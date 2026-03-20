@@ -748,6 +748,25 @@ export function judgeNeedToHint(fromType: string | undefined, toType: string | u
                 toType === 'DWORD' ||
                 toType === 'BYTE'
             );
+        // 关键：新增 BYTE 分支
+        case 'BYTE':
+            // BYTE 能安全放进的整数类型都不提示
+            if (
+                toType === 'BYTE' || // 自身
+                toType === 'USINT' ||
+                toType === 'SINT' ||
+                toType === 'INT' ||
+                toType === 'UINT' ||
+                toType === 'DINT' ||
+                toType === 'UDINT' ||
+                toType === 'LINT' ||
+                toType === 'ULINT'
+            ) {
+                return false;
+            }
+            // 其他目标类型（比如 BOOL、WORD/DWORD/LWORD）如果你想慎重，可以保持提示
+            return true;
+
         case 'ULINT':
             return (
                 toType === 'SINT' ||
