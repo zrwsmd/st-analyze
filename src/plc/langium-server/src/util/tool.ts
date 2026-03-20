@@ -672,10 +672,10 @@ export function ignoreCase(eachVarTypeName: string): [string | null, boolean] {
  * INT=>SINT,这种返回true才提示
  */
 
-type SpecifiedType = 'SINT' | 'USINT' | 'INT' | 'UINT' | 'DINT' | 'UDINT' | 'LINT' | 'WORD' | 'DWORD' | 'LWORD' | 'BYTE' | 'BOOL';
+type SpecifiedType = 'SINT' | 'USINT' | 'INT' | 'UINT' | 'DINT' | 'UDINT' | 'LINT' | 'WORD' | 'DWORD' | 'LWORD' | 'BYTE' | 'BOOL' | 'ULINT';
 
 function isSpecifiedType(value: string): value is SpecifiedType {
-    return ['SINT', 'USINT', 'INT', 'UINT', 'DINT', 'UDINT', 'LINT', 'WORD', 'DWORD', 'LWORD', 'BYTE', 'BOOL'].includes(
+    return ['SINT', 'USINT', 'INT', 'UINT', 'DINT', 'UDINT', 'LINT', 'WORD', 'DWORD', 'LWORD', 'BYTE', 'BOOL', 'ULINT'].includes(
         value as SpecifiedType
     );
 }
@@ -746,6 +746,20 @@ export function judgeNeedToHint(fromType: string | undefined, toType: string | u
                 toType === 'UDINT' ||
                 toType === 'WORD' ||
                 toType === 'DWORD' ||
+                toType === 'BYTE'
+            );
+        case 'ULINT':
+            return (
+                toType === 'SINT' ||
+                toType === 'USINT' ||
+                toType === 'INT' ||
+                toType === 'UINT' ||
+                toType === 'DINT' ||
+                toType === 'UDINT' ||
+                toType === 'LINT' ||
+                toType === 'WORD' ||
+                toType === 'DWORD' ||
+                toType === 'LWORD' ||
                 toType === 'BYTE'
             );
         default:
