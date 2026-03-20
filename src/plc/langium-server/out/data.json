@@ -1,0 +1,5129 @@
+[
+  {
+    "name": "Standard function blocks",
+    "list": [
+      {
+        "name": "SR",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["S1", "BOOL", "none"],
+          ["R", "BOOL", "none"]
+        ],
+        "outputs": [["Q1", "BOOL", "none"]],
+        "comment": "The SR bistable is a latch where the Set dominates.",
+        "usage": "\n (BOOL:S1, BOOL:R) => (BOOL:Q1)"
+      },
+      {
+        "name": "RS",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["S", "BOOL", "none"],
+          ["R1", "BOOL", "none"]
+        ],
+        "outputs": [["Q1", "BOOL", "none"]],
+        "comment": "The RS bistable is a latch where the Reset dominates.",
+        "usage": "\n (BOOL:S, BOOL:R1) => (BOOL:Q1)"
+      },
+      {
+        "name": "SEMA",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CLAIM", "BOOL", "none"],
+          ["RELEASE", "BOOL", "none"]
+        ],
+        "outputs": [["BUSY", "BOOL", "none"]],
+        "comment": "The semaphore provides a mechanism to allow software elements mutually exclusive access to certain resources.",
+        "usage": "\n (BOOL:CLAIM, BOOL:RELEASE) => (BOOL:BUSY)"
+      },
+      {
+        "name": "R_TRIG",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [["CLK", "BOOL", "none"]],
+        "outputs": [["Q", "BOOL", "none"]],
+        "comment": "The output produces a single pulse when a rising edge is detected.",
+        "usage": "\n (BOOL:CLK) => (BOOL:Q)"
+      },
+      {
+        "name": "F_TRIG",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [["CLK", "BOOL", "none"]],
+        "outputs": [["Q", "BOOL", "none"]],
+        "comment": "The output produces a single pulse when a falling edge is detected.",
+        "usage": "\n (BOOL:CLK) => (BOOL:Q)"
+      },
+      {
+        "name": "CTU",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CU", "BOOL", "rising"],
+          ["R", "BOOL", "none"],
+          ["PV", "INT", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["CV", "INT", "none"]
+        ],
+        "comment": "The up-counter can be used to signal when a count has reached a maximum value.",
+        "usage": "\n (BOOL:CU, BOOL:R, INT:PV) => (BOOL:Q, INT:CV)"
+      },
+      {
+        "name": "CTU_DINT",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CU", "BOOL", "rising"],
+          ["R", "BOOL", "none"],
+          ["PV", "DINT", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["CV", "DINT", "none"]
+        ],
+        "comment": "The up-counter can be used to signal when a count has reached a maximum value.",
+        "usage": "\n (BOOL:CU, BOOL:R, DINT:PV) => (BOOL:Q, DINT:CV)"
+      },
+      {
+        "name": "CTU_LINT",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CU", "BOOL", "rising"],
+          ["R", "BOOL", "none"],
+          ["PV", "LINT", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["CV", "LINT", "none"]
+        ],
+        "comment": "The up-counter can be used to signal when a count has reached a maximum value.",
+        "usage": "\n (BOOL:CU, BOOL:R, LINT:PV) => (BOOL:Q, LINT:CV)"
+      },
+      {
+        "name": "CTU_UDINT",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CU", "BOOL", "rising"],
+          ["R", "BOOL", "none"],
+          ["PV", "UDINT", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["CV", "UDINT", "none"]
+        ],
+        "comment": "The up-counter can be used to signal when a count has reached a maximum value.",
+        "usage": "\n (BOOL:CU, BOOL:R, UDINT:PV) => (BOOL:Q, UDINT:CV)"
+      },
+      {
+        "name": "CTU_ULINT",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CU", "BOOL", "rising"],
+          ["R", "BOOL", "none"],
+          ["PV", "ULINT", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["CV", "ULINT", "none"]
+        ],
+        "comment": "The up-counter can be used to signal when a count has reached a maximum value.",
+        "usage": "\n (BOOL:CU, BOOL:R, ULINT:PV) => (BOOL:Q, ULINT:CV)"
+      },
+      {
+        "name": "CTD",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CD", "BOOL", "rising"],
+          ["LD", "BOOL", "none"],
+          ["PV", "INT", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["CV", "INT", "none"]
+        ],
+        "comment": "The down-counter can be used to signal when a count has reached zero, on counting down from a preset value.",
+        "usage": "\n (BOOL:CD, BOOL:LD, INT:PV) => (BOOL:Q, INT:CV)"
+      },
+      {
+        "name": "CTD_DINT",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CD", "BOOL", "rising"],
+          ["LD", "BOOL", "none"],
+          ["PV", "DINT", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["CV", "DINT", "none"]
+        ],
+        "comment": "The down-counter can be used to signal when a count has reached zero, on counting down from a preset value.",
+        "usage": "\n (BOOL:CD, BOOL:LD, DINT:PV) => (BOOL:Q, DINT:CV)"
+      },
+      {
+        "name": "CTD_LINT",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CD", "BOOL", "rising"],
+          ["LD", "BOOL", "none"],
+          ["PV", "LINT", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["CV", "LINT", "none"]
+        ],
+        "comment": "The down-counter can be used to signal when a count has reached zero, on counting down from a preset value.",
+        "usage": "\n (BOOL:CD, BOOL:LD, LINT:PV) => (BOOL:Q, LINT:CV)"
+      },
+      {
+        "name": "CTD_UDINT",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CD", "BOOL", "rising"],
+          ["LD", "BOOL", "none"],
+          ["PV", "UDINT", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["CV", "UDINT", "none"]
+        ],
+        "comment": "The down-counter can be used to signal when a count has reached zero, on counting down from a preset value.",
+        "usage": "\n (BOOL:CD, BOOL:LD, UDINT:PV) => (BOOL:Q, UDINT:CV)"
+      },
+      {
+        "name": "CTD_ULINT",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CD", "BOOL", "rising"],
+          ["LD", "BOOL", "none"],
+          ["PV", "ULINT", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["CV", "ULINT", "none"]
+        ],
+        "comment": "The down-counter can be used to signal when a count has reached zero, on counting down from a preset value.",
+        "usage": "\n (BOOL:CD, BOOL:LD, ULINT:PV) => (BOOL:Q, ULINT:CV)"
+      },
+      {
+        "name": "CTUD",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CU", "BOOL", "rising"],
+          ["CD", "BOOL", "rising"],
+          ["R", "BOOL", "none"],
+          ["LD", "BOOL", "none"],
+          ["PV", "INT", "none"]
+        ],
+        "outputs": [
+          ["QU", "BOOL", "none"],
+          ["QD", "BOOL", "none"],
+          ["CV", "INT", "none"],
+          ["CD_T", "R_TRIG", "none"],
+          ["CU_T", "R_TRIG", "none"]
+        ],
+        "comment": "The up-down counter has two inputs CU and CD. It can be used to both count up on one input and down on the other.",
+        "usage": "\n (BOOL:CU, BOOL:CD, BOOL:R, BOOL:LD, INT:PV) => (BOOL:QU, BOOL:QD, INT:CV, R_TRIG:CD_T, R_TRIG:CU_T)"
+      },
+      {
+        "name": "CTUD_DINT",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CU", "BOOL", "rising"],
+          ["CD", "BOOL", "rising"],
+          ["R", "BOOL", "none"],
+          ["LD", "BOOL", "none"],
+          ["PV", "DINT", "none"]
+        ],
+        "outputs": [
+          ["QU", "BOOL", "none"],
+          ["QD", "BOOL", "none"],
+          ["CV", "DINT", "none"],
+          ["CD_T", "R_TRIG", "none"],
+          ["CU_T", "R_TRIG", "none"]
+        ],
+        "comment": "The up-down counter has two inputs CU and CD. It can be used to both count up on one input and down on the other.",
+        "usage": "\n (BOOL:CU, BOOL:CD, BOOL:R, BOOL:LD, DINT:PV) => (BOOL:QU, BOOL:QD, DINT:CV, R_TRIG:CD_T, R_TRIG:CU_T)"
+      },
+      {
+        "name": "CTUD_LINT",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CU", "BOOL", "rising"],
+          ["CD", "BOOL", "rising"],
+          ["R", "BOOL", "none"],
+          ["LD", "BOOL", "none"],
+          ["PV", "LINT", "none"]
+        ],
+        "outputs": [
+          ["QU", "BOOL", "none"],
+          ["QD", "BOOL", "none"],
+          ["CV", "LINT", "none"],
+          ["CD_T", "R_TRIG", "none"],
+          ["CU_T", "R_TRIG", "none"]
+        ],
+        "comment": "The up-down counter has two inputs CU and CD. It can be used to both count up on one input and down on the other.",
+        "usage": "\n (BOOL:CU, BOOL:CD, BOOL:R, BOOL:LD, LINT:PV) => (BOOL:QU, BOOL:QD, LINT:CV, R_TRIG:CD_T, R_TRIG:CU_T)"
+      },
+      {
+        "name": "CTUD_UDINT",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CU", "BOOL", "rising"],
+          ["CD", "BOOL", "rising"],
+          ["R", "BOOL", "none"],
+          ["LD", "BOOL", "none"],
+          ["PV", "UDINT", "none"]
+        ],
+        "outputs": [
+          ["QU", "BOOL", "none"],
+          ["QD", "BOOL", "none"],
+          ["CV", "UDINT", "none"],
+          ["CD_T", "R_TRIG", "none"],
+          ["CU_T", "R_TRIG", "none"]
+        ],
+        "comment": "The up-down counter has two inputs CU and CD. It can be used to both count up on one input and down on the other.",
+        "usage": "\n (BOOL:CU, BOOL:CD, BOOL:R, BOOL:LD, UDINT:PV) => (BOOL:QU, BOOL:QD, UDINT:CV, R_TRIG:CD_T, R_TRIG:CU_T)"
+      },
+      {
+        "name": "CTUD_ULINT",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["CU", "BOOL", "rising"],
+          ["CD", "BOOL", "rising"],
+          ["R", "BOOL", "none"],
+          ["LD", "BOOL", "none"],
+          ["PV", "ULINT", "none"]
+        ],
+        "outputs": [
+          ["QU", "BOOL", "none"],
+          ["QD", "BOOL", "none"],
+          ["CV", "ULINT", "none"],
+          ["CD_T", "R_TRIG", "none"],
+          ["CU_T", "R_TRIG", "none"]
+        ],
+        "comment": "The up-down counter has two inputs CU and CD. It can be used to both count up on one input and down on the other.",
+        "usage": "\n (BOOL:CU, BOOL:CD, BOOL:R, BOOL:LD, ULINT:PV) => (BOOL:QU, BOOL:QD, ULINT:CV, R_TRIG:CD_T, R_TRIG:CU_T)"
+      },
+      {
+        "name": "TP",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["IN", "BOOL", "none"],
+          ["PT", "TIME", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["ET", "TIME", "none"]
+        ],
+        "comment": "The pulse timer can be used to generate output pulses of a given time duration.",
+        "usage": "\n (BOOL:IN, TIME:PT) => (BOOL:Q, TIME:ET)"
+      },
+      {
+        "name": "TON",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["IN", "BOOL", "none"],
+          ["PT", "TIME", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["ET", "TIME", "none"]
+        ],
+        "comment": "The on-delay timer can be used to delay setting an output true, for fixed period after an input becomes true.",
+        "usage": "\n (BOOL:IN, TIME:PT) => (BOOL:Q, TIME:ET)"
+      },
+      {
+        "name": "TOF",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["IN", "BOOL", "none"],
+          ["PT", "TIME", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["ET", "TIME", "none"]
+        ],
+        "comment": "The off-delay timer can be used to delay setting an output false, for fixed period after input goes false.",
+        "usage": "\n (BOOL:IN, TIME:PT) => (BOOL:Q, TIME:ET)"
+      }
+    ]
+  },
+  {
+    "name": "Additional function blocks",
+    "list": [
+      {
+        "name": "RTC",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["IN", "BOOL", "none"],
+          ["PDT", "DT", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["CDT", "DT", "none"]
+        ],
+        "comment": "The real time clock has many uses including time stamping, setting dates and times of day in batch reports, in alarm messages and so on.",
+        "usage": "\n (BOOL:IN, DT:PDT) => (BOOL:Q, DT:CDT)"
+      },
+      {
+        "name": "INTEGRAL",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["RUN", "BOOL", "none"],
+          ["R1", "BOOL", "none"],
+          ["XIN", "REAL", "none"],
+          ["X0", "REAL", "none"],
+          ["CYCLE", "TIME", "none"]
+        ],
+        "outputs": [
+          ["Q", "BOOL", "none"],
+          ["XOUT", "REAL", "none"]
+        ],
+        "comment": "The integral function block integrates the value of input XIN over time.",
+        "usage": "\n (BOOL:RUN, BOOL:R1, REAL:XIN, REAL:X0, TIME:CYCLE) => (BOOL:Q, REAL:XOUT)"
+      },
+      {
+        "name": "DERIVATIVE",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["RUN", "BOOL", "none"],
+          ["XIN", "REAL", "none"],
+          ["CYCLE", "TIME", "none"]
+        ],
+        "outputs": [["XOUT", "REAL", "none"]],
+        "comment": "The derivative function block produces an output XOUT proportional to the rate of change of the input XIN.",
+        "usage": "\n (BOOL:RUN, REAL:XIN, TIME:CYCLE) => (REAL:XOUT)"
+      },
+      {
+        "name": "PID",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["AUTO", "BOOL", "none"],
+          ["PV", "REAL", "none"],
+          ["SP", "REAL", "none"],
+          ["X0", "REAL", "none"],
+          ["KP", "REAL", "none"],
+          ["TR", "REAL", "none"],
+          ["TD", "REAL", "none"],
+          ["CYCLE", "TIME", "none"]
+        ],
+        "outputs": [["XOUT", "REAL", "none"]],
+        "comment": "The PID (proportional, Integral, Derivative) function block provides the classical three term controller for closed loop control.",
+        "usage": "\n (BOOL:AUTO, REAL:PV, REAL:SP, REAL:X0, REAL:KP, REAL:TR, REAL:TD, TIME:CYCLE) => (REAL:XOUT)"
+      },
+      {
+        "name": "RAMP",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["RUN", "BOOL", "none"],
+          ["X0", "REAL", "none"],
+          ["X1", "REAL", "none"],
+          ["TR", "TIME", "none"],
+          ["CYCLE", "TIME", "none"]
+        ],
+        "outputs": [
+          ["BUSY", "BOOL", "none"],
+          ["XOUT", "REAL", "none"]
+        ],
+        "comment": "The RAMP function block is modelled on example given in the standard.",
+        "usage": "\n (BOOL:RUN, REAL:X0, REAL:X1, TIME:TR, TIME:CYCLE) => (BOOL:BUSY, REAL:XOUT)"
+      },
+      {
+        "name": "HYSTERESIS",
+        "type": "functionBlock",
+        "extensible": false,
+        "inputs": [
+          ["XIN1", "REAL", "none"],
+          ["XIN2", "REAL", "none"],
+          ["EPS", "REAL", "none"]
+        ],
+        "outputs": [["Q", "BOOL", "none"]],
+        "comment": "The hysteresis function block provides a hysteresis boolean output driven by the difference of two floating point (REAL) inputs XIN1 and XIN2.",
+        "usage": "\n (REAL:XIN1, REAL:XIN2, REAL:EPS) => (BOOL:Q)"
+      }
+    ]
+  },
+  {
+    "name": "Type conversion",
+    "list": [
+      {
+        "name": "BOOL_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BOOL_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BOOL", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "SINT_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "SINT", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "INT_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "INT", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DINT_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DINT", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LINT_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LINT", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "REAL_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "REAL", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LREAL_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LREAL", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TIME_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TIME", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DATE_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DATE", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TOD_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "TOD", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DT_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "STRING_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BYTE_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "WORD_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "DWORD_TO_LWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_BOOL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_SINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "SINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_INT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_DINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "DINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_LINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "LINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_REAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "REAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_LREAL",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "LREAL", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_TIME",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_TOD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_DT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_STRING",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_BYTE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_WORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "LWORD_TO_DWORD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Data type conversion\")",
+        "extensible": false,
+        "filter": "ANY_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "TRUNC",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_REAL", "none"]],
+        "outputs": [["OUT", "ANY_INT", "none"]],
+        "comment": "_(\"Rounding up/down\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "BCD_TO_USINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "BYTE", "none"]],
+        "outputs": [["OUT", "USINT", "none"]],
+        "comment": "_(\"Conversion from BCD\")",
+        "extensible": false,
+        "filter": "BCD_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BCD_TO_UINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "WORD", "none"]],
+        "outputs": [["OUT", "UINT", "none"]],
+        "comment": "_(\"Conversion from BCD\")",
+        "extensible": false,
+        "filter": "BCD_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BCD_TO_UDINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DWORD", "none"]],
+        "outputs": [["OUT", "UDINT", "none"]],
+        "comment": "_(\"Conversion from BCD\")",
+        "extensible": false,
+        "filter": "BCD_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "BCD_TO_ULINT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "LWORD", "none"]],
+        "outputs": [["OUT", "ULINT", "none"]],
+        "comment": "_(\"Conversion from BCD\")",
+        "extensible": false,
+        "filter": "BCD_TO_ANY",
+        "type": "function"
+      },
+      {
+        "name": "USINT_TO_BCD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "USINT", "none"]],
+        "outputs": [["OUT", "BYTE", "none"]],
+        "comment": "_(\"Conversion to BCD\")",
+        "extensible": false,
+        "filter": "ANY_TO_BCD",
+        "type": "function"
+      },
+      {
+        "name": "UINT_TO_BCD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UINT", "none"]],
+        "outputs": [["OUT", "WORD", "none"]],
+        "comment": "_(\"Conversion to BCD\")",
+        "extensible": false,
+        "filter": "ANY_TO_BCD",
+        "type": "function"
+      },
+      {
+        "name": "UDINT_TO_BCD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "UDINT", "none"]],
+        "outputs": [["OUT", "DWORD", "none"]],
+        "comment": "_(\"Conversion to BCD\")",
+        "extensible": false,
+        "filter": "ANY_TO_BCD",
+        "type": "function"
+      },
+      {
+        "name": "ULINT_TO_BCD",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ULINT", "none"]],
+        "outputs": [["OUT", "LWORD", "none"]],
+        "comment": "_(\"Conversion to BCD\")",
+        "extensible": false,
+        "filter": "ANY_TO_BCD",
+        "type": "function"
+      },
+      {
+        "name": "DATE_AND_TIME_TO_TIME_OF_DAY",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Conversion to time-of-day\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "DATE_AND_TIME_TO_DATE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "DT", "none"]],
+        "outputs": [["OUT", "DATE", "none"]],
+        "comment": "_(\"Conversion to date\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "name": "Numerical",
+    "list": [
+      {
+        "name": "ABS",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_NUM", "none"]],
+        "outputs": [["OUT", "ANY_NUM", "none"]],
+        "comment": "_(\"Absolute number\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SQRT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_REAL", "none"]],
+        "outputs": [["OUT", "ANY_REAL", "none"]],
+        "comment": "_(\"Square root (base 2)\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "LN",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_REAL", "none"]],
+        "outputs": [["OUT", "ANY_REAL", "none"]],
+        "comment": "_(\"Natural logarithm\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "LOG",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_REAL", "none"]],
+        "outputs": [["OUT", "ANY_REAL", "none"]],
+        "comment": "_(\"Logarithm to base 10\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "EXP",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_REAL", "none"]],
+        "outputs": [["OUT", "ANY_REAL", "none"]],
+        "comment": "_(\"Exponentiation\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SIN",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_REAL", "none"]],
+        "outputs": [["OUT", "ANY_REAL", "none"]],
+        "comment": "_(\"Sine\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "COS",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_REAL", "none"]],
+        "outputs": [["OUT", "ANY_REAL", "none"]],
+        "comment": "_(\"Cosine\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "TAN",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_REAL", "none"]],
+        "outputs": [["OUT", "ANY_REAL", "none"]],
+        "comment": "_(\"Tangent\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "ASIN",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_REAL", "none"]],
+        "outputs": [["OUT", "ANY_REAL", "none"]],
+        "comment": "_(\"Arc sine\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "ACOS",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_REAL", "none"]],
+        "outputs": [["OUT", "ANY_REAL", "none"]],
+        "comment": "_(\"Arc cosine\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "ATAN",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_REAL", "none"]],
+        "outputs": [["OUT", "ANY_REAL", "none"]],
+        "comment": "_(\"Arc tangent\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "name": "Arithmetic",
+    "list": [
+      {
+        "name": "ADD",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY_NUM", "none"],
+          ["IN2", "ANY_NUM", "none"]
+        ],
+        "outputs": [["OUT", "ANY_NUM", "none"]],
+        "comment": "_(\"Addition\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "MUL",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY_NUM", "none"],
+          ["IN2", "ANY_NUM", "none"]
+        ],
+        "outputs": [["OUT", "ANY_NUM", "none"]],
+        "comment": "_(\"Multiplication\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY_NUM", "none"],
+          ["IN2", "ANY_NUM", "none"]
+        ],
+        "outputs": [["OUT", "ANY_NUM", "none"]],
+        "comment": "_(\"Subtraction\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "DIV",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY_NUM", "none"],
+          ["IN2", "ANY_NUM", "none"]
+        ],
+        "outputs": [["OUT", "ANY_NUM", "none"]],
+        "comment": "_(\"Division\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "MOD",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY_INT", "none"],
+          ["IN2", "ANY_INT", "none"]
+        ],
+        "outputs": [["OUT", "ANY_INT", "none"]],
+        "comment": "_(\"Remainder (modulo)\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "EXPT",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY_REAL", "none"],
+          ["IN2", "ANY_NUM", "none"]
+        ],
+        "outputs": [["OUT", "ANY_REAL", "none"]],
+        "comment": "_(\"Exponent\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "MOVE",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY", "none"]],
+        "outputs": [["OUT", "ANY", "none"]],
+        "comment": "_(\"Assignment\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "name": "Time",
+    "list": [
+      {
+        "name": "ADD",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TIME", "none"],
+          ["IN2", "TIME", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Time addition\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "ADD_TIME",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TIME", "none"],
+          ["IN2", "TIME", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Time addition\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "ADD",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TOD", "none"],
+          ["IN2", "TIME", "none"]
+        ],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Time-of-day addition\")+\" \"+_(\"DEPRECATED\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "ADD_TOD_TIME",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TOD", "none"],
+          ["IN2", "TIME", "none"]
+        ],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Time-of-day addition\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "ADD",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "DT", "none"],
+          ["IN2", "TIME", "none"]
+        ],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Date addition\")+\" \"+_(\"DEPRECATED\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "ADD_DT_TIME",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "DT", "none"],
+          ["IN2", "TIME", "none"]
+        ],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Date addition\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "MUL",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TIME", "none"],
+          ["IN2", "ANY_NUM", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Time multiplication\")+\" \"+_(\"DEPRECATED\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "MULTIME",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TIME", "none"],
+          ["IN2", "ANY_NUM", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Time multiplication\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB_TIME",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TIME", "none"],
+          ["IN2", "TIME", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Time subtraction\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TIME", "none"],
+          ["IN2", "TIME", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Time subtraction\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "DATE", "none"],
+          ["IN2", "DATE", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Date subtraction\")+\" \"+_(\"DEPRECATED\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB_DATE_DATE",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "DATE", "none"],
+          ["IN2", "DATE", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Date subtraction\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TOD", "none"],
+          ["IN2", "TIME", "none"]
+        ],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Time-of-day subtraction\")+\" \"+_(\"DEPRECATED\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB_TOD_TIME",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TOD", "none"],
+          ["IN2", "TIME", "none"]
+        ],
+        "outputs": [["OUT", "TOD", "none"]],
+        "comment": "_(\"Time-of-day subtraction\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TOD", "none"],
+          ["IN2", "TOD", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Time-of-day subtraction\")+\" \"+_(\"DEPRECATED\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB_TOD_TOD",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TOD", "none"],
+          ["IN2", "TOD", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Time-of-day subtraction\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "DT", "none"],
+          ["IN2", "TIME", "none"]
+        ],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Date and time subtraction\")+\" \"+_(\"DEPRECATED\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB_DT_TIME",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "DT", "none"],
+          ["IN2", "TIME", "none"]
+        ],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Date and time subtraction\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "DT", "none"],
+          ["IN2", "DT", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Date and time subtraction\")+\" \"+_(\"DEPRECATED\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SUB_DT_DT",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "DT", "none"],
+          ["IN2", "DT", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Date and time subtraction\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "DIV",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TIME", "none"],
+          ["IN2", "ANY_NUM", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Time division\")+\" \"+_(\"DEPRECATED\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "DIVTIME",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "TIME", "none"],
+          ["IN2", "ANY_NUM", "none"]
+        ],
+        "outputs": [["OUT", "TIME", "none"]],
+        "comment": "_(\"Time division\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "name": "Bit-shift",
+    "list": [
+      {
+        "name": "SHL",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN", "ANY_BIT", "none"],
+          ["N", "ANY_INT", "none"]
+        ],
+        "outputs": [["OUT", "ANY_BIT", "none"]],
+        "comment": "_(\"Shift left\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "SHR",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN", "ANY_BIT", "none"],
+          ["N", "ANY_INT", "none"]
+        ],
+        "outputs": [["OUT", "ANY_BIT", "none"]],
+        "comment": "_(\"Shift right\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "ROR",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN", "ANY_NBIT", "none"],
+          ["N", "ANY_INT", "none"]
+        ],
+        "outputs": [["OUT", "ANY_NBIT", "none"]],
+        "comment": "_(\"Rotate right\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "ROL",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN", "ANY_NBIT", "none"],
+          ["N", "ANY_INT", "none"]
+        ],
+        "outputs": [["OUT", "ANY_NBIT", "none"]],
+        "comment": "_(\"Rotate left\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "name": "Bitwise",
+    "list": [
+      {
+        "name": "AND",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY_BIT", "none"],
+          ["IN2", "ANY_BIT", "none"]
+        ],
+        "outputs": [["OUT", "ANY_BIT", "none"]],
+        "comment": "_(\"Bitwise AND\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "OR",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY_BIT", "none"],
+          ["IN2", "ANY_BIT", "none"]
+        ],
+        "outputs": [["OUT", "ANY_BIT", "none"]],
+        "comment": "_(\"Bitwise OR\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "XOR",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY_BIT", "none"],
+          ["IN2", "ANY_BIT", "none"]
+        ],
+        "outputs": [["OUT", "ANY_BIT", "none"]],
+        "comment": "_(\"Bitwise XOR\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "NOT",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "ANY_BIT", "none"]],
+        "outputs": [["OUT", "ANY_BIT", "none"]],
+        "comment": "_(\"Bitwise inverting\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "name": "Selection",
+    "list": [
+      {
+        "name": "SEL",
+        "baseinputnumber": 0,
+        "inputs": [
+          ["G", "BOOL", "none"],
+          ["IN0", "ANY", "none"],
+          ["IN1", "ANY", "none"]
+        ],
+        "outputs": [["OUT", "ANY", "none"]],
+        "comment": "_(\"Binary selection (1 of 2)\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "MAX",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY", "none"],
+          ["IN2", "ANY", "none"]
+        ],
+        "outputs": [["OUT", "ANY", "none"]],
+        "comment": "_(\"Maximum\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "MIN",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY", "none"],
+          ["IN2", "ANY", "none"]
+        ],
+        "outputs": [["OUT", "ANY", "none"]],
+        "comment": "_(\"Minimum\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "LIMIT",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["MN", "ANY", "none"],
+          ["IN", "ANY", "none"],
+          ["MX", "ANY", "none"]
+        ],
+        "outputs": [["OUT", "ANY", "none"]],
+        "comment": "_(\"Limitation\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "MUX",
+        "baseinputnumber": 0,
+        "inputs": [
+          ["K", "ANY_INT", "none"],
+          ["IN0", "ANY", "none"],
+          ["IN1", "ANY", "none"]
+        ],
+        "outputs": [["OUT", "ANY", "none"]],
+        "comment": "_(\"Multiplexer (select 1 of N)\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "name": "Comparison",
+    "list": [
+      {
+        "name": "GT",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY", "none"],
+          ["IN2", "ANY", "none"]
+        ],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Greater than\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "GE",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY", "none"],
+          ["IN2", "ANY", "none"]
+        ],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Greater than or equal to\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "EQ",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY", "none"],
+          ["IN2", "ANY", "none"]
+        ],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Equal to\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "LT",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY", "none"],
+          ["IN2", "ANY", "none"]
+        ],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Less than\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "LE",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY", "none"],
+          ["IN2", "ANY", "none"]
+        ],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Less than or equal to\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "NE",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "ANY", "none"],
+          ["IN2", "ANY", "none"]
+        ],
+        "outputs": [["OUT", "BOOL", "none"]],
+        "comment": "_(\"Not equal to\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      }
+    ]
+  },
+  {
+    "name": "Character string",
+    "list": [
+      {
+        "name": "LEN",
+        "baseinputnumber": 1,
+        "inputs": [["IN", "STRING", "none"]],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Length of string\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "LEFT",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN", "STRING", "none"],
+          ["L", "ANY_INT", "none"]
+        ],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"string left of\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "RIGHT",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN", "STRING", "none"],
+          ["L", "ANY_INT", "none"]
+        ],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"string right of\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "MID",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN", "STRING", "none"],
+          ["L", "ANY_INT", "none"],
+          ["P", "ANY_INT", "none"]
+        ],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"string from the middle\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "CONCAT",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "STRING", "none"],
+          ["IN2", "STRING", "none"]
+        ],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Concatenation\")",
+        "extensible": true,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "CONCAT_DATE_TOD",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "DATE", "none"],
+          ["IN2", "TOD", "none"]
+        ],
+        "outputs": [["OUT", "DT", "none"]],
+        "comment": "_(\"Time concatenation\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "INSERT",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "STRING", "none"],
+          ["IN2", "STRING", "none"],
+          ["P", "ANY_INT", "none"]
+        ],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Insertion (into)\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "DELETE",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN", "STRING", "none"],
+          ["L", "ANY_INT", "none"],
+          ["P", "ANY_INT", "none"]
+        ],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Deletion (within)\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "REPLACE",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "STRING", "none"],
+          ["IN2", "STRING", "none"],
+          ["L", "ANY_INT", "none"],
+          ["P", "ANY_INT", "none"]
+        ],
+        "outputs": [["OUT", "STRING", "none"]],
+        "comment": "_(\"Replacement (within)\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      },
+      {
+        "name": "FIND",
+        "baseinputnumber": 1,
+        "inputs": [
+          ["IN1", "STRING", "none"],
+          ["IN2", "STRING", "none"]
+        ],
+        "outputs": [["OUT", "INT", "none"]],
+        "comment": "_(\"Find position\")",
+        "extensible": false,
+        "filter": "",
+        "type": "function"
+      }
+    ]
+  }
+]

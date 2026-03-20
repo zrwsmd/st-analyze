@@ -1,0 +1,10 @@
+TYPE
+	TON: UNION
+	 a: BOOL := FALSE;
+	 b: REAL;
+	 c: BOOL;
+
+END_UNION
+END_TYPE
+
+

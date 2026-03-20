@@ -1,0 +1,157 @@
+ {
+    "elements": [
+      {
+        "elementType": "functionBlock",
+        "elementName": "CacheFb1",
+        "varDecls": [
+          {
+            "varGlobalType": "VAR",
+            "varName": "ccc",
+            "varType": "R_TRIG"
+          },
+          {
+            "varGlobalType": "VAR",
+            "varName": "dtTimeNow",
+            "varType": "DATE_AND_TIME"
+          }
+        ]
+      },
+      {
+        "elementType": "functionBlock",
+        "elementName": "CacheFb2",
+        "varDecls": [
+          {
+            "varGlobalType": "VAR",
+            "varName": "ccc",
+            "varType": "INT"
+          },
+          {
+            "varGlobalType": "VAR",
+            "varName": "aa",
+            "varType": "INT"
+          },
+          {
+            "varGlobalType": "VAR",
+            "varName": "aaaaaa",
+            "varType": "BOOL"
+          },
+          {
+            "varGlobalType": "VAR",
+            "varName": "dtTimeNow",
+            "varType": "DATE_AND_TIME"
+          }
+        ]
+      },
+      {
+        "elementType": "function",
+        "elementName": "AddNumbers2",
+        "varDecls": [
+          {
+            "varGlobalType": "VAR",
+            "varName": "a",
+            "varType": "INT"
+          },
+          {
+            "varGlobalType": "VAR",
+            "varName": "b",
+            "varType": "INT"
+          },
+          {
+            "varGlobalType": "VAR",
+            "varName": "sum",
+            "varType": "INT"
+          },
+          {
+            "varGlobalType": "VAR_INPUT",
+            "varName": "c",
+            "varType": "INT"
+          }
+        ],
+        "params": [
+          {
+            "paramName": "a1",
+            "paramType": "INT"
+          },
+          {
+            "paramName": "a2",
+            "paramType": "INT"
+          }
+        ],
+        "returnType": "INT"
+      },
+      {
+        "elementType": "function",
+        "elementName": "AddNumbers",
+        "varDecls": [],
+        "params": [
+          {
+            "paramName": "q",
+            "paramType": "LREAL"
+          }
+        ],
+        "returnType": "INT"
+      },
+      {
+        "elementType": "struct",
+        "elementName": "City",
+        "varDecls": [
+          {
+            "varName": "cityId",
+            "varType": "INT"
+          },
+          {
+            "varName": "region",
+            "varType": "Region",
+            "refFilePath": "file:///d%3A/glsp-vscode-integration-master-without-glsp-langium3.0-0508/example/workflow/workspace/region.st@struct"
+          },
+          {
+            "varName": "dtTimeNow",
+            "varType": "DATE_AND_TIME"
+          }
+        ]
+      },
+      {
+        "elementType": "struct",
+        "elementName": "China",
+        "varDecls": [
+          {
+            "varName": "provinceId",
+            "varType": "INT"
+          },
+          {
+            "varName": "province",
+            "varType": "Province",
+            "refFilePath": "file:///d%3A/glsp-vscode-integration-master-without-glsp-langium3.0-0508/example/workflow/workspace/province.st@struct"
+          },
+          {
+            "varName": "a",
+            "varType": "INT"
+          }
+        ]
+      },
+      {
+        "elementType": "struct",
+        "elementName": "Province",
+        "varDecls": [
+          {
+            "varName": "provinceId",
+            "varType": "INT"
+          },
+          {
+            "varName": "aa",
+            "varType": "STRING"
+          },
+          {
+            "varName": "city",
+            "varType": "City",
+            "refFilePath": "file:///d%3A/glsp-vscode-integration-master-without-glsp-langium3.0-0508/example/workflow/workspace/city.st@struct"
+          }
+        ]
+      }
+    ]
+  }
+
+
+
+
+

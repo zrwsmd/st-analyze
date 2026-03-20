@@ -1,0 +1,76 @@
+{
+  "name": "langium-statemachine-dsl",
+  "displayName": "State Machine DSL",
+  "version": "2.0.0",
+  "description": "Example language built with Langium",
+  "categories": [
+    "Programming Languages"
+  ],
+  "homepage": "https://langium.org",
+  "bugs": "https://github.com/eclipse-langium/langium/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eclipse-langium/langium",
+    "directory": "examples/statemachine"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "TypeFox",
+    "url": "https://www.typefox.io"
+  },
+  "type": "module",
+  "main": "./out/main.cjs",
+  "files": [
+    "bin",
+    "out",
+    "src",
+    "syntaxes",
+    "language-configuration.json"
+  ],
+  "scripts": {
+    "build": "tsc --noEmit && node esbuild.mjs",
+    "bundle": "webpack",
+    "clean": "rimraf lib tsconfig.tsbuildinfo ",
+    "langium:generate": "langium generate",
+    "lint": "eslint src test --ext ts",
+    "prepare": "yarn clean && yarn build",
+    "publish:latest": "npm publish --tag latest --access public",
+    "publish:next": "npm --no-git-tag-version version \"$(semver $npm_package_version -i minor)-next.$(git rev-parse --short HEAD)\" && npm publish --tag next",
+    "watch": "tsc -w"
+  },
+  "contributes": {
+    "grammars": [
+      {
+        "language": "statemachine",
+        "scopeName": "source.statemachine",
+        "path": "./syntaxes/cross-model.tmLanguage.json"
+      }
+    ],
+    "languages": [
+      {
+        "id": "statemachine",
+        "aliases": [
+          "Statemachine",
+          "statemachine"
+        ],
+        "extensions": [
+          ".st"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ]
+  },
+  "activationEvents": [
+    "onLanguage:*"
+  ],
+  "dependencies": {
+    "@types/lodash": "^4.14.202",
+    "@types/vscode": "^1.67.0",
+    "chalk": "~5.3.0",
+    "commander": "~11.0.0",
+    "lodash": "^4.17.21"
+  },
+  "engines": {
+    "vscode": "^1.67.0"
+  }
+}

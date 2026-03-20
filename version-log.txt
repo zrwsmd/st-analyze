@@ -1,0 +1,2 @@
+1.0.2  解决禅道的103问题(http://10.20.99.99:8072/bug-view-103.html#app=execution)
+1.0.3 END_IF,END_CASE等后面加一个或者多个分号也不报错

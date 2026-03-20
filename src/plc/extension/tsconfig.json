@@ -1,0 +1,36 @@
+{
+  
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "declaration": false,
+    "declarationMap": false,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "noImplicitOverride": true,
+    "noEmitOnError": false,
+    "noUnusedLocals": false,
+    "noImplicitReturns": false,
+    "strict": true,
+    "incremental": true,
+    // Needs to be disabled to support property injection
+    "strictPropertyInitialization": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true,
+    "moduleResolution": "node16",
+    //"resolveJsonModule": true,
+    "module": "Node16",
+    "target": "ES2019",
+    "jsx": "react",
+    "lib": ["ES2019", "dom"],
+    //不生成.js.map
+    "sourceMap": false,
+    "types": [ "reflect-metadata"],
+    "esModuleInterop":true,
+    //"rootDir": "."
+    
+  },
+  "include": ["src", "server", "dist"]
+}

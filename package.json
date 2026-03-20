@@ -1,0 +1,48 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/*/",
+    "src/plc/*"
+  ],
+  "scripts": {
+    "all": "yarn install && yarn lint",
+    "build": "lerna run build",
+    "bundle": " lerna run bundle",
+    "bundle:prod": "lerna run bundle:prod",
+    "check:headers": "glsp checkHeaders . -t lastCommit",
+    "check:pr": "yarn all && yarn check:headers",
+    "clean": "lerna run clean && rimraf logs/*.log",
+    "lint": "lerna run lint",
+    "lint:ci": "lerna run lint:ci",
+    "prepare": "lerna run prepare",
+    "publish:latest": "lerna publish from-git --no-git-reset --no-git-tag-version --no-verify-access --no-push",
+    "publish:next": "SHA=$(git rev-parse --short HEAD) && lerna publish preminor --exact --canary --preid next.${SHA} --dist-tag next --no-git-reset --no-git-tag-version --no-push --ignore-scripts --yes --no-verify-access",
+    "publish:prepare": "lerna version --ignore-scripts --yes --no-push",
+    "upgrade:next": "yarn upgrade -p \"@eclipse-glsp.*|sprotty.*\" --next ",
+    "watch": "lerna run --parallel watch"
+  },
+  "dependencies": {
+    "@eclipse-glsp/dev": "~2.0.0",
+    "@types/node": "^18.0.0",
+    "@types/vscode": "~1.67.0",
+    "chalk": "~5.3.0",
+    "commander": "~11.0.0",
+    "esbuild": "~0.19.2",
+    "glob": "~10.4.5",
+    "inversify": "~6.0.1",
+    "langium": "~3.0.0",
+    "lerna": "^6.6.2",
+    "lodash": "^4.17.21",
+    "multimap": "~1.1.0",
+    "terser": "^5.31.0",
+    "typescript": "^5.0.4",
+    "vscode-languageclient": "~9.0.1",
+    "vscode-languageserver": "~9.0.1",
+    "vscode-languageserver-protocol": "^3.17.3",
+    "vscode-languageserver-textdocument": "^1.0.8"
+  },
+  "engines": {
+    "node": ">=16.11.0",
+    "yarn": ">=1.7.0 <2.x.x"
+  }
+}
