@@ -775,6 +775,8 @@ export class StValidator {
             this.validatePrefixSuffixElement(functionExpression, accept);
             //有可能是ToN这种，需要都转化为大写TON
             let cacheName = selectRefFunctionName.Cache_type_name;
+            let returnType = this.getCacheFunctionReturnType(cacheName);
+            this.validateReturnTypeCompatibility(returnType, expectType, accept, functionExpression, 'refFunctionName');
             if (params) {
                 let parameters = params.parameters;
                 let result = getRelatedElementAndLangiumDoc(cacheName);
@@ -934,6 +936,56 @@ export class StValidator {
         }
     }
 
+    private normalizeTypeAlias(typeName: string | undefined): string | undefined {
+        if (!typeName) {
+            return undefined;
+        }
+        let normalizedType = typeName.toUpperCase();
+        if (normalizedType === 'DT') {
+            return 'DATE_AND_TIME';
+        }
+        if (normalizedType === 'TOD') {
+            return 'TIME_OF_DAY';
+        }
+        return normalizedType;
+    }
+
+    private getCacheFunctionReturnType(cacheName: string): string | undefined {
+        let result = getRelatedElementAndLangiumDoc(cacheName);
+        if (!result) {
+            return undefined;
+        }
+        let [elementNode] = result;
+        if (!elementNode || elementNode.elementType !== 'function') {
+            return undefined;
+        }
+        let returnDecl =
+            elementNode.varDecls.find(varDecl => varDecl.varGlobalType === 'VAR_OUTPUT' && varDecl.varName.toUpperCase() === 'OUT') ||
+            elementNode.varDecls.find(varDecl => varDecl.varGlobalType === 'VAR_OUTPUT');
+        let returnType = this.normalizeTypeAlias(returnDecl?.varType);
+        if (!returnType || returnType === 'ANY' || returnType.startsWith('ANY_')) {
+            return undefined;
+        }
+        return returnType;
+    }
+
+    private validateReturnTypeCompatibility(
+        actualType: string | undefined,
+        expectType: string | undefined,
+        accept: ValidationAcceptor,
+        node: FunctionExpression,
+        property: 'refFunctionName'
+    ) {
+        let normalizedActualType = this.normalizeTypeAlias(actualType);
+        let normalizedExpectType = this.normalizeTypeAlias(expectType);
+        if (normalizedActualType && normalizedExpectType && normalizedActualType.toLowerCase() !== normalizedExpectType.toLowerCase()) {
+            accept('error', `不能将类型'${normalizedActualType}'转化为类型'${normalizedExpectType}'`, {
+                node,
+                property
+            });
+        }
+    }
+
     private judgeCacheNodeInputOutputVarDecl(
         inputOrOutputSign: string | undefined,
         elementNode: FunctionBlockElement | FunctionElement | undefined
@@ -1033,17 +1085,16 @@ export class StValidator {
                         let typeName = refFunNode.variable_type;
                         let returnType: any;
                         returnType = handleNativeTypeName(typeName, returnType, accept);
-                        if (returnType.toLowerCase() !== expectType.toLowerCase()) {
-                            accept('error', `不能将类型'${returnType}'转化为类型'${expectType}'`, {
-                                node: parameter,
-                                property: 'ParamName'
-                            });
-                        }
+                        this.validateReturnTypeCompatibility(returnType, expectType, accept, priorFunctionExpression, 'refFunctionName');
                     }
                 } else {
                     //外部的function暂时不判断，比如ADD(),因为data.json目前没有一个明确的返回的类型
                     let cacheFunNode = priorFunctionExpression.refFunctionName.refFunctionName.$refText;
                 }
+            } else if (priorFunctionExpression.refFunctionName.Cache_type_name) {
+                let cacheFunNode = priorFunctionExpression.refFunctionName.Cache_type_name;
+                let returnType = this.getCacheFunctionReturnType(cacheFunNode);
+                this.validateReturnTypeCompatibility(returnType, expectType, accept, priorFunctionExpression, 'refFunctionName');
             }
         }
     }
