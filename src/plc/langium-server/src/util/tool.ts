@@ -78,6 +78,17 @@ export const isInteger = (str: string): boolean => {
 export const isLowerCase = (str: string): boolean => {
     return /^[a-z]+$/.test(str);
 };
+export const shouldHintCacheCase = (cacheName: string): boolean => {
+    let result = getRelatedElementAndLangiumDoc(cacheName);
+    if (!result) {
+        return true;
+    }
+    let [elementNode] = result;
+    if (!elementNode) {
+        return true;
+    }
+    return elementNode.elementName === elementNode.elementName.toUpperCase();
+};
 
 //time type regex
 export const TIME_REGEX = /^T#(\d+y)?(\d+m)?(\d+d)?(\d+h)?(\d+m)?(\d+s)?(\d+ms)?$/i;
@@ -930,10 +941,12 @@ export function handleNotCaseSensitive(eachVarTypeName: any, typeName: Native_Ty
         if (eachVarTypeName !== matchedString) {
             //都是小写那么就不提示了，只有有大写又有小写才提示
             if (!isLowerCase(eachVarTypeName)) {
-                accept('hint', `did you mean '${matchedString}'?`, {
-                    node: typeName,
-                    property: type
-                });
+                if (type !== 'Cache_type_name' || !typeName.Cache_type_name || shouldHintCacheCase(typeName.Cache_type_name)) {
+                    accept('hint', `did you mean '${matchedString}'?`, {
+                        node: typeName,
+                        property: type
+                    });
+                }
             }
         }
     }
