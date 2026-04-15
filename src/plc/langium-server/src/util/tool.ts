@@ -138,7 +138,46 @@ export const refOuterFunctionBlockStr: string[] = [
     'CTUD_ULINT',
     'TP',
     'TON',
-    'TOF'
+    'TOF',
+    'MC_POWER',
+    'MC_READACTUALPOSITION',
+    'MC_MOVEABSOLUTE',
+    'MC_MOVERELATIVE',
+    'MC_MOVEADDITIVE',
+    'MC_MOVESUPERIMPOSED',
+    'MC_MOVEVELOCITY',
+    'MC_POSITIONPROFILE',
+    'MC_VELOCITYPROFILE',
+    'MC_READACTUALVELOCITY',
+    'MC_ACCELERATIONPROFILE',
+    'MC_SETPOSITION',
+    'MC_READPARAMETER',
+    'MC_READBOOLPARAMETER',
+    'MC_WRITEPARAMETER',
+    'MC_WRITEBOOLPARAMETER',
+    'MC_READACTUALTORQUE',
+    'MC_READSTATUS',
+    'MC_READAXISERROR',
+    'MC_RESET',
+    'MC_DIGITALCAMSWITCH',
+    'MC_TOUCHPROBE',
+    'MC_ABORTTRIGGER',
+    'MC_STOP',
+    'MC_HALT',
+    'MC_HOME',
+    'MC_CAMTABLESELECT',
+    'MC_CAMIN',
+    'MC_CAMOUT',
+    'MC_GEARIN',
+    'MC_GEAROUT',
+    'MC_GEARINPOS',
+    'MC_PHASING',
+    'SMC_TRACKAXIS',
+    'SMC_TRACKSETVALUES',
+    'MC_STARTTRACE',
+    'SMC_MOVECONTINUOUSABSOLUTE',
+    'SMC_MOVECONTINUOUSRELATIVE',
+    'SMC_GETTAPPETVALUE'
 ];
 
 export const typeConversionFunctionStr: string[] = [
@@ -550,6 +589,8 @@ export const characterStringFunctionStr: string[] = [
     'FIND'
 ];
 
+export const smcBasicFunctionStr: string[] = ['SMC_READAXISINFO', 'SMC_GETTIMENS', 'SMC_PARAMETERNUMBER_COE'];
+
 export const allFunctionBlockStr: string[] = keywordStr.concat(refOuterFunctionBlockStr);
 export const allFunctionStr: string[] = typeConversionFunctionStr
     .concat(numericalFunctionStr)
@@ -559,7 +600,8 @@ export const allFunctionStr: string[] = typeConversionFunctionStr
     .concat(bitWiseFunctionStr)
     .concat(selectionFunctionStr)
     .concat(comparisonFunctionStr)
-    .concat(characterStringFunctionStr);
+    .concat(characterStringFunctionStr)
+    .concat(smcBasicFunctionStr);
 
 export const allCacheStr: string[] = allFunctionBlockStr.concat(allFunctionStr);
 export const noBasicAllCacheStr: string[] = refOuterFunctionBlockStr.concat(allFunctionStr);
