@@ -5125,5 +5125,2887 @@
         "type": "function"
       }
     ]
-  }
+  },
+  
+    {
+        "name": "SMC_Basic function blocks",
+        "list": [
+            {
+                "name": "MC_Power",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Enable",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "bRegulatorOn",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "bDriveStart",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Status",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "bRegulatorRealState",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "bDriveStartRealState",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Enable, BOOL:bRegulatorOn, BOOL:bDriveStart) => (AXIS_REF:Axis, BOOL:Status, BOOL:bRegulatorRealState, BOOL:bDriveStartRealState, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_ReadActualPosition",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Enable",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Valid",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "Position",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Enable) => (AXIS_REF:Axis, BOOL:Valid, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID, LREAL:Position)"
+            },
+            {
+                "name": "MC_MoveAbsolute",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Position",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Velocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Acceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Direction",
+                        "MC_Direction",
+                        "none"
+                    ],
+                    [
+                        "BufferMode",
+                        "MC_BUFFER_MODE",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Active",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, LREAL:Position, LREAL:Velocity, LREAL:Acceleration, LREAL:Deceleration, LREAL:Jerk, MC_Direction:Direction, MC_BUFFER_MODE:BufferMode) => (AXIS_REF:Axis, BOOL:Done, BOOL:Busy, BOOL:Active, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_MoveRelative",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Distance",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Velocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Acceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "BufferMode",
+                        "MC_BUFFER_MODE",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Active",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, LREAL:Distance, LREAL:Velocity, LREAL:Acceleration, LREAL:Deceleration, LREAL:Jerk, MC_BUFFER_MODE:BufferMode) => (AXIS_REF:Axis, BOOL:Done, BOOL:Busy, BOOL:Active, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_MoveAdditive",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Distance",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Velocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Acceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, LREAL:Distance, LREAL:Velocity, LREAL:Acceleration, LREAL:Deceleration, LREAL:Jerk) => (AXIS_REF:Axis, BOOL:Done, BOOL:Busy, BOOL:CommandAborted, BOOL:Error, BOOL:ErrorID)"
+            },
+            {
+                "name": "MC_MoveSuperImposed",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Abort",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Distance",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "VelocityDiff",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Acceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "DistanceTravelled",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "SuperImposedVelocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "SuperImposedAcceleration",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, BOOL:Abort, LREAL:Distance, LREAL:VelocityDiff, LREAL:Acceleration, LREAL:Deceleration, LREAL:Jerk) => (AXIS_REF:Axis, BOOL:Done, BOOL:Busy, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID, LREAL:DistanceTravelled, LREAL:SuperImposedVelocity, LREAL:SuperImposedAcceleration)"
+            },
+            {
+                "name": "MC_MoveVelocity",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Velocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Acceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Direction",
+                        "MC_Direction",
+                        "none"
+                    ],
+                    [
+                        "BufferMode",
+                        "MC_BUFFER_MODE",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "InVelocity",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Active",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, LREAL:Velocity, LREAL:Acceleration, LREAL:Deceleration, LREAL:Jerk, MC_Direction:Direction, MC_BUFFER_MODE:BufferMode) => (AXIS_REF:Axis, BOOL:InVelocity, BOOL:Busy, BOOL:Active, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_PositionProfile",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "TimePosition",
+                        "MC_TP_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ArraySize",
+                        "INT",
+                        "none"
+                    ],
+                    [
+                        "PositionScale",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Offset",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "TimePosition",
+                        "MC_TP_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "Section",
+                        "INT",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, MC_TP_REF:TimePosition, BOOL:Execute, INT:ArraySize, LREAL:PositionScale, LREAL:Offset) => (AXIS_REF:Axis, MC_TP_REF:TimePosition, BOOL:Done, BOOL:Busy, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID, INT:Section)"
+            },
+            {
+                "name": "MC_VelocityProfile",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "TimeVelocity",
+                        "MC_TV_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ArraySize",
+                        "INT",
+                        "none"
+                    ],
+                    [
+                        "VelocityScale",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Offset",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "TimeVelocity",
+                        "MC_TV_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "Section",
+                        "INT",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, MC_TV_REF:TimeVelocity, BOOL:Execute, INT:ArraySize, LREAL:VelocityScale, LREAL:Offset) => (AXIS_REF:Axis, MC_TV_REF:TimeVelocity, BOOL:Done, BOOL:Busy, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID, INT:Section)"
+            },
+            {
+                "name": "MC_ReadActualVelocity",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Enable",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Valid",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "Velocity",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Enable) => (AXIS_REF:Axis, BOOL:Valid, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID, LREAL:Velocity)"
+            },
+            {
+                "name": "MC_AccelerationProfile",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "TimeAcceleration",
+                        "MC_TA_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ArraySize",
+                        "INT",
+                        "none"
+                    ],
+                    [
+                        "AccelerationScale",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Offset",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "TimeAcceleration",
+                        "MC_TA_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "Section",
+                        "INT",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, MC_TA_REF:TimeAcceleration, BOOL:Execute, INT:ArraySize, LREAL:AccelerationScale, LREAL:Offset) => (AXIS_REF:Axis, MC_TA_REF:TimeAcceleration, BOOL:Done, BOOL:Busy, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID, INT:Section)"
+            },
+            {
+                "name": "MC_SetPosition",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Position",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Mode",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, LREAL:Position, BOOL:Mode) => (AXIS_REF:Axis, BOOL:Done, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_ReadParameter",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Enable",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ParameterNumber",
+                        "DINT",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Valid",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "Value",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Enable, DINT:ParameterNumber) => (AXIS_REF:Axis, BOOL:Valid, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID, LREAL:Value)"
+            },
+            {
+                "name": "MC_ReadBoolParameter",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Enable",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ParameterNumber",
+                        "DINT",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Valid",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "Value",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Enable, DINT:ParameterNumber) => (AXIS_REF:Axis, BOOL:Valid, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID, BOOL:Value)"
+            },
+            {
+                "name": "MC_WriteParameter",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ParameterNumber",
+                        "DINT",
+                        "none"
+                    ],
+                    [
+                        "Value",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, DINT:ParameterNumber, LREAL:Value) => (AXIS_REF:Axis, BOOL:Done, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_WriteBoolParameter",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ParameterNumber",
+                        "DINT",
+                        "none"
+                    ],
+                    [
+                        "Value",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, DINT:ParameterNumber, BOOL:Value) => (AXIS_REF:Axis, BOOL:Done, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_ReadActualTorque",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Enable",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Valid",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "Torque",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Enable) => (AXIS_REF:Axis, BOOL:Valid, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID, LREAL:Torque)"
+            },
+            {
+                "name": "MC_ReadStatus",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Enable",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Valid",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "Disabled",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Errorstop",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Stopping",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "StandStill",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "DiscreteMotion",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ContinuousMotion",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "SynchronizedMotion",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Homing",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ConstantVelocity",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Accelerating",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Decelerating",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "FBErrorOccured",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Enable) => (AXIS_REF:Axis, BOOL:Valid, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID, BOOL:Disabled, BOOL:Errorstop, BOOL:Stopping, BOOL:StandStill, BOOL:DiscreteMotion, BOOL:ContinuousMotion, BOOL:SynchronizedMotion, BOOL:Homing, BOOL:ConstantVelocity, BOOL:Accelerating, BOOL:Decelerating, BOOL:FBErrorOccured)"
+            },
+            {
+                "name": "MC_ReadAxisError",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Enable",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Valid",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "AxisError",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "AxisErrorID",
+                        "DWORD",
+                        "none"
+                    ],
+                    [
+                        "SWEndSwitchActive",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Enable) => (AXIS_REF:Axis, BOOL:Valid, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID, BOOL:AxisError, DWORD:AxisErrorID, BOOL:SWEndSwitchActive)"
+            },
+            {
+                "name": "MC_Reset",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute) => (AXIS_REF:Axis, BOOL:Done, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_DigitalCamSwitch",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Switches",
+                        "MC_CAMSWITCH_REF",
+                        "none"
+                    ],
+                    [
+                        "Outputs",
+                        "ARRAY",
+                        "none"
+                    ],
+                    [
+                        "TrackOptions",
+                        "ARRAY",
+                        "none"
+                    ],
+                    [
+                        "Enable",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "EnableMask",
+                        "DWORD",
+                        "none"
+                    ],
+                    [
+                        "TappetMode",
+                        "MC_TAPPETMODE",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Switches",
+                        "MC_CAMSWITCH_REF",
+                        "none"
+                    ],
+                    [
+                        "Outputs",
+                        "ARRAY",
+                        "none"
+                    ],
+                    [
+                        "TrackOptions",
+                        "ARRAY",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, MC_CAMSWITCH_REF:Switches, ARRAY:Outputs, ARRAY:TrackOptions, BOOL:Enable, DWORD:EnableMask, MC_TAPPETMODE:TappetMode) => (AXIS_REF:Axis, MC_CAMSWITCH_REF:Switches, ARRAY:Outputs, ARRAY:TrackOptions)"
+            },
+            {
+                "name": "MC_TouchProbe",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "TriggerInput",
+                        "TRIGGER_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "WindowOnly",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "FirstPosition",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "LastPosition",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "TriggerInput",
+                        "TRIGGER_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "RecordedPosition",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, TRIGGER_REF:TriggerInput, BOOL:Execute, BOOL:WindowOnly, LREAL:FirstPosition, LREAL:LastPosition) => (AXIS_REF:Axis, TRIGGER_REF:TriggerInput, BOOL:Done, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID, LREAL:RecordedPosition, BOOL:CommandAborted)"
+            },
+            {
+                "name": "MC_AbortTrigger",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "TriggerInput",
+                        "TRIGGER_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "TriggerInput",
+                        "TRIGGER_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, TRIGGER_REF:TriggerInput, BOOL:Execute) => (AXIS_REF:Axis, TRIGGER_REF:TriggerInput, BOOL:Done, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_Stop",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, LREAL:Deceleration, LREAL:Jerk) => (AXIS_REF:Axis, BOOL:Done, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_Halt",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, LREAL:Deceleration, LREAL:Jerk) => (AXIS_REF:Axis, BOOL:Done, BOOL:Busy, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_Home",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Position",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, LREAL:Position) => (AXIS_REF:Axis, BOOL:Done, BOOL:Busy, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_CamTableSelect",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Master",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "CamTable",
+                        "MC_CAM_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Periodic",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "MasterAbsolute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "SlaveAbsolute",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Master",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "CamTable",
+                        "MC_CAM_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "CamTableID",
+                        "MC_CAM_ID",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Master, AXIS_REF:Slave, MC_CAM_REF:CamTable, BOOL:Execute, BOOL:Periodic, BOOL:MasterAbsolute, BOOL:SlaveAbsolute) => (AXIS_REF:Master, AXIS_REF:Slave, MC_CAM_REF:CamTable, BOOL:Done, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID, MC_CAM_ID:CamTableID)"
+            },
+            {
+                "name": "MC_CamIn",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Master",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "MasterOffset",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "SlaveOffset",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "MasterScaling",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "SlaveScaling",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "StartMode",
+                        "MC_STARTMODE",
+                        "none"
+                    ],
+                    [
+                        "CamTableID",
+                        "MC_CAM_ID",
+                        "none"
+                    ],
+                    [
+                        "VelocityDiff",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Acceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "TappetHysteresis",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Master",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "InSync",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "EndOfProfile",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Tappets",
+                        "SMC_TAPPETDATA",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Master, AXIS_REF:Slave, BOOL:Execute, LREAL:MasterOffset, LREAL:SlaveOffset, LREAL:MasterScaling, LREAL:SlaveScaling, MC_STARTMODE:StartMode, MC_CAM_ID:CamTableID, LREAL:VelocityDiff, LREAL:Acceleration, LREAL:Deceleration, LREAL:Jerk, LREAL:TappetHysteresis) => (AXIS_REF:Master, AXIS_REF:Slave, BOOL:InSync, BOOL:Busy, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID, BOOL:EndOfProfile, SMC_TAPPETDATA:Tappets)"
+            },
+            {
+                "name": "MC_CamOut",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Slave, BOOL:Execute) => (AXIS_REF:Slave, BOOL:Done, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_GearIn",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Master",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "RatioNumerator",
+                        "DINT",
+                        "none"
+                    ],
+                    [
+                        "RatioDenominator",
+                        "UDINT",
+                        "none"
+                    ],
+                    [
+                        "Acceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "BufferMode",
+                        "MC_BUFFER_MODE",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Master",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "InGear",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Active",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Master, AXIS_REF:Slave, BOOL:Execute, DINT:RatioNumerator, UDINT:RatioDenominator, LREAL:Acceleration, LREAL:Deceleration, LREAL:Jerk, MC_BUFFER_MODE:BufferMode) => (AXIS_REF:Master, AXIS_REF:Slave, BOOL:InGear, BOOL:Busy, BOOL:Active, BOOL:CommandAborted, BOOL:Error, BOOL:ErrorID)"
+            },
+            {
+                "name": "MC_GearOut",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Slave, BOOL:Execute) => (AXIS_REF:Slave, BOOL:Done, BOOL:Busy, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_GearInPos",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Master",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "RatioNumerator",
+                        "DINT",
+                        "none"
+                    ],
+                    [
+                        "RatioDenominator",
+                        "DINT",
+                        "none"
+                    ],
+                    [
+                        "MasterSyncPosition",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "SlaveSyncPosition",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "MasterStartDistance",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "BufferMode",
+                        "MC_BUFFER_MODE",
+                        "none"
+                    ],
+                    [
+                        "AvoidReversal",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Master",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "StartSync",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "InSync",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Active",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Master, AXIS_REF:Slave, BOOL:Execute, DINT:RatioNumerator, DINT:RatioDenominator, LREAL:MasterSyncPosition, LREAL:SlaveSyncPosition, LREAL:MasterStartDistance, MC_BUFFER_MODE:BufferMode, BOOL:AvoidReversal) => (AXIS_REF:Master, AXIS_REF:Slave, BOOL:StartSync, BOOL:InSync, BOOL:Busy, BOOL:Active, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "MC_Phasing",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Master",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "PhaseShift",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Velocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Acceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Master",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Done",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Master, AXIS_REF:Slave, BOOL:Execute, LREAL:PhaseShift, LREAL:Velocity, LREAL:Acceleration, LREAL:Deceleration, LREAL:Jerk) => (AXIS_REF:Master, AXIS_REF:Slave, BOOL:Done, BOOL:Busy, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "SMC_TrackAxis",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Master",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "bExecute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Velocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Acceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Master",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Slave",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "bBusy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "bCommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "bError",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "iErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "bInSync",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Master, AXIS_REF:Slave, BOOL:bExecute, LREAL:Velocity, LREAL:Acceleration, LREAL:Deceleration, LREAL:Jerk) => (AXIS_REF:Master, AXIS_REF:Slave, BOOL:bBusy, BOOL:bCommandAborted, BOOL:bError, SMC_ERROR:iErrorID, BOOL:bInSync)"
+            },
+            {
+                "name": "SMC_TrackSetValues",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "bExecute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "fSetPosition",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "fSetVelocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "fSetAcceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "fSetJerk",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Velocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Acceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "SignalModuloPeriod",
+                        "LREAL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "bBusy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "bCommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "bError",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "iErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ],
+                    [
+                        "bInSync",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:bExecute, LREAL:fSetPosition, LREAL:fSetVelocity, LREAL:fSetAcceleration, LREAL:fSetJerk, LREAL:Velocity, LREAL:Acceleration, LREAL:Deceleration, LREAL:Jerk, LREAL:SignalModuloPeriod) => (AXIS_REF:Axis, BOOL:bBusy, BOOL:bCommandAborted, BOOL:bError, SMC_ERROR:iErrorID, BOOL:bInSync)"
+            },
+            {
+                "name": "MC_StartTrace",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "bStartTrace",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:bStartTrace) => ()"
+            },
+            {
+                "name": "SMC_MoveContinuousAbsolute",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Position",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Velocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "EndVelocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "EndVelocityDirection",
+                        "MC_Direction",
+                        "none"
+                    ],
+                    [
+                        "Acceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Direction",
+                        "MC_Direction",
+                        "none"
+                    ],
+                    [
+                        "AdaptEndVelToAvoidOvershoot",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "InEndVelocity",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "PositionReached",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, LREAL:Position, LREAL:Velocity, LREAL:EndVelocity, MC_Direction:EndVelocityDirection, LREAL:Acceleration, LREAL:Deceleration, LREAL:Jerk, MC_Direction:Direction, BOOL:AdaptEndVelToAvoidOvershoot) => (AXIS_REF:Axis, BOOL:InEndVelocity, BOOL:PositionReached, BOOL:Busy, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "SMC_MoveContinuousRelative",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "Execute",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Distance",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Velocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "EndVelocity",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "EndVelocityDirection",
+                        "MC_Direction",
+                        "none"
+                    ],
+                    [
+                        "Acceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Deceleration",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "Jerk",
+                        "LREAL",
+                        "none"
+                    ],
+                    [
+                        "AdaptEndVelToAvoidOvershoot",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ],
+                    [
+                        "InEndVelocity",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "DistanceTravelled",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Busy",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "CommandAborted",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "Error",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "ErrorID",
+                        "SMC_ERROR",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (AXIS_REF:Axis, BOOL:Execute, LREAL:Distance, LREAL:Velocity, LREAL:EndVelocity, MC_Direction:EndVelocityDirection, LREAL:Acceleration, LREAL:Deceleration, LREAL:Jerk, BOOL:AdaptEndVelToAvoidOvershoot) => (AXIS_REF:Axis, BOOL:InEndVelocity, BOOL:DistanceTravelled, BOOL:Busy, BOOL:CommandAborted, BOOL:Error, SMC_ERROR:ErrorID)"
+            },
+            {
+                "name": "SMC_GetTappetValue",
+                "type": "functionBlock",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "Tappets",
+                        "SMC_TAPPETDATA",
+                        "none"
+                    ],
+                    [
+                        "iID",
+                        "INT",
+                        "none"
+                    ],
+                    [
+                        "bInitValue",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "bSetInitValueAtReset",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "Tappets",
+                        "SMC_TAPPETDATA",
+                        "none"
+                    ],
+                    [
+                        "bTappet",
+                        "BOOL",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (SMC_TAPPETDATA:Tappets, INT:iID, BOOL:bInitValue, BOOL:bSetInitValueAtReset) => (SMC_TAPPETDATA:Tappets, BOOL:bTappet)"
+            }
+        ]
+    },
+    {
+        "name": "SMC_Basic functions",
+        "list": [
+            {
+                "name": "SMC_ReadAxisInfo",
+                "type": "function",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "AxisInfo",
+                        "Axis_Ref_Info",
+                        "none"
+                    ],
+                    [
+                        "Axis",
+                        "AXIS_REF",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "OUT",
+                        "BOOL",
+                        "none"
+                    ],
+                    [
+                        "AxisInfo",
+                        "Axis_Ref_Info",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (Axis_Ref_Info:AxisInfo, AXIS_REF:Axis) => (BOOL:OUT, Axis_Ref_Info:AxisInfo)"
+            },
+            {
+                "name": "SMC_GetTimeNS",
+                "type": "function",
+                "extensible": false,
+                "inputs": [],
+                "outputs": [
+                    [
+                        "OUT",
+                        "ULINT",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n () => (ULINT:OUT)"
+            },
+            {
+                "name": "SMC_ParameterNumber_CoE",
+                "type": "function",
+                "extensible": false,
+                "inputs": [
+                    [
+                        "index",
+                        "UINT",
+                        "none"
+                    ],
+                    [
+                        "subIndex",
+                        "USINT",
+                        "none"
+                    ],
+                    [
+                        "dataLength",
+                        "USINT",
+                        "none"
+                    ]
+                ],
+                "outputs": [
+                    [
+                        "OUT",
+                        "DINT",
+                        "none"
+                    ]
+                ],
+                "comment": "",
+                "usage": "\n (UINT:index, USINT:subIndex, USINT:dataLength) => (DINT:OUT)"
+            }
+        ]
+    }
+
 ]

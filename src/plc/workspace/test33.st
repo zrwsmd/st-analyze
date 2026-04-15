@@ -8,7 +8,8 @@ VAR
 	g: INT;
 	b: CTU;
 	dd:USINT:=0;
-
+	asd:SEMA;
+	mmm:CTU_DINT;
 END_VAR
 
 
@@ -18,7 +19,7 @@ END_VAR
 (* generate 【segmentId 174237778419740866】 code start *)
 IF a THEN
  CTU(CU := c, R := d, PV := e, Q => c, CV => g);
-END_IF;
+END_IF
 (* generate 【segmentId 174237778419740866】 code end *)
 
 END_PROGRAM

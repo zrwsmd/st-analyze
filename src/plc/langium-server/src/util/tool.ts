@@ -1076,7 +1076,11 @@ export function convertOuterNode2ComposeNode(outerComposeNodeArr: OuterComposeNo
     outerComposeNodeArr.forEach(outerComposeNode => {
         let rootName = outerComposeNode.name;
         let list = outerComposeNode.list;
-        if (rootName === 'Additional function blocks' || rootName === 'Standard function blocks') {
+        if (
+            rootName === 'Additional function blocks' ||
+            rootName === 'Standard function blocks' ||
+            rootName === 'SMC_Basic function blocks'
+        ) {
             let outerFunctionBlockElementArr = list as OuterFunctionBlockElement[];
             let composeNode: ComposeNode = {
                 $type: 'ComposeNode',

@@ -26,12 +26,11 @@ VAR
 	china: China;
 	main_testBool: BOOL := 0;
 	hh:USINT:=0;
-
+nnn:MC_ReadActualPosition;
 END_VAR
 VAR_IN_OUT
 	Variable: BOOL; (* Comment *)
 END_VAR
-
 
 
 
