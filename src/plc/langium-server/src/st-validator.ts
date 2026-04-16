@@ -4,7 +4,7 @@
  * terms of the MIT License, which is available in the project root.
  ******************************************************************************/
 
-import { AstUtils, GrammarUtils, RootCstNode, ValidationAcceptor, isReference, type ValidationChecks } from 'langium';
+import { AstNode, AstUtils, GrammarUtils, RootCstNode, ValidationAcceptor, isReference, type ValidationChecks } from 'langium';
 import {
     Alias,
     Arr_string,
@@ -12,6 +12,7 @@ import {
     AssignPrefix,
     Assignment_subrule,
     Constant,
+    EnumeratedValue,
     Expression,
     FunctionBlock,
     FunctionExpression,
@@ -41,6 +42,7 @@ import {
     VariableExpression,
     isArr_string,
     isConstant,
+    isEnumeratedValue,
     isExpression,
     isFor_statement,
     isFunctionBlock,
@@ -71,7 +73,7 @@ import {
     judgeNeedToHint,
     validateTimeFormat
 } from './util/tool.js';
-import { getRelatedElementAndLangiumDoc } from './util/transform.js';
+import { getRelatedElementAndLangiumDoc, getRelatedEnumElementAndLangiumDoc } from './util/transform.js';
 
 export function registerValidationChecks(services: StatemachineServices) {
     let documentValidator = services.validation.DocumentValidator;
@@ -251,9 +253,20 @@ export class StValidator {
                     let expression = caseClause.caseExpression;
                     let statements_list = caseClause.elseStatements;
                     let caseElements = caseClause.caseElements;
+                    let caseExpectType: string | undefined = '';
                     if (isVariableExpression(expression)) {
                         let variableParent = expression.variable;
                         //this.handleVariableHint(variableParent, varNameSet, varNameMap, accept, false);
+                        caseExpectType = this.judgeRefNodeType(variableParent.ref, caseExpectType);
+                    } else if (isEnumeratedValue(expression)) {
+                        caseExpectType = this.validateEnumeratedValue(expression, undefined, accept);
+                    } else if (isExpression(expression)) {
+                        let prior = expression.prior;
+                        if (isVariableExpression(prior)) {
+                            caseExpectType = this.judgeRefNodeType(prior.variable.ref, caseExpectType);
+                        } else if (isEnumeratedValue(prior)) {
+                            caseExpectType = this.validateEnumeratedValue(prior, undefined, accept);
+                        }
                     }
                     if (statements_list) {
                         let statementsArr = statements_list.statements;
@@ -273,6 +286,8 @@ export class StValidator {
                             caseListElements.forEach(caseListElement => {
                                 let numCaseStart = caseListElement.numCaseStart;
                                 let numericCaseEnd = caseListElement.numericCaseEnd;
+                                let enumCase = caseListElement.enumCase;
+                                let simpleEnumCase = caseListElement.simpleEnumCase;
                                 if (numCaseStart && numericCaseEnd) {
                                     if (typeof numCaseStart === 'string' && typeof numericCaseEnd === 'string') {
                                         numCaseStart = parseInt(numCaseStart);
@@ -281,6 +296,21 @@ export class StValidator {
                                             accept('error', '左侧值不能大于右侧值!', {
                                                 node: caseListElement,
                                                 property: 'numCaseStart'
+                                            });
+                                        }
+                                    }
+                                }
+                                if (enumCase && isEnumeratedValue(enumCase)) {
+                                    this.validateEnumeratedValue(enumCase, caseExpectType, accept);
+                                }
+                                if (simpleEnumCase && caseExpectType) {
+                                    let enumMembers = this.getEnumMembers(caseExpectType, caseListElement);
+                                    if (enumMembers) {
+                                        let hasMember = enumMembers.some(item => item.toLowerCase() === simpleEnumCase.toLowerCase());
+                                        if (!hasMember) {
+                                            accept('error', `'${simpleEnumCase}' is not a member of enum '${caseExpectType}'.`, {
+                                                node: caseListElement,
+                                                property: 'simpleEnumCase'
                                             });
                                         }
                                     }
@@ -422,6 +452,9 @@ export class StValidator {
 
                 //可能有多个
                 this.handleDataTypeMatch(varValue, expectType, accept, astNode);
+            } else if (expressionType === 'EnumeratedValue') {
+                let enumeratedValue = expression as EnumeratedValue;
+                this.validateEnumeratedValue(enumeratedValue, expectType, accept);
             } else if (expressionType === 'Expression') {
                 let originalExpression = expression as Expression;
                 let prior = originalExpression?.prior;
@@ -662,6 +695,87 @@ export class StValidator {
         return expectType;
     }
 
+    private getCurrentRoot(node: AstNode | undefined): St | undefined {
+        if (!node) {
+            return undefined;
+        }
+        if (node.$type === 'St') {
+            return node as St;
+        }
+        return AstUtils.getContainerOfType(node, (item): item is St => item.$type === 'St');
+    }
+
+    private getLocalEnumByName(enumName: string | undefined, node: AstNode | undefined): StEnum | undefined {
+        if (!enumName) {
+            return undefined;
+        }
+        let root = this.getCurrentRoot(node);
+        return root?.types_enum.find(item => item.name.toLowerCase() === enumName.toLowerCase());
+    }
+
+    private getEnumMembers(enumName: string | undefined, node: AstNode | undefined): string[] | undefined {
+        if (!enumName) {
+            return undefined;
+        }
+        let localEnum = this.getLocalEnumByName(enumName, node);
+        if (localEnum) {
+            return localEnum.enum.map(item => item.variable_name);
+        }
+        let result = getRelatedEnumElementAndLangiumDoc(enumName);
+        if (result) {
+            let [enumElement] = result;
+            return enumElement?.enumChild.map(item => item.enumVarName);
+        }
+        return undefined;
+    }
+
+    private getEnumeratedValueTypeName(enumValue: EnumeratedValue): string | undefined {
+        if (enumValue.enumCacheTypeName) {
+            return enumValue.enumCacheTypeName;
+        }
+        let refNode = enumValue.enumType?.ref;
+        if (refNode) {
+            if (refNode.$type === 'StEnum') {
+                return refNode.name;
+            }
+            if ('elementType' in refNode && refNode.elementType === 'enum' && 'elementName' in refNode) {
+                let elementName = refNode.elementName;
+                if (typeof elementName === 'string') {
+                    return elementName;
+                }
+            }
+        }
+        return enumValue.enumType?.$refText;
+    }
+
+    private validateEnumeratedValue(
+        enumValue: EnumeratedValue,
+        expectType: string | undefined,
+        accept: ValidationAcceptor
+    ): string | undefined {
+        let enumTypeName = this.getEnumeratedValueTypeName(enumValue);
+        let enumMembers = this.getEnumMembers(enumTypeName, enumValue);
+        if (enumTypeName && enumMembers) {
+            let hasMember = enumMembers.some(item => item.toLowerCase() === enumValue.enumValue.toLowerCase());
+            if (!hasMember) {
+                accept('error', `'${enumValue.enumValue}' is not a member of enum '${enumTypeName}'.`, {
+                    node: enumValue,
+                    property: 'enumValue'
+                });
+            }
+        }
+        if (enumTypeName && expectType) {
+            let [normalizedActualType, normalizedExpectType] = this.getComparableTypes(enumTypeName, expectType);
+            if (normalizedActualType && normalizedExpectType && normalizedActualType.toLowerCase() !== normalizedExpectType.toLowerCase()) {
+                accept('error', `Cannot convert enum type '${enumTypeName}' to type '${expectType}'.`, {
+                    node: enumValue,
+                    property: 'enumValue'
+                });
+            }
+        }
+        return enumTypeName;
+    }
+
     private handleExpressionPrior(
         prior: Expression | undefined,
         expectType: string | undefined,
@@ -693,6 +807,9 @@ export class StValidator {
                 // }
 
                 this.handleDataTypeMatch(varValue, expectType, accept, astNode);
+            } else if (expressionType === 'EnumeratedValue') {
+                let enumeratedValue = prior as EnumeratedValue;
+                this.validateEnumeratedValue(enumeratedValue, expectType, accept);
             } else if (expressionType === 'FunctionExpression') {
                 let refNode = this.handleFunctionExpression(prior, accept, astNode, expectType);
             } else if (expressionType === 'VariableExpression') {
@@ -1027,6 +1144,9 @@ export class StValidator {
                     });
                 }
             }
+        } else if (isEnumeratedValue(paramValue.prior)) {
+            let enumeratedValue = paramValue.prior as EnumeratedValue;
+            this.validateEnumeratedValue(enumeratedValue, expectType, accept);
         } else if (isMemberCall(paramValue)) {
             let element = paramValue.element;
             let prior = paramValue.previous?.prior;
@@ -1272,6 +1392,8 @@ export class StValidator {
                         leftVariableName = refNode.variables;
                         leftExpectType = this.judgeRefNodeType(refNode, leftExpectType);
                     }
+                } else if (isEnumeratedValue(prior)) {
+                    leftExpectType = this.validateEnumeratedValue(prior, undefined, accept);
                 }
                 if (rightExpressionType === 'Expression') {
                     let rightExpression = right as Expression;
@@ -1317,6 +1439,8 @@ export class StValidator {
                     }
                 }
             }
+        } else if (isEnumeratedValue(prior)) {
+            rightExpectType = this.validateEnumeratedValue(prior, leftExpectType, accept);
         } else if (isConstant(prior)) {
             let rightConstExpression = prior as Constant;
             let varValue = rightConstExpression.constant;

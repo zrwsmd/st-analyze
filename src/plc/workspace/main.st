@@ -17,6 +17,8 @@ VAR
 	b:SMC_TrackAxis;
     c:SMC_TP;
 	d:TON;
+	mode    : RunMode;
+	libEnum:MC_BUFFER_MODE;
 END_VAR
 VAR_IN_OUT
 	Variable: BOOL; (* Comment *)

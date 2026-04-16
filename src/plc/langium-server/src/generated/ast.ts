@@ -55,7 +55,7 @@ export function isCharacter_string(item: unknown): item is Character_string {
     return typeof item === 'string' && (/(')(\\.|[^'])*(')/.test(item) || /(")(\\.|[^"])*(")/.test(item));
 }
 
-export type ComposeElement = Alias | FunctionBlock | StFunction | StructsList;
+export type ComposeElement = Alias | FunctionBlock | StEnum | StFunction | StructsList;
 
 export const ComposeElement = 'ComposeElement';
 
@@ -403,9 +403,10 @@ export function isCase_list(item: unknown): item is Case_list {
 export interface Case_list_element extends AstNode {
     readonly $container: Case_list;
     readonly $type: 'Case_list_element';
-    enumCase?: string;
+    enumCase?: Expression;
     numCaseStart?: Signed_Integer;
     numericCaseEnd?: Signed_Integer;
+    simpleEnumCase?: string;
 }
 
 export const Case_list_element = 'Case_list_element';
@@ -442,7 +443,7 @@ export function isEnum(item: unknown): item is Enum {
 }
 
 export interface Expression extends AstNode {
-    readonly $type: 'Constant' | 'Expression' | 'FunctionExpression' | 'MemberCall' | 'VariableExpression';
+    readonly $type: 'Constant' | 'EnumeratedValue' | 'Expression' | 'FunctionExpression' | 'MemberCall' | 'VariableExpression';
     left?: Expression;
     operator?: '&' | '*' | '**' | '+' | '-' | '/' | '<' | '<=' | '<>' | '=' | '>' | '>=' | 'AND' | 'MOD' | 'NOT' | 'OR' | 'XOR';
     prior?: Expression;
@@ -950,6 +951,19 @@ export function isConstant(item: unknown): item is Constant {
     return reflection.isInstance(item, Constant);
 }
 
+export interface EnumeratedValue extends Expression {
+    readonly $type: 'EnumeratedValue';
+    enumCacheTypeName?: string;
+    enumType?: Reference<ComposeElement>;
+    enumValue: string;
+}
+
+export const EnumeratedValue = 'EnumeratedValue';
+
+export function isEnumeratedValue(item: unknown): item is EnumeratedValue {
+    return reflection.isInstance(item, EnumeratedValue);
+}
+
 export interface FunctionExpression extends Expression {
     readonly $type: 'FunctionExpression';
     params: Invoke_subrule;
@@ -1016,6 +1030,7 @@ export type StAstType = {
     ComposeElement: ComposeElement;
     Constant: Constant;
     Enum: Enum;
+    EnumeratedValue: EnumeratedValue;
     Expression: Expression;
     For_list: For_list;
     For_statement: For_statement;
@@ -1077,6 +1092,7 @@ export class StAstReflection extends AbstractAstReflection {
             'ComposeElement',
             'Constant',
             'Enum',
+            'EnumeratedValue',
             'Expression',
             'For_list',
             'For_statement',
@@ -1126,6 +1142,7 @@ export class StAstReflection extends AbstractAstReflection {
         switch (subtype) {
             case Alias:
             case FunctionBlock:
+            case StEnum:
             case StructsList: {
                 return this.isSubtype(ComposeElement, supertype);
             }
@@ -1133,6 +1150,7 @@ export class StAstReflection extends AbstractAstReflection {
                 return this.isSubtype(Native_Type_Name, supertype);
             }
             case Constant:
+            case EnumeratedValue:
             case FunctionExpression:
             case MemberCall:
             case VariableExpression: {
@@ -1171,6 +1189,7 @@ export class StAstReflection extends AbstractAstReflection {
                 return Universe;
             }
             case 'Array_liters:Identifier':
+            case 'EnumeratedValue:enumType':
             case 'Native_Type_Name:Identifier': {
                 return ComposeElement;
             }
@@ -1241,7 +1260,7 @@ export class StAstReflection extends AbstractAstReflection {
             case 'Case_list_element': {
                 return {
                     name: 'Case_list_element',
-                    properties: [{ name: 'enumCase' }, { name: 'numCaseStart' }, { name: 'numericCaseEnd' }]
+                    properties: [{ name: 'enumCase' }, { name: 'numCaseStart' }, { name: 'numericCaseEnd' }, { name: 'simpleEnumCase' }]
                 };
             }
             case 'Case_statement': {
@@ -1530,6 +1549,21 @@ export class StAstReflection extends AbstractAstReflection {
                     name: 'Constant',
                     properties: [
                         { name: 'constant' },
+                        { name: 'left' },
+                        { name: 'operator' },
+                        { name: 'prior' },
+                        { name: 'right' },
+                        { name: 'value' }
+                    ]
+                };
+            }
+            case 'EnumeratedValue': {
+                return {
+                    name: 'EnumeratedValue',
+                    properties: [
+                        { name: 'enumCacheTypeName' },
+                        { name: 'enumType' },
+                        { name: 'enumValue' },
                         { name: 'left' },
                         { name: 'operator' },
                         { name: 'prior' },

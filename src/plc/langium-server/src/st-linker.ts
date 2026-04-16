@@ -42,6 +42,8 @@ export class StLinker extends DefaultLinker {
         if (outerElement) {
             if (outerElement.elementType === 'alias') {
                 descriptionType = 'Alias';
+            } else if (outerElement.elementType === 'enum') {
+                descriptionType = 'StEnum';
             } else if (outerElement.elementType === 'struct') {
                 descriptionType = 'StructsList';
             } else if (outerElement.elementType === 'functionBlock') {

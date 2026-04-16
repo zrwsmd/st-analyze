@@ -143,7 +143,7 @@ Modifier returns string:
 
 
 ComposeElement:
-  Structs_List|FunctionBlock|StFunction|Alias;
+  Structs_List|FunctionBlock|StFunction|Alias|StEnum;
 
 Variable_Primary infers PrimaryVariable:
 	name=Identifier
@@ -301,9 +301,18 @@ Primary_Expression infers Expression:
 Constant
 | '(' Expression ')'
 | FunctionExpression
+| EnumeratedValue
 | VariableExpression
 | Unary_expression
 |FeatureCall;//IF POWERSTATUS:=true THEN ....
+
+
+EnumeratedValue infers Expression:
+    {infer EnumeratedValue}
+    (enumType=[ComposeElement:Identifier] | enumCacheTypeName=Cache_type_name)
+    '#'
+    enumValue=Identifier
+;
 
 
 FunctionExpression infers Expression:
@@ -380,7 +389,7 @@ caseListElement+=Case_list_element (',' caseListElement+=Case_list_element)*;
 
 //case_list_element = subrange | signed_integer | enumerated_value;
 Case_list_element:
-(numCaseStart=Signed_Integer ('..' numericCaseEnd=Signed_Integer)?) | (enumCase=IdentifierEnumeratedCase);
+(numCaseStart=Signed_Integer ('..' numericCaseEnd=Signed_Integer)?) | (enumCase=EnumeratedValue) | (simpleEnumCase=IdentifierEnumeratedCase);
 
 /* Iteration statements */
 Iteration_statement:

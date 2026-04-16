@@ -3,10 +3,12 @@ import {
     Alias,
     Arr_string,
     Constant,
+    Enum,
     FunctionBlock,
     Methods,
     Native_Type_Name,
     St,
+    StEnum,
     Struct_Var_Decl_Init,
     StructsList,
     VarDeclarationInit,
@@ -40,7 +42,9 @@ export type AliasElement = SingleElement & {
 };
 export type EnumElement = BaseElement & {
     enumChild: Array<EnumChild>;
-};
+    rootName?: string;
+    comment?: string;
+} & AstNode;
 
 export type FunctionBlockElement = SingleElement & {
     methods?: Array<Methods>;
@@ -1196,6 +1200,28 @@ export function transform2AstNode(composeNodeArr: ComposeNode[]): St {
                 root.types_alias.push(astNode);
                 return;
             }
+            if (element.elementType === 'enum') {
+                let enumElement = element as EnumElement;
+                let astNode: StEnum = {
+                    $container: root,
+                    $type: 'StEnum',
+                    enum: [],
+                    name: enumElement.elementName
+                };
+                enumElement.enumChild.forEach(enumChild => {
+                    let enumNode: Enum = {
+                        $container: astNode,
+                        $type: 'Enum',
+                        variable_name: enumChild.enumVarName
+                    };
+                    if (enumChild.assignValue !== undefined) {
+                        enumNode.assignValue = enumChild.assignValue.toString();
+                    }
+                    astNode.enum.push(enumNode);
+                });
+                root.types_enum.push(astNode);
+                return;
+            }
             let elementType = element.elementType;
             if (elementType === 'struct') {
                 element = element as SingleElement;
@@ -1286,7 +1312,7 @@ export function transform2AstNode(composeNodeArr: ComposeNode[]): St {
 //define outer json format and transform to previous self json format
 export type OuterComposeNode = {
     name: string;
-    list: (OuterFunctionBlockElement | OuterFunctionElement | OuterStructElement | OuterAliasElement)[];
+    list: (OuterFunctionBlockElement | OuterFunctionElement | OuterStructElement | OuterAliasElement | OuterEnumElement)[];
 };
 export type OuterBasicElement = {
     name: string;
@@ -1320,6 +1346,12 @@ export type OuterAliasElement = {
     base_type: string;
     comment: string;
     value?: string | number | boolean;
+};
+export type OuterEnumElement = {
+    name: string;
+    type: 'enum';
+    values: string[];
+    comment: string;
 };
 
 export function convertOuterNode2ComposeNode(outerComposeNodeArr: OuterComposeNode[]): ComposeNode[] {
@@ -1376,7 +1408,7 @@ export function convertOuterNode2ComposeNode(outerComposeNodeArr: OuterComposeNo
                 }
             }
         } else if (rootName === 'extra_library') {
-            let outerElementArr = list as (OuterStructElement | OuterAliasElement)[];
+            let outerElementArr = list as (OuterStructElement | OuterAliasElement | OuterEnumElement)[];
             let composeNode: ComposeNode = {
                 $type: 'ComposeNode',
                 elements: []
@@ -1413,6 +1445,20 @@ export function convertOuterNode2ComposeNode(outerComposeNodeArr: OuterComposeNo
                         comment: outerElement.comment
                     };
                     composeNode.elements.push(aliasElement);
+                } else if (outerElement.type === 'enum') {
+                    let enumElement: EnumElement = {
+                        $type: 'EnumElement',
+                        elementType: 'enum',
+                        elementName: outerElement.name,
+                        enumChild: outerElement.values.map(enumValue => {
+                            return {
+                                enumVarName: enumValue
+                            };
+                        }),
+                        rootName: rootName,
+                        comment: outerElement.comment
+                    };
+                    composeNode.elements.push(enumElement);
                 }
             }
             if (composeNode.elements.length > 0) {

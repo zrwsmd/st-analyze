@@ -1,14 +1,14 @@
 import fs from 'fs';
 import { LangiumDocument, URI } from 'langium';
 import { shared, st } from '../../main.js';
-import { OuterComposeNode, SingleElement, convertOuterNode2ComposeNode } from '../../src/util/tool.js';
+import { EnumElement, OuterComposeNode, SingleElement, convertOuterNode2ComposeNode } from '../../src/util/tool.js';
 
 let cacheFirstMap = new Map<URI, OuterComposeNode[]>();
 let cacheOuterMap = new Map<URI, OuterComposeNode[]>();
 let cacheSecondMap = new Map<URI, LangiumDocument>();
 export const StUri = URI.parse(`memory://cache.st`);
 
-export function getRelatedElementInfoToOuter(cacheName: string): SingleElement | undefined {
+export function getRelatedElementInfoToOuter(cacheName: string): SingleElement | EnumElement | undefined {
     if (cacheOuterMap.get(StUri)) {
         let cacheOuterComposeNodeArr = cacheOuterMap.get(StUri);
         if (cacheOuterComposeNodeArr) {
@@ -21,10 +21,15 @@ export function getRelatedElementInfoToOuter(cacheName: string): SingleElement |
                 });
                 if (cacheFunctionBlock) {
                     let elementType = cacheFunctionBlock.elementType;
-                    let element: SingleElement;
-                    if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct' || elementType === 'alias') {
-                        element = cacheFunctionBlock as SingleElement;
-                        return element;
+                    if (
+                        elementType === 'functionBlock' ||
+                        elementType === 'function' ||
+                        elementType === 'struct' ||
+                        elementType === 'alias'
+                    ) {
+                        return cacheFunctionBlock as SingleElement;
+                    } else if (elementType === 'enum') {
+                        return cacheFunctionBlock as EnumElement;
                     }
                 }
             }
@@ -44,10 +49,10 @@ export function getRelatedElementInfoToOuter(cacheName: string): SingleElement |
             });
             if (cacheFunctionBlock) {
                 let elementType = cacheFunctionBlock.elementType;
-                let element: SingleElement;
                 if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct' || elementType === 'alias') {
-                    element = cacheFunctionBlock as SingleElement;
-                    return element;
+                    return cacheFunctionBlock as SingleElement;
+                } else if (elementType === 'enum') {
+                    return cacheFunctionBlock as EnumElement;
                 }
             }
         }
@@ -70,10 +75,13 @@ export function getRelatedElementAndLangiumDoc(cacheName: string): [SingleElemen
                 });
                 if (cacheFunctionBlock) {
                     let elementType = cacheFunctionBlock.elementType;
-                    let element: SingleElement;
-                    if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct' || elementType === 'alias') {
-                        element = cacheFunctionBlock as SingleElement;
-                        return [element, cacheLangiumDocument];
+                    if (
+                        elementType === 'functionBlock' ||
+                        elementType === 'function' ||
+                        elementType === 'struct' ||
+                        elementType === 'alias'
+                    ) {
+                        return [cacheFunctionBlock as SingleElement, cacheLangiumDocument];
                     }
                 }
             }
@@ -97,11 +105,52 @@ export function getRelatedElementAndLangiumDoc(cacheName: string): [SingleElemen
             });
             if (cacheFunctionBlock) {
                 let elementType = cacheFunctionBlock.elementType;
-                let element: SingleElement;
                 if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct' || elementType === 'alias') {
-                    element = cacheFunctionBlock as SingleElement;
-                    return [element, langiumDocument];
+                    return [cacheFunctionBlock as SingleElement, langiumDocument];
                 }
+            }
+        }
+    }
+
+    return undefined;
+}
+
+export function getRelatedEnumElementAndLangiumDoc(cacheName: string): [EnumElement | undefined, LangiumDocument?] | undefined {
+    if (cacheFirstMap.get(StUri) && cacheSecondMap.get(StUri)) {
+        let cacheOuterComposeNodeArr = cacheFirstMap.get(StUri);
+        let cacheLangiumDocument = cacheSecondMap.get(StUri);
+        if (cacheOuterComposeNodeArr) {
+            let composeNodeArr = convertOuterNode2ComposeNode(cacheOuterComposeNodeArr);
+            for (let i = 0; i < composeNodeArr.length; i++) {
+                let composeNode = composeNodeArr[i];
+                let composeNodeElementArr = composeNode.elements;
+                let cacheEnum = composeNodeElementArr.find(element => {
+                    return element.elementName.toLowerCase() === cacheName.toLowerCase();
+                });
+                if (cacheEnum && cacheEnum.elementType === 'enum') {
+                    return [cacheEnum as EnumElement, cacheLangiumDocument];
+                }
+            }
+        }
+    } else {
+        let dirName = __dirname;
+        let data = readJsonFile(`${dirName}\\data.json`);
+        let serializer = st.serializer.JsonSerializer;
+        let astNode = serializer.deserialize(data);
+        let langiumDocument = shared.workspace.LangiumDocumentFactory.fromModel(astNode, URI.parse(`memory://cache.st`));
+        let jsonArrObj = JSON.parse(data);
+        let outerComposeNodeArr = jsonArrObj as OuterComposeNode[];
+        cacheFirstMap.set(StUri, outerComposeNodeArr);
+        cacheSecondMap.set(StUri, langiumDocument);
+        let composeNodeArr = convertOuterNode2ComposeNode(outerComposeNodeArr);
+        for (let i = 0; i < composeNodeArr.length; i++) {
+            let composeNode = composeNodeArr[i];
+            let composeNodeElementArr = composeNode.elements;
+            let cacheEnum = composeNodeElementArr.find(element => {
+                return element.elementName.toLowerCase() === cacheName.toLowerCase();
+            });
+            if (cacheEnum && cacheEnum.elementType === 'enum') {
+                return [cacheEnum as EnumElement, langiumDocument];
             }
         }
     }

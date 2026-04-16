@@ -685,6 +685,7 @@ function handleEnumArr(enumArr: StEnum[], composeNode: ComposeNode) {
             enumChildArr.push(enumChild);
         });
         const enumElement: EnumElement = {
+            $type: 'EnumElement',
             elementType: 'enum',
             elementName: stEnum.name,
             enumChild: enumChildArr
