@@ -199,32 +199,57 @@ export class CacheSignatureHelpProvider extends AbstractSignatureHelpProvider {
                                 return signatureHelp;
                             }
                         }
-                    }
-                } else {
-                    if (cacheName) {
-                        let result = getRelatedElementAndLangiumDoc(cacheName);
-                        if (result) {
-                            let [cacheElement, langiumDocument] = result;
-                            let signatureInformationArr: SignatureInformation[] = [];
-                            if (cacheElement) {
-                                let result = this.getSignatureInfo(
-                                    cacheElement,
-                                    signatureInformationArr,
-                                    "usage"
-                                );
-                                if (result) {
-                                    return result;
-                                } else {
-                                    return this.getSignatureInfo(
-                                        cacheElement,
-                                        signatureInformationArr,
-                                        "comment"
-                                    );
-                                }
-                            }
+                        let cacheSignatureHelp = this.getCacheSignatureHelp(
+                            this.getVarDeclarationCacheName(refNode)
+                        );
+                        if (cacheSignatureHelp) {
+                            return cacheSignatureHelp;
                         }
                     }
                 }
+                let cacheSignatureHelp = this.getCacheSignatureHelp(cacheName);
+                if (cacheSignatureHelp) {
+                    return cacheSignatureHelp;
+                }
+            }
+        }
+        return undefined;
+    }
+
+    private getVarDeclarationCacheName(
+        refNode: VarDeclarationInit
+    ): string | undefined {
+        let typeName = refNode.typeName;
+        if (typeName.Cache_type_name) {
+            return typeName.Cache_type_name;
+        }
+        return typeName.Identifier?.$refText;
+    }
+
+    private getCacheSignatureHelp(
+        cacheName: string | undefined
+    ): SignatureHelp | undefined {
+        if (!cacheName) {
+            return undefined;
+        }
+        let result = getRelatedElementAndLangiumDoc(cacheName);
+        if (result) {
+            let [cacheElement] = result;
+            let signatureInformationArr: SignatureInformation[] = [];
+            if (cacheElement) {
+                let signatureHelp = this.getSignatureInfo(
+                    cacheElement,
+                    signatureInformationArr,
+                    "usage"
+                );
+                if (signatureHelp) {
+                    return signatureHelp;
+                }
+                return this.getSignatureInfo(
+                    cacheElement,
+                    signatureInformationArr,
+                    "comment"
+                );
             }
         }
         return undefined;
