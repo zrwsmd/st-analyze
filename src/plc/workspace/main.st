@@ -13,21 +13,9 @@
 
 PROGRAM Test
 VAR
-	o12366677: WORD;
-	ton34: TON;
-	time567: STRING;
-	o23344: CTUD_DINT;
-	date56: EnumFB;
-	bt33455: INT;
-	t13544: INT;
-	voltage: INT;
-    tempConverter: TemperatureConverter;
-	result: BYTE;
-	china: China;
-	main_testBool: BOOL := 0;
-	hh:USINT:=0;
-nnn:MC_TA_REF;
-hj:Ton;
+  nnn:MC_TA_REF;
+  aa:China;
+  bb:TON;
 END_VAR
 VAR_IN_OUT
 	Variable: BOOL; (* Comment *)
