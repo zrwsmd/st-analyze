@@ -115,7 +115,13 @@ Unions_List infers UnionsList:
 
 
 Alias:
- 'TYPE' aliasName=VarEnchanceDecl ':' refName=VarEnchanceDecl 'END_TYPE'
+ 'TYPE'
+    name=Identifier
+    ':'
+    refName=Native_Type_Name
+    (':=' initialValue=Constant)?
+    ';'
+ 'END_TYPE'
 ;
 
 StEnum:
@@ -137,7 +143,7 @@ Modifier returns string:
 
 
 ComposeElement:
-  Structs_List|FunctionBlock|StFunction;
+  Structs_List|FunctionBlock|StFunction|Alias;
 
 Variable_Primary infers PrimaryVariable:
 	name=Identifier

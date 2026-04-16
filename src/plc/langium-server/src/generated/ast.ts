@@ -55,7 +55,7 @@ export function isCharacter_string(item: unknown): item is Character_string {
     return typeof item === 'string' && (/(')(\\.|[^'])*(')/.test(item) || /(")(\\.|[^"])*(")/.test(item));
 }
 
-export type ComposeElement = FunctionBlock | StFunction | StructsList;
+export type ComposeElement = Alias | FunctionBlock | StFunction | StructsList;
 
 export const ComposeElement = 'ComposeElement';
 
@@ -315,8 +315,9 @@ export function isAction_call_statement(item: unknown): item is Action_call_stat
 export interface Alias extends AstNode {
     readonly $container: St;
     readonly $type: 'Alias';
-    aliasName: VarEnchanceDecl;
-    refName: VarEnchanceDecl;
+    initialValue?: Constant;
+    name: string;
+    refName: Native_Type_Name;
 }
 
 export const Alias = 'Alias';
@@ -930,7 +931,7 @@ export function isWhile_statement(item: unknown): item is While_statement {
 }
 
 export interface Constant extends Expression {
-    readonly $container: Arr_string | Struct_Var_Decl_Init | VarDeclarationInit;
+    readonly $container: Alias | Arr_string | Struct_Var_Decl_Init | VarDeclarationInit;
     readonly $type: 'Constant';
     constant:
         | Arr_string
@@ -1123,6 +1124,11 @@ export class StAstReflection extends AbstractAstReflection {
 
     protected override computeIsSubtype(subtype: string, supertype: string): boolean {
         switch (subtype) {
+            case Alias:
+            case FunctionBlock:
+            case StructsList: {
+                return this.isSubtype(ComposeElement, supertype);
+            }
             case Array_liters: {
                 return this.isSubtype(Native_Type_Name, supertype);
             }
@@ -1139,10 +1145,6 @@ export class StAstReflection extends AbstractAstReflection {
             case Iteration_statement:
             case Selection_statement: {
                 return this.isSubtype(Statement, supertype);
-            }
-            case FunctionBlock:
-            case StructsList: {
-                return this.isSubtype(ComposeElement, supertype);
             }
             case NamedElement: {
                 return this.isSubtype(Universe, supertype);
@@ -1197,7 +1199,7 @@ export class StAstReflection extends AbstractAstReflection {
             case 'Alias': {
                 return {
                     name: 'Alias',
-                    properties: [{ name: 'aliasName' }, { name: 'refName' }]
+                    properties: [{ name: 'initialValue' }, { name: 'name' }, { name: 'refName' }]
                 };
             }
             case 'Arr_string': {

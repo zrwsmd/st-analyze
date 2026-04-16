@@ -56,9 +56,7 @@ export function getRelatedElementInfoToOuter(cacheName: string): SingleElement |
     return undefined;
 }
 
-export function getRelatedElementAndLangiumDoc(
-    cacheName: string
-): [SingleElement | undefined, LangiumDocument?] | undefined {
+export function getRelatedElementAndLangiumDoc(cacheName: string): [SingleElement | undefined, LangiumDocument?] | undefined {
     if (cacheFirstMap.get(StUri) && cacheSecondMap.get(StUri)) {
         let cacheOuterComposeNodeArr = cacheFirstMap.get(StUri);
         let cacheLangiumDocument = cacheSecondMap.get(StUri);

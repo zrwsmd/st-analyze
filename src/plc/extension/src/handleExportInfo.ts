@@ -326,7 +326,7 @@ async function saveData(langiumDocs: LangiumDocuments, file: vscode.Uri) {
         globalMap.set(struct.name, filePath.concat('@struct'));
     });
     types_alias.forEach(alias => {
-        globalMap.set(alias.refName, filePath.concat('@alias'));
+        globalMap.set(alias.name, filePath.concat('@alias'));
     });
     types_enum.forEach(stEnum => {
         globalMap.set(stEnum.name, filePath.concat('@enum'));
@@ -633,8 +633,9 @@ function handleStructArr(structArr: StructsList[], composeNode: ComposeNode) {
 
 function handleAliasArr(aliasArr: Alias[], composeNode: ComposeNode) {
     aliasArr.forEach(alias => {
-        let aliasName = alias.aliasName;
-        let refName = alias.refName;
+        let aliasName = alias.name;
+        let refName = '';
+        refName = handleNoAcceptNativeTypeName(alias.refName, refName);
         const aliasElement: AliasElement = {
             elementType: 'alias',
             elementName: aliasName,

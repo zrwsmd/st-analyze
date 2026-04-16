@@ -1630,7 +1630,7 @@ export class StValidator {
             let enumArr = dataTypeEnum.enum;
         });
         dataTypeAliasArr.forEach(dataTypeAlias => {
-            let alisaName = dataTypeAlias.aliasName;
+            let alisaName = dataTypeAlias.name;
         });
     }
 
