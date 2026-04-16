@@ -33,7 +33,7 @@ VAR_IN_OUT
 	Variable: BOOL; (* Comment *)
 END_VAR
 
-nnn.Position
+
 
 END_PROGRAM
 
