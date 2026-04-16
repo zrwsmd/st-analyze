@@ -22,6 +22,6 @@ VAR_IN_OUT
 END_VAR
 
 
-nnn.IsAbsolute:=23;
+
 END_PROGRAM
 

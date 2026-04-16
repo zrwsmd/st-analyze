@@ -632,12 +632,8 @@ export class StValidator {
                             if (result) {
                                 let [elementNode, langiumDocument] = result;
                                 if (elementNode) {
-                                    let elementType = elementNode.elementType;
-                                    if (elementType === 'functionBlock') {
-                                        elementNode = elementNode as FunctionBlockElement;
-                                        let filterVarDecl = elementNode.varDecls.find(varDecl => varDecl.varName === currentElementRefText);
-                                        expectType = filterVarDecl?.varType;
-                                    }
+                                    let filterVarDecl = elementNode.varDecls.find(varDecl => varDecl.varName === currentElementRefText);
+                                    expectType = filterVarDecl?.varType;
                                 }
                             }
                         }
