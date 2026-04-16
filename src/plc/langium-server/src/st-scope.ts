@@ -77,9 +77,9 @@ export class StScopeProvider extends DefaultScopeProvider {
         let result = getRelatedElementAndLangiumDoc(cacheName);
         let cacheScope: Scope | undefined;
         if (result) {
-            let [functionBlockElement, langiumDocument] = result;
-            if (functionBlockElement) {
-                let cacheVarDecls = functionBlockElement.varDecls;
+            let [libraryElement, langiumDocument] = result;
+            if (libraryElement) {
+                let cacheVarDecls = libraryElement.varDecls;
                 const cacheDesc = stream(cacheVarDecls)
                     .map(cacheVarDecl => {
                         //cacheVarDecl.$document=

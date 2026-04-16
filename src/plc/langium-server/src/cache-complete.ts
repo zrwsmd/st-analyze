@@ -82,6 +82,31 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         });
     }
 
+    private getVarDeclDetail(varDecl: VarDeclaration): string {
+        let varGlobalType = varDecl.varGlobalType;
+        if (varGlobalType === 'VAR_INPUT' || varGlobalType === 'VAR_OUTPUT') {
+            let type = varGlobalType === 'VAR_INPUT' ? '输入参数' : '输出参数';
+            return `${type}, 类型是${varDecl.varType}`;
+        }
+        return `${varDecl.varType}`;
+    }
+
+    private hintCacheVarDecls(
+        cacheVarDecls: VarDeclaration[] | undefined,
+        acceptor: CompletionAcceptor,
+        context: CompletionContext,
+        sortText = '1'
+    ) {
+        cacheVarDecls?.forEach(varDecl => {
+            acceptor(context, {
+                label: varDecl.varName,
+                kind: CompletionItemKind.Field,
+                detail: this.getVarDeclDetail(varDecl),
+                sortText
+            });
+        });
+    }
+
     override createReferenceCompletionItem(nodeDescription: AstNodeDescription): CompletionValueItem {
         let detail: string | undefined = '';
         if (nodeDescription) {
@@ -104,12 +129,10 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
                 }
                 if (nodeDescription.node.$type === 'VarDeclaration') {
                     let varDecl = nodeDescription.node as VarDeclaration;
-                    let varGlobalType = varDecl.varGlobalType;
-                    let type = varGlobalType === 'VAR_INPUT' ? '输入参数' : '输出参数';
                     return {
                         nodeDescription,
                         kind: CompletionItemKind.Field,
-                        detail: `${type},类型是${varDecl.varType}`,
+                        detail: this.getVarDeclDetail(varDecl),
                         sortText: '0'
                     };
                 } else if (nodeDescription.node.$type === 'VarDeclarationInit') {
@@ -122,15 +145,13 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
                         if (result) {
                             let [cacheElement, langiumDocument] = result;
                             let elementType = cacheElement?.elementType;
-                            if (elementType === 'functionBlock') {
+                            if (elementType === 'functionBlock' || elementType === 'struct') {
                                 let varDecls = cacheElement?.varDecls;
                                 varDecls?.forEach(varDecl => {
-                                    let varGlobalType = varDecl.varGlobalType;
-                                    let type = varGlobalType === 'VAR_INPUT' ? '输入参数' : '输出参数';
                                     return {
                                         nodeDescription,
                                         kind: CompletionItemKind.Field,
-                                        detail: `${type},类型是${varDecl.varType}`,
+                                        detail: this.getVarDeclDetail(varDecl),
                                         sortText: '0'
                                     };
                                 });
@@ -192,18 +213,8 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
                         if (result) {
                             let [cacheElement, langiumDocument] = result;
                             let elementType = cacheElement?.elementType;
-                            if (elementType === 'functionBlock') {
-                                let varDecls = cacheElement?.varDecls;
-                                varDecls?.forEach(varDecl => {
-                                    let varGlobalType = varDecl.varGlobalType;
-                                    let type = varGlobalType === 'VAR_INPUT' ? '输入参数' : '输出参数';
-                                    acceptor(context, {
-                                        label: varDecl.varName,
-                                        kind: CompletionItemKind.Field,
-                                        detail: `${type},类型是${varDecl.varType}`,
-                                        sortText: '1'
-                                    });
-                                });
+                            if (elementType === 'functionBlock' || elementType === 'struct') {
+                                this.hintCacheVarDecls(cacheElement?.varDecls, acceptor, context);
                             }
                         }
                     } else {

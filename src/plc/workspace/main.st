@@ -13,15 +13,15 @@
 
 PROGRAM Test
 VAR
-  nnn:MC_TA_REF;
-  aa:China;
-  bb:TON;
+  nnn: MC_TA_REF;
+  aa: China;
+  bb: TON;
 END_VAR
 VAR_IN_OUT
 	Variable: BOOL; (* Comment *)
 END_VAR
 
 
-
+nnn.IsAbsolute:=23;
 END_PROGRAM
 

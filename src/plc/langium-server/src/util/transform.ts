@@ -1,14 +1,14 @@
 import fs from 'fs';
 import { LangiumDocument, URI } from 'langium';
 import { shared, st } from '../../main.js';
-import { FunctionBlockElement, FunctionElement, OuterComposeNode, convertOuterNode2ComposeNode } from '../../src/util/tool.js';
+import { OuterComposeNode, SingleElement, convertOuterNode2ComposeNode } from '../../src/util/tool.js';
 
 let cacheFirstMap = new Map<URI, OuterComposeNode[]>();
 let cacheOuterMap = new Map<URI, OuterComposeNode[]>();
 let cacheSecondMap = new Map<URI, LangiumDocument>();
 export const StUri = URI.parse(`memory://cache.st`);
 
-export function getRelatedElementInfoToOuter(cacheName: string): FunctionBlockElement | FunctionElement | undefined {
+export function getRelatedElementInfoToOuter(cacheName: string): SingleElement | undefined {
     if (cacheOuterMap.get(StUri)) {
         let cacheOuterComposeNodeArr = cacheOuterMap.get(StUri);
         if (cacheOuterComposeNodeArr) {
@@ -21,12 +21,9 @@ export function getRelatedElementInfoToOuter(cacheName: string): FunctionBlockEl
                 });
                 if (cacheFunctionBlock) {
                     let elementType = cacheFunctionBlock.elementType;
-                    let element: FunctionBlockElement | FunctionElement;
-                    if (elementType === 'functionBlock') {
-                        element = cacheFunctionBlock as FunctionBlockElement;
-                        return element;
-                    } else if (elementType === 'function') {
-                        element = cacheFunctionBlock as FunctionElement;
+                    let element: SingleElement;
+                    if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct') {
+                        element = cacheFunctionBlock as SingleElement;
                         return element;
                     }
                 }
@@ -47,12 +44,9 @@ export function getRelatedElementInfoToOuter(cacheName: string): FunctionBlockEl
             });
             if (cacheFunctionBlock) {
                 let elementType = cacheFunctionBlock.elementType;
-                let element: FunctionBlockElement | FunctionElement;
-                if (elementType === 'functionBlock') {
-                    element = cacheFunctionBlock as FunctionBlockElement;
-                    return element;
-                } else if (elementType === 'function') {
-                    element = cacheFunctionBlock as FunctionElement;
+                let element: SingleElement;
+                if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct') {
+                    element = cacheFunctionBlock as SingleElement;
                     return element;
                 }
             }
@@ -64,7 +58,7 @@ export function getRelatedElementInfoToOuter(cacheName: string): FunctionBlockEl
 
 export function getRelatedElementAndLangiumDoc(
     cacheName: string
-): [FunctionBlockElement | FunctionElement | undefined, LangiumDocument?] | undefined {
+): [SingleElement | undefined, LangiumDocument?] | undefined {
     if (cacheFirstMap.get(StUri) && cacheSecondMap.get(StUri)) {
         let cacheOuterComposeNodeArr = cacheFirstMap.get(StUri);
         let cacheLangiumDocument = cacheSecondMap.get(StUri);
@@ -78,12 +72,9 @@ export function getRelatedElementAndLangiumDoc(
                 });
                 if (cacheFunctionBlock) {
                     let elementType = cacheFunctionBlock.elementType;
-                    let element: FunctionBlockElement | FunctionElement;
-                    if (elementType === 'functionBlock') {
-                        element = cacheFunctionBlock as FunctionBlockElement;
-                        return [element, cacheLangiumDocument];
-                    } else if (elementType === 'function') {
-                        element = cacheFunctionBlock as FunctionElement;
+                    let element: SingleElement;
+                    if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct') {
+                        element = cacheFunctionBlock as SingleElement;
                         return [element, cacheLangiumDocument];
                     }
                 }
@@ -108,12 +99,9 @@ export function getRelatedElementAndLangiumDoc(
             });
             if (cacheFunctionBlock) {
                 let elementType = cacheFunctionBlock.elementType;
-                let element: FunctionBlockElement | FunctionElement;
-                if (elementType === 'functionBlock') {
-                    element = cacheFunctionBlock as FunctionBlockElement;
-                    return [element, langiumDocument];
-                } else if (elementType === 'function') {
-                    element = cacheFunctionBlock as FunctionElement;
+                let element: SingleElement;
+                if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct') {
+                    element = cacheFunctionBlock as SingleElement;
                     return [element, langiumDocument];
                 }
             }
