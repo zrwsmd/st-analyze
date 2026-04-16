@@ -1,8 +1,4 @@
-TYPE UnitedStates: Us
 
-
-
-END_TYPE
 
 TYPE
 	China: STRUCT
