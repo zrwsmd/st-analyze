@@ -1108,7 +1108,7 @@ export function transform2AstNode(composeNodeArr: ComposeNode[]): St {
 //define outer json format and transform to previous self json format
 export type OuterComposeNode = {
     name: string;
-    list: (OuterFunctionBlockElement | OuterFunctionElement)[];
+    list: (OuterFunctionBlockElement | OuterFunctionElement | OuterStructElement)[];
 };
 export type OuterBasicElement = {
     name: string;
@@ -1124,6 +1124,17 @@ export type OuterFunctionBlockElement = OuterBasicElement & {
 export type OuterFunctionElement = OuterBasicElement & {
     filter: string;
     baseinputnumber: number;
+};
+export type OuterStructField = {
+    name: string;
+    type: string;
+    comment: string;
+};
+export type OuterStructElement = {
+    name: string;
+    type: 'struct';
+    elements: OuterStructField[];
+    comment: string;
 };
 
 export function convertOuterNode2ComposeNode(outerComposeNodeArr: OuterComposeNode[]): ComposeNode[] {
@@ -1178,6 +1189,38 @@ export function convertOuterNode2ComposeNode(outerComposeNodeArr: OuterComposeNo
                 if (i === outerFunctionBlockElementArr.length - 1) {
                     composeNodeArr.push(composeNode);
                 }
+            }
+        } else if (rootName === 'extra_library') {
+            let outerElementArr = list as OuterStructElement[];
+            let composeNode: ComposeNode = {
+                $type: 'ComposeNode',
+                elements: []
+            };
+            for (let i = 0; i < outerElementArr.length; i++) {
+                let outerElement = outerElementArr[i];
+                if (outerElement.type !== 'struct') {
+                    continue;
+                }
+                let structElement: SingleElement = {
+                    $type: 'SingleElement',
+                    elementType: 'struct',
+                    elementName: outerElement.name,
+                    varDecls: [],
+                    rootName: rootName,
+                    comment: outerElement.comment
+                };
+                outerElement.elements.forEach(element => {
+                    let varDecl: VarDeclaration = {
+                        $type: 'VarDeclaration',
+                        varName: element.name,
+                        varType: element.type
+                    };
+                    structElement.varDecls.push(varDecl);
+                });
+                composeNode.elements.push(structElement);
+            }
+            if (composeNode.elements.length > 0) {
+                composeNodeArr.push(composeNode);
             }
         } else {
             let outerFunctionElementArr = list as OuterFunctionElement[];

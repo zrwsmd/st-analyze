@@ -26,7 +26,7 @@ VAR
 	china: China;
 	main_testBool: BOOL := 0;
 	hh:USINT:=0;
-nnn:MC_ReadActualPosition;
+nnn:MC_TA_REF;
 hj:Ton;
 END_VAR
 VAR_IN_OUT
