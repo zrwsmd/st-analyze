@@ -38,7 +38,11 @@ export class CacheHighLight extends DefaultDocumentHighlightProvider {
                  */
                 return refs;
             } else {
-                const includeDeclaration = UriUtils.equals(AstUtils.getDocument(targetAstNode).uri, document.uri);
+                let targetDocument = targetAstNode.$document;
+                if (!targetDocument) {
+                    return refs;
+                }
+                const includeDeclaration = UriUtils.equals(targetDocument.uri, document.uri);
                 const options: FindReferencesOptions = { documentUri: document.uri, includeDeclaration };
                 const references = this.references.findReferences(targetAstNode, options);
                 return references.map(ref => this.createDocumentHighlight(ref)).toArray();

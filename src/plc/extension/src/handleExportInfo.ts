@@ -636,10 +636,14 @@ function handleAliasArr(aliasArr: Alias[], composeNode: ComposeNode) {
         let aliasName = alias.name;
         let refName = '';
         refName = handleNoAcceptNativeTypeName(alias.refName, refName);
+        let initialValue = alias.initialValue?.constant;
         const aliasElement: AliasElement = {
+            $type: 'AliasElement',
             elementType: 'alias',
             elementName: aliasName,
-            refName: refName
+            refName: refName,
+            initialValue: typeof initialValue === 'string' || typeof initialValue === 'number' ? initialValue : undefined,
+            varDecls: []
         };
         composeNode.elements.push(aliasElement);
     });

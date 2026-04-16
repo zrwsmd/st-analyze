@@ -58,12 +58,13 @@ import {
 } from './generated/ast.js';
 import type { StatemachineServices } from './ld-module.js';
 import {
+    AliasElement,
     FunctionBlockElement,
     FunctionElement,
     VarDeclaration,
-    basicDataType,
     determineVariableType,
     handleNativeTypeName,
+    handleNoAcceptNativeTypeName,
     isDecimal,
     isFloatOrDouble,
     isInteger,
@@ -300,8 +301,7 @@ export class StValidator {
                             let refNode = state.controlVariable.ref;
                             let expectType: string | undefined = '';
                             if (isVarDeclarationInit(refNode)) {
-                                let typeName = refNode.typeName;
-                                expectType = basicDataType(expectType, typeName);
+                                expectType = this.judgeRefNodeType(refNode, expectType);
                             }
                             let forList = state.forList;
                             let forExpression = forList.forExpr;
@@ -469,7 +469,8 @@ export class StValidator {
                             actualType = handleNativeTypeName(nativeTypeName, actualType, accept);
                             if (actualType) {
                                 if (expectType !== '') {
-                                    if (actualType.toLowerCase() !== expectType?.toLowerCase()) {
+                                    let [normalizedActualType, normalizedExpectType] = this.getComparableTypes(actualType, expectType);
+                                    if (normalizedActualType && normalizedExpectType && normalizedActualType.toLowerCase() !== normalizedExpectType.toLowerCase()) {
                                         accept('error', `不能将类型'${actualType}'转化为类型'${expectType}'`, {
                                             node: memberCall,
                                             property: 'element'
@@ -547,7 +548,7 @@ export class StValidator {
                                                 let varDecl: VarDeclaration = {
                                                     $type: 'VarDeclaration',
                                                     varName: item.variables,
-                                                    varType: basicDataType(expectType, item.typeName),
+                                                    varType: handleNoAcceptNativeTypeName(item.typeName, expectedType),
                                                     //VAR VAR_INPUT  VAR_OUTPUT
                                                     varGlobalType: 'VAR_INPUT'
                                                 };
@@ -561,7 +562,7 @@ export class StValidator {
                                                 let varDecl: VarDeclaration = {
                                                     $type: 'VarDeclaration',
                                                     varName: item.variables,
-                                                    varType: basicDataType(expectType, item.typeName),
+                                                    varType: handleNoAcceptNativeTypeName(item.typeName, expectedType),
                                                     //VAR VAR_INPUT  VAR_OUTPUT
                                                     varGlobalType: 'VAR_OUTPUT'
                                                 };
@@ -651,39 +652,13 @@ export class StValidator {
     private judgeRefNodeType(refNode: NamedElement | undefined, expectType: string | undefined) {
         if (isVarDeclarationInit(refNode)) {
             let typeName = refNode.typeName;
-            expectType = basicDataType(expectType, typeName);
-            if (!expectType) {
-                if (typeName) {
-                    if (typeName.Identifier) {
-                        let nameElementNode = typeName.Identifier?.ref;
-                        if (isStructsList(nameElementNode)) {
-                            expectType = nameElementNode.name;
-                        } else if (isFunctionBlock(nameElementNode)) {
-                            expectType = nameElementNode.name;
-                        }
-                    }
-                }
-            }
+            expectType = handleNoAcceptNativeTypeName(typeName, expectType);
         }
         return expectType;
     }
 
     private judgeType(expectType: string | undefined, typeName: Native_Type_Name) {
-        expectType = basicDataType(expectType, typeName);
-        if (expectType === undefined) {
-            if (typeName) {
-                //结构体变量还是结构体类型
-                let identifier = typeName.Identifier;
-                if (identifier) {
-                    let refNode = identifier?.ref;
-                    if (isStructsList(refNode)) {
-                        expectType = refNode.name;
-                    } else if (isFunctionBlock(refNode)) {
-                        expectType = refNode.name;
-                    }
-                }
-            }
-        }
+        expectType = handleNoAcceptNativeTypeName(typeName, expectType);
         return expectType;
     }
 
@@ -726,7 +701,8 @@ export class StValidator {
                 let actualType: string | undefined = '';
                 actualType = this.judgeRefNodeType(refNode, actualType);
                 if (actualType && expectType) {
-                    if (actualType.toLowerCase() !== expectType.toLowerCase()) {
+                    let [normalizedActualType, normalizedExpectType] = this.getComparableTypes(actualType, expectType);
+                    if (normalizedActualType && normalizedExpectType && normalizedActualType.toLowerCase() !== normalizedExpectType.toLowerCase()) {
                         accept('error', `不能将类型'${actualType}'转化为类型'${expectType}'`, {
                             node: variableExpression,
                             property: 'variable'
@@ -819,14 +795,11 @@ export class StValidator {
             varDecl.push(...varInput.items);
         });
         if (typeName) {
-            if (typeName.Identifier) {
-                actualType = typeName.Identifier;
-            } else {
-                actualType = basicDataType(actualType, typeName);
-            }
+            actualType = handleNoAcceptNativeTypeName(typeName, actualType);
             if (astNode) {
                 if (actualType && expectType) {
-                    if (actualType.toLowerCase() !== expectType?.toLowerCase()) {
+                    let [normalizedActualType, normalizedExpectType] = this.getComparableTypes(actualType, expectType);
+                    if (normalizedActualType && normalizedExpectType && normalizedActualType.toLowerCase() !== normalizedExpectType.toLowerCase()) {
                         accept('error', `不能将类型'${actualType}'转化为类型'${expectType}'`, {
                             node: astNode,
                             property: 'prior'
@@ -932,7 +905,7 @@ export class StValidator {
         }
     }
 
-    private normalizeTypeAlias(typeName: string | undefined): string | undefined {
+    private normalizeTypeAlias(typeName: string | undefined, visitedAlias = new Set<string>()): string | undefined {
         if (!typeName) {
             return undefined;
         }
@@ -943,7 +916,24 @@ export class StValidator {
         if (normalizedType === 'TOD') {
             return 'TIME_OF_DAY';
         }
+        let result = getRelatedElementAndLangiumDoc(typeName);
+        if (result) {
+            let [elementNode] = result;
+            if (elementNode?.elementType === 'alias') {
+                let aliasElement = elementNode as AliasElement;
+                let aliasName = aliasElement.elementName.toUpperCase();
+                if (visitedAlias.has(aliasName)) {
+                    return aliasName;
+                }
+                visitedAlias.add(aliasName);
+                return this.normalizeTypeAlias(aliasElement.refName, visitedAlias) ?? normalizedType;
+            }
+        }
         return normalizedType;
+    }
+
+    private getComparableTypes(actualType: string | undefined, expectType: string | undefined): [string | undefined, string | undefined] {
+        return [this.normalizeTypeAlias(actualType), this.normalizeTypeAlias(expectType)];
     }
 
     private getCacheFunctionReturnType(cacheName: string): string | undefined {
@@ -1029,7 +1019,8 @@ export class StValidator {
             let actualType: string | undefined = '';
             actualType = this.judgeRefNodeType(refNode, actualType);
             if (actualType && expectType) {
-                if (actualType.toLowerCase() !== expectType.toLowerCase()) {
+                let [normalizedActualType, normalizedExpectType] = this.getComparableTypes(actualType, expectType);
+                if (normalizedActualType && normalizedExpectType && normalizedActualType.toLowerCase() !== normalizedExpectType.toLowerCase()) {
                     accept('error', `不能将类型'${actualType}'转化为类型'${expectType}'`, {
                         node: variableExpression,
                         property: 'variable'
@@ -1045,9 +1036,8 @@ export class StValidator {
                 let varExpression = prior as VariableExpression;
                 let refNode = varExpression.variable.ref;
                 if (isVarDeclarationInit(refNode)) {
-                    let typeName = refNode.typeName;
                     rightVarName = refNode.variables;
-                    rightExpectType = basicDataType(rightExpectType, typeName);
+                    rightExpectType = this.judgeRefNodeType(refNode, rightExpectType);
                 }
                 if (rightExpectType) {
                     let result = getRelatedElementAndLangiumDoc(rightExpectType.toUpperCase());
@@ -1059,7 +1049,8 @@ export class StValidator {
                             if (filterVarDecl) {
                                 let actualType: string = filterVarDecl.varType;
                                 if (actualType && expectType) {
-                                    if (actualType.toLowerCase() !== expectType.toLowerCase()) {
+                                    let [normalizedActualType, normalizedExpectType] = this.getComparableTypes(actualType, expectType);
+                                    if (normalizedActualType && normalizedExpectType && normalizedActualType.toLowerCase() !== normalizedExpectType.toLowerCase()) {
                                         accept('error', `不能将类型'${actualType}'转化为类型'${expectType}'`, {
                                             node: parameter,
                                             property: 'ParamName'
@@ -1137,6 +1128,7 @@ export class StValidator {
         if (!finalVariableName) {
             return;
         }
+        expectType = this.normalizeTypeAlias(expectType);
         let actualType: string[] = [];
         if (isArr_string(varValue)) {
             let singleElements = varValue.arrElements;
@@ -1159,6 +1151,7 @@ export class StValidator {
         accept: ValidationAcceptor,
         varValue: string | number | Arr_string
     ) {
+        expectType = this.normalizeTypeAlias(expectType);
         if (actualType.length === 1) {
             //consider upper lower case
             if (expectType && actualType) {
@@ -1276,9 +1269,8 @@ export class StValidator {
                     let varExpression = prior as VariableExpression;
                     let refNode = varExpression.variable.ref;
                     if (isVarDeclarationInit(refNode)) {
-                        let typeName = refNode.typeName;
                         leftVariableName = refNode.variables;
-                        leftExpectType = basicDataType(leftExpectType, typeName);
+                        leftExpectType = this.judgeRefNodeType(refNode, leftExpectType);
                     }
                 }
                 if (rightExpressionType === 'Expression') {
@@ -1304,19 +1296,19 @@ export class StValidator {
             let varExpression = prior as VariableExpression;
             let refNode = varExpression.variable.ref;
             if (isVarDeclarationInit(refNode)) {
-                let typeName = refNode.typeName;
                 rightVariableName = refNode.variables;
-                rightExpectType = basicDataType(rightExpectType, typeName);
+                rightExpectType = this.judgeRefNodeType(refNode, rightExpectType);
             }
             if (leftExpectType && rightExpectType) {
-                if (leftExpectType?.toLowerCase() !== rightExpectType?.toLowerCase()) {
-                    if (leftExpectType.toLowerCase() === 'string') {
+                let [normalizedRightExpectType, normalizedLeftExpectType] = this.getComparableTypes(rightExpectType, leftExpectType);
+                if (normalizedLeftExpectType && normalizedRightExpectType && normalizedLeftExpectType.toLowerCase() !== normalizedRightExpectType.toLowerCase()) {
+                    if (normalizedLeftExpectType.toLowerCase() === 'string') {
                         accept('error', `不能将类型'${rightExpectType}'转化为类型'${leftExpectType}'`, {
                             node: prior,
                             property: 'variable'
                         });
                     }
-                    let isJudgeNeedToHint = judgeNeedToHint(rightExpectType, leftExpectType);
+                    let isJudgeNeedToHint = judgeNeedToHint(normalizedRightExpectType, normalizedLeftExpectType);
                     if (isJudgeNeedToHint) {
                         accept('error', `不能将类型'${rightExpectType}'转化为类型'${leftExpectType}'`, {
                             node: prior,
@@ -1350,6 +1342,7 @@ export class StValidator {
         accept: ValidationAcceptor,
         constExpression: Constant
     ) {
+        expectType = this.normalizeTypeAlias(expectType);
         let varValue = constExpression.constant;
         if (actualType.length === 1) {
             //consider upper lower case
@@ -1407,6 +1400,7 @@ export class StValidator {
             LWORD: { min: 0, max: Math.pow(2, 64) - 1 }
         };
         let closestType: string | undefined;
+        expectType = this.normalizeTypeAlias(expectType);
         if (expectType === undefined) {
             return [`变量类型为undefined!`, 'error'];
         }
@@ -1630,7 +1624,13 @@ export class StValidator {
             let enumArr = dataTypeEnum.enum;
         });
         dataTypeAliasArr.forEach(dataTypeAlias => {
-            let alisaName = dataTypeAlias.name;
+            let aliasTypeName: any = '';
+            aliasTypeName = handleNativeTypeName(dataTypeAlias.refName, aliasTypeName, accept);
+            let aliasInitialValue = dataTypeAlias.initialValue;
+            if (aliasInitialValue) {
+                let actualType = determineVariableType(aliasInitialValue);
+                this.handleVarDeclHint(actualType, aliasTypeName, accept, dataTypeAlias, aliasInitialValue);
+            }
         });
     }
 
@@ -1662,7 +1662,7 @@ export class StValidator {
             } else if (typeName.$type === 'Array_liters') {
                 let arrayLiters = typeName as Array_liters;
                 let dataType = arrayLiters.dataType;
-                expectType = basicDataType(expectType, dataType);
+                expectType = handleNoAcceptNativeTypeName(dataType, expectType);
                 let arrayElemets = arrayLiters.arrayElemets;
                 arrayElemets.forEach(element => {
                     let left = element.left;
@@ -1702,9 +1702,12 @@ export class StValidator {
         actualType: string[],
         expectType: any,
         accept: ValidationAcceptor,
-        varDeclarationInit: Struct_Var_Decl_Init | VarDeclarationInit,
+        varDeclarationInit: Struct_Var_Decl_Init | VarDeclarationInit | Alias,
         varInitialValue: Constant | string | number | boolean | Arr_string
     ) {
+        if (typeof expectType === 'string') {
+            expectType = this.normalizeTypeAlias(expectType);
+        }
         if (actualType.length === 1) {
             //expectType可能为Reference<ComposeElement>，这个肯定没有toLowerCase方法，所以判断一下
             if (expectType !== undefined && !isReference(expectType)) {
@@ -1771,7 +1774,7 @@ export class StValidator {
         value: string,
         expectType: any,
         accept: ValidationAcceptor,
-        varDeclarationInit: VarDeclarationInit | Struct_Var_Decl_Init
+        varDeclarationInit: VarDeclarationInit | Struct_Var_Decl_Init | Alias
     ) {
         if (isFloatOrDouble(value)) {
             let [msg, errorLevel] = this.convertValue(value, expectType);

@@ -1,8 +1,12 @@
 import { AstNode } from 'langium';
 
 import { createCacheType, createErrorType, createFunctionBlockType, createStructType, TypeDescription } from './descriptions.js';
+import { resolveNativeTypeName } from './util/tool.js';
 import {
+    Alias,
     Expression,
+    Native_Type_Name,
+    isAlias,
     isExpression,
     isFunctionBlock,
     isMemberCall,
@@ -37,15 +41,7 @@ export function inferType(node: AstNode, cache: Map<AstNode, TypeDescription | u
     } else if (isVarDeclarationInit(node)) {
         let typeName = node.typeName;
         if (isNative_Type_Name(typeName)) {
-            let identifier = typeName.Identifier;
-            if (identifier) {
-                let refNode = identifier.ref;
-                if (refNode) {
-                    type = inferType(refNode, cache);
-                }
-            } else if (typeName.Cache_type_name) {
-                type = createCacheType(typeName.Cache_type_name);
-            }
+            type = inferNativeTypeName(typeName, cache);
         }
     } else if (isStruct_Var_Decl_Init(node)) {
         type = inferStructDeclaration(node, cache);
@@ -53,6 +49,8 @@ export function inferType(node: AstNode, cache: Map<AstNode, TypeDescription | u
         type = createStructType(node);
     } else if (isFunctionBlock(node)) {
         type = createFunctionBlockType(node);
+    } else if (isAlias(node)) {
+        type = inferAliasDeclaration(node, cache);
     }
     if (!type) {
         type = createErrorType('Could not infer type for ' + node.$type, node);
@@ -63,6 +61,14 @@ export function inferType(node: AstNode, cache: Map<AstNode, TypeDescription | u
 
 function inferStructDeclaration(node: Struct_Var_Decl_Init, cache: Map<AstNode, TypeDescription | undefined>) {
     let typeName = node.typeName;
+    return inferNativeTypeName(typeName, cache);
+}
+
+function inferAliasDeclaration(node: Alias, cache: Map<AstNode, TypeDescription | undefined>) {
+    return inferNativeTypeName(node.refName, cache);
+}
+
+function inferNativeTypeName(typeName: Native_Type_Name, cache: Map<AstNode, TypeDescription | undefined>) {
     if (isNative_Type_Name(typeName)) {
         let identifier = typeName.Identifier;
         if (identifier) {
@@ -70,6 +76,10 @@ function inferStructDeclaration(node: Struct_Var_Decl_Init, cache: Map<AstNode, 
             if (refNode) {
                 return inferType(refNode, cache);
             }
+        }
+        let resolvedTypeName = resolveNativeTypeName(typeName);
+        if (resolvedTypeName) {
+            return createCacheType(resolvedTypeName);
         }
     }
 }

@@ -1,5 +1,6 @@
 import { AstNode, ValidationAcceptor } from 'langium';
 import {
+    Alias,
     Arr_string,
     Constant,
     FunctionBlock,
@@ -11,6 +12,7 @@ import {
     VarDeclarationInit,
     VarInput,
     VarLocal,
+    isAlias,
     isArr_string,
     isStFunction
 } from '../generated/ast.js';
@@ -32,8 +34,9 @@ export type SingleElement = BaseElement & {
     comment?: string; //outer json comment property
     usage?: string; //outer json usage property
 } & AstNode;
-export type AliasElement = BaseElement & {
+export type AliasElement = SingleElement & {
     refName: string;
+    initialValue?: string | number | boolean;
 };
 export type EnumElement = BaseElement & {
     enumChild: Array<EnumChild>;
@@ -601,8 +604,9 @@ export const characterStringFunctionStr: string[] = [
 ];
 
 export const smcBasicFunctionStr: string[] = ['SMC_READAXISINFO', 'SMC_GETTIMENS', 'SMC_PARAMETERNUMBER_COE'];
+export const extraLibraryDerivedStr: string[] = ['AXIS_REF', 'MC_CAM_REF'];
 
-export const allFunctionBlockStr: string[] = keywordStr.concat(refOuterFunctionBlockStr);
+export const allFunctionBlockStr: string[] = keywordStr.concat(refOuterFunctionBlockStr).concat(extraLibraryDerivedStr);
 export const allFunctionStr: string[] = typeConversionFunctionStr
     .concat(numericalFunctionStr)
     .concat(arithmeticFunctionStr)
@@ -694,6 +698,164 @@ export function basicDataType(expectType: string | undefined, typeName: Native_T
             typeName.Cache_type_name;
     }
     return expectType;
+}
+
+const signedIntegerTypeStr = ['SINT', 'INT', 'DINT', 'LINT'];
+const unsignedIntegerTypeStr = ['USINT', 'UINT', 'UDINT', 'ULINT'];
+const bitStringTypeStr = ['BYTE', 'WORD', 'DWORD', 'LWORD'];
+const realTypeStr = ['REAL', 'LREAL'];
+
+function createNativeTypeNameByName(typeName: string): Native_Type_Name {
+    let astTypeName: Native_Type_Name = {
+        $type: 'Native_Type_Name'
+    };
+    let normalizedTypeName = typeName.toUpperCase();
+    if (realTypeStr.includes(normalizedTypeName)) {
+        astTypeName.Real_type_name = normalizedTypeName;
+    } else if (bitStringTypeStr.includes(normalizedTypeName)) {
+        astTypeName.Bit_string_type_name = normalizedTypeName;
+    } else if (signedIntegerTypeStr.includes(normalizedTypeName)) {
+        astTypeName.Integer_type_name = normalizedTypeName;
+    } else if (unsignedIntegerTypeStr.includes(normalizedTypeName)) {
+        astTypeName.Unsigned_integer_type_name = normalizedTypeName;
+    } else if (normalizedTypeName === 'BOOL') {
+        astTypeName.Bool_type_name = normalizedTypeName;
+    } else if (normalizedTypeName === 'STRING') {
+        astTypeName.String_type_name = normalizedTypeName;
+    } else if (normalizedTypeName === 'DATE') {
+        astTypeName.Date_type_name = normalizedTypeName;
+    } else if (normalizedTypeName === 'TIME') {
+        astTypeName.Time_type_name = normalizedTypeName;
+    } else if (normalizedTypeName === 'DATE_AND_TIME') {
+        astTypeName.Date_And_time_type_name = normalizedTypeName;
+    } else if (normalizedTypeName === 'TIME_OF_DAY') {
+        astTypeName.Time_Of_Day_type_name = normalizedTypeName;
+    } else {
+        astTypeName.Cache_type_name = typeName;
+    }
+    return astTypeName;
+}
+
+function createConstantByValue(aliasNode: Alias, value: string | number | boolean | undefined): Constant | undefined {
+    if (value === undefined) {
+        return undefined;
+    }
+    let constantValue: string | number;
+    if (typeof value === 'boolean') {
+        constantValue = value ? 'TRUE' : 'FALSE';
+    } else {
+        constantValue = value;
+    }
+    return {
+        $container: aliasNode,
+        $type: 'Constant',
+        constant: constantValue
+    };
+}
+
+type ResolvedNativeType = {
+    typeName?: string;
+    refNode?: AstNode;
+};
+
+function resolveExternalTypeName(typeName: string | undefined, visitedAlias = new Set<string>()): ResolvedNativeType {
+    if (!typeName) {
+        return {};
+    }
+    let normalizedTypeName = typeName.toUpperCase();
+    if (
+        signedIntegerTypeStr.includes(normalizedTypeName) ||
+        unsignedIntegerTypeStr.includes(normalizedTypeName) ||
+        bitStringTypeStr.includes(normalizedTypeName) ||
+        realTypeStr.includes(normalizedTypeName) ||
+        normalizedTypeName === 'BOOL' ||
+        normalizedTypeName === 'STRING' ||
+        normalizedTypeName === 'DATE' ||
+        normalizedTypeName === 'TIME' ||
+        normalizedTypeName === 'DATE_AND_TIME' ||
+        normalizedTypeName === 'TIME_OF_DAY'
+    ) {
+        return {
+            typeName: normalizedTypeName
+        };
+    }
+    let result = getRelatedElementAndLangiumDoc(typeName);
+    if (!result) {
+        return {
+            typeName
+        };
+    }
+    let [elementNode] = result;
+    if (!elementNode || elementNode.elementType !== 'alias') {
+        return {
+            typeName
+        };
+    }
+    let aliasNode = elementNode as AliasElement;
+    let aliasName = aliasNode.elementName.toUpperCase();
+    if (visitedAlias.has(aliasName)) {
+        return {
+            typeName: aliasNode.elementName,
+            refNode: aliasNode
+        };
+    }
+    visitedAlias.add(aliasName);
+    let resolvedAliasType = resolveExternalTypeName(aliasNode.refName, visitedAlias);
+    return {
+        typeName: resolvedAliasType.typeName ?? aliasNode.elementName,
+        refNode: resolvedAliasType.refNode ?? aliasNode
+    };
+}
+
+function resolveNativeType(typeName: Native_Type_Name | undefined, visitedAlias = new Set<string>()): ResolvedNativeType {
+    if (!typeName) {
+        return {};
+    }
+    let basicTypeName = basicDataType(undefined, typeName);
+    if (basicTypeName) {
+        if (typeName.Cache_type_name) {
+            return resolveExternalTypeName(typeName.Cache_type_name, visitedAlias);
+        }
+        return {
+            typeName: basicTypeName
+        };
+    }
+    let identifier = typeName.Identifier;
+    if (!identifier) {
+        return {};
+    }
+    let refNode = identifier.ref;
+    if (!refNode) {
+        return resolveExternalTypeName(identifier.$refText, visitedAlias);
+    }
+    if (isAlias(refNode)) {
+        if (visitedAlias.has(refNode.name)) {
+            return {
+                typeName: refNode.name,
+                refNode
+            };
+        }
+        visitedAlias.add(refNode.name);
+        let resolvedAliasType = resolveNativeType(refNode.refName, visitedAlias);
+        return {
+            typeName: resolvedAliasType.typeName ?? refNode.name,
+            refNode: resolvedAliasType.refNode
+        };
+    }
+    if ('name' in refNode && typeof refNode.name === 'string') {
+        return {
+            typeName: refNode.name,
+            refNode
+        };
+    }
+    return {
+        typeName: identifier.$refText
+    };
+}
+
+export function resolveNativeTypeName(typeName: Native_Type_Name | undefined): string | undefined {
+    let resolvedNativeType = resolveNativeType(typeName);
+    return resolvedNativeType.typeName;
 }
 export function isFloatOrDouble(str: string): boolean {
     // 使用正则表达式匹配浮点数或双精度浮点数的格式，但不包括整数
@@ -889,7 +1051,9 @@ export function handleNotCaseSensitive(eachVarTypeName: any, typeName: Native_Ty
         | 'Time_type_name'
         | 'Cache_type_name';
 
-    eachVarTypeName = basicDataType(eachVarTypeName, typeName);
+    let sourceTypeName = basicDataType(eachVarTypeName, typeName);
+    let resolvedNativeType = resolveNativeType(typeName);
+    eachVarTypeName = resolvedNativeType.typeName ?? sourceTypeName;
     if (typeName.Real_type_name) {
         type = 'Real_type_name';
     } else if (typeName.Bit_string_type_name) {
@@ -916,7 +1080,8 @@ export function handleNotCaseSensitive(eachVarTypeName: any, typeName: Native_Ty
         //添加默认值
         type = 'String_type_name';
     }
-    let [matchedString, isSame] = ignoreCase(eachVarTypeName);
+    let hintTarget = sourceTypeName ?? eachVarTypeName;
+    let [matchedString, isSame] = ignoreCase(hintTarget);
     if (!isSame) {
         //t13: ADD_DT_TIME; 这种类型的就是符合这个条件的
         if ('Cache_type_name' === type) {
@@ -938,9 +1103,9 @@ export function handleNotCaseSensitive(eachVarTypeName: any, typeName: Native_Ty
         }
         // this.judgeVarTypeIsExisted(eachVarTypeName, accept, typeName);
     } else {
-        if (eachVarTypeName !== matchedString) {
+        if (hintTarget !== matchedString) {
             //都是小写那么就不提示了，只有有大写又有小写才提示
-            if (!isLowerCase(eachVarTypeName)) {
+            if (!isLowerCase(hintTarget)) {
                 if (type !== 'Cache_type_name' || !typeName.Cache_type_name || shouldHintCacheCase(typeName.Cache_type_name)) {
                     accept('hint', `did you mean '${matchedString}'?`, {
                         node: typeName,
@@ -958,10 +1123,14 @@ export function handleNativeTypeName(typeName: Native_Type_Name, eachVarTypeName
     }
     if (typeName.Identifier) {
         let basicTypeRef = typeName.Identifier;
+        let resolvedNativeType = resolveNativeType(typeName);
         let ref = basicTypeRef.ref;
+        if (resolvedNativeType.typeName) {
+            eachVarTypeName = resolvedNativeType.typeName;
+        }
         if (ref) {
-            eachVarTypeName = ref.name;
-            if (isStFunction(ref)) {
+            let resolvedRefNode = resolvedNativeType.refNode;
+            if (isStFunction(ref) || (resolvedRefNode && isStFunction(resolvedRefNode))) {
                 accept('error', `${eachVarTypeName}的类型为FUNCTION,不能实例化`, {
                     node: typeName,
                     property: 'Identifier'
@@ -988,9 +1157,9 @@ export function handleNativeTypeName(typeName: Native_Type_Name, eachVarTypeName
 }
 
 export function handleNoAcceptNativeTypeName(typeName: Native_Type_Name, eachVarTypeName: any) {
-    if (typeName.Identifier) {
-        let basicTypeRef = typeName.Identifier;
-        eachVarTypeName = basicTypeRef.ref?.name;
+    let resolvedNativeTypeName = resolveNativeTypeName(typeName);
+    if (resolvedNativeTypeName) {
+        eachVarTypeName = resolvedNativeTypeName;
     } else {
         eachVarTypeName = basicDataType(eachVarTypeName, typeName);
     }
@@ -1012,6 +1181,21 @@ export function transform2AstNode(composeNodeArr: ComposeNode[]): St {
     composeNodeArr.forEach(composeNode => {
         let composeNodeElementArr = composeNode.elements;
         composeNodeElementArr.forEach(element => {
+            if (element.elementType === 'alias') {
+                let aliasElement = element as AliasElement;
+                let astNode: Alias = {
+                    $container: root,
+                    $type: 'Alias',
+                    name: aliasElement.elementName,
+                    refName: createNativeTypeNameByName(aliasElement.refName)
+                };
+                let initialValue = createConstantByValue(astNode, aliasElement.initialValue);
+                if (initialValue) {
+                    astNode.initialValue = initialValue;
+                }
+                root.types_alias.push(astNode);
+                return;
+            }
             let elementType = element.elementType;
             if (elementType === 'struct') {
                 element = element as SingleElement;
@@ -1026,10 +1210,7 @@ export function transform2AstNode(composeNodeArr: ComposeNode[]): St {
                 varDeclArr.forEach(varDecl => {
                     let varName = varDecl.varName;
                     let varType = varDecl.varType;
-                    let cacheTypeName: Native_Type_Name = {
-                        $type: 'Native_Type_Name',
-                        Cache_type_name: varType
-                    };
+                    let cacheTypeName = createNativeTypeNameByName(varType);
                     let langiumVarDecl: Struct_Var_Decl_Init = {
                         $container: astNode,
                         $type: 'Struct_Var_Decl_Init',
@@ -1058,10 +1239,7 @@ export function transform2AstNode(composeNodeArr: ComposeNode[]): St {
                     let varName = varDecl.varName;
                     let varType = varDecl.varType;
                     let varGlobalType = varDecl.varGlobalType;
-                    let cacheTypeName: Native_Type_Name = {
-                        $type: 'Native_Type_Name',
-                        Cache_type_name: varType
-                    };
+                    let cacheTypeName = createNativeTypeNameByName(varType);
                     if (varGlobalType) {
                         let langiumVarDecl: VarDeclarationInit;
                         if (varGlobalType === 'VAR_INPUT') {
@@ -1108,7 +1286,7 @@ export function transform2AstNode(composeNodeArr: ComposeNode[]): St {
 //define outer json format and transform to previous self json format
 export type OuterComposeNode = {
     name: string;
-    list: (OuterFunctionBlockElement | OuterFunctionElement | OuterStructElement)[];
+    list: (OuterFunctionBlockElement | OuterFunctionElement | OuterStructElement | OuterAliasElement)[];
 };
 export type OuterBasicElement = {
     name: string;
@@ -1135,6 +1313,13 @@ export type OuterStructElement = {
     type: 'struct';
     elements: OuterStructField[];
     comment: string;
+};
+export type OuterAliasElement = {
+    name: string;
+    type: 'derived';
+    base_type: string;
+    comment: string;
+    value?: string | number | boolean;
 };
 
 export function convertOuterNode2ComposeNode(outerComposeNodeArr: OuterComposeNode[]): ComposeNode[] {
@@ -1191,33 +1376,44 @@ export function convertOuterNode2ComposeNode(outerComposeNodeArr: OuterComposeNo
                 }
             }
         } else if (rootName === 'extra_library') {
-            let outerElementArr = list as OuterStructElement[];
+            let outerElementArr = list as (OuterStructElement | OuterAliasElement)[];
             let composeNode: ComposeNode = {
                 $type: 'ComposeNode',
                 elements: []
             };
             for (let i = 0; i < outerElementArr.length; i++) {
                 let outerElement = outerElementArr[i];
-                if (outerElement.type !== 'struct') {
-                    continue;
-                }
-                let structElement: SingleElement = {
-                    $type: 'SingleElement',
-                    elementType: 'struct',
-                    elementName: outerElement.name,
-                    varDecls: [],
-                    rootName: rootName,
-                    comment: outerElement.comment
-                };
-                outerElement.elements.forEach(element => {
-                    let varDecl: VarDeclaration = {
-                        $type: 'VarDeclaration',
-                        varName: element.name,
-                        varType: element.type
+                if (outerElement.type === 'struct') {
+                    let structElement: SingleElement = {
+                        $type: 'SingleElement',
+                        elementType: 'struct',
+                        elementName: outerElement.name,
+                        varDecls: [],
+                        rootName: rootName,
+                        comment: outerElement.comment
                     };
-                    structElement.varDecls.push(varDecl);
-                });
-                composeNode.elements.push(structElement);
+                    outerElement.elements.forEach(element => {
+                        let varDecl: VarDeclaration = {
+                            $type: 'VarDeclaration',
+                            varName: element.name,
+                            varType: element.type
+                        };
+                        structElement.varDecls.push(varDecl);
+                    });
+                    composeNode.elements.push(structElement);
+                } else if (outerElement.type === 'derived') {
+                    let aliasElement: AliasElement = {
+                        $type: 'AliasElement',
+                        elementType: 'alias',
+                        elementName: outerElement.name,
+                        refName: outerElement.base_type,
+                        initialValue: outerElement.value,
+                        varDecls: [],
+                        rootName: rootName,
+                        comment: outerElement.comment
+                    };
+                    composeNode.elements.push(aliasElement);
+                }
             }
             if (composeNode.elements.length > 0) {
                 composeNodeArr.push(composeNode);

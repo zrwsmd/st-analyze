@@ -22,7 +22,7 @@ export function getRelatedElementInfoToOuter(cacheName: string): SingleElement |
                 if (cacheFunctionBlock) {
                     let elementType = cacheFunctionBlock.elementType;
                     let element: SingleElement;
-                    if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct') {
+                    if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct' || elementType === 'alias') {
                         element = cacheFunctionBlock as SingleElement;
                         return element;
                     }
@@ -45,7 +45,7 @@ export function getRelatedElementInfoToOuter(cacheName: string): SingleElement |
             if (cacheFunctionBlock) {
                 let elementType = cacheFunctionBlock.elementType;
                 let element: SingleElement;
-                if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct') {
+                if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct' || elementType === 'alias') {
                     element = cacheFunctionBlock as SingleElement;
                     return element;
                 }
@@ -71,7 +71,7 @@ export function getRelatedElementAndLangiumDoc(cacheName: string): [SingleElemen
                 if (cacheFunctionBlock) {
                     let elementType = cacheFunctionBlock.elementType;
                     let element: SingleElement;
-                    if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct') {
+                    if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct' || elementType === 'alias') {
                         element = cacheFunctionBlock as SingleElement;
                         return [element, cacheLangiumDocument];
                     }
@@ -98,7 +98,7 @@ export function getRelatedElementAndLangiumDoc(cacheName: string): [SingleElemen
             if (cacheFunctionBlock) {
                 let elementType = cacheFunctionBlock.elementType;
                 let element: SingleElement;
-                if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct') {
+                if (elementType === 'functionBlock' || elementType === 'function' || elementType === 'struct' || elementType === 'alias') {
                     element = cacheFunctionBlock as SingleElement;
                     return [element, langiumDocument];
                 }
