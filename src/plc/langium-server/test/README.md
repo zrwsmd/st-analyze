@@ -3,6 +3,9 @@
 - `helpers/langium-test-utils.cjs`
   Shared helper utilities for creating in-memory Langium documents, collecting diagnostics, fetching completion items, and requesting signature help.
 
+- `helpers/export-info-test-utils.cjs`
+  Shared helper utilities for bundling `handleExportInfo.ts` into a Node-testable module, mocking the small subset of VSCode APIs used by export logic, and creating temporary `.st` workspaces on disk.
+
 - `external-library-functions.test.cjs`
   Covers external function blocks and functions from `data.json`, including successful resolution and function-block type-name completion.
 
@@ -35,3 +38,6 @@
 
 - `st-validator-provider.test.cjs`
   Focuses on `st-validator.ts`, covering alias compatibility, struct member type validation, enum validation, external function block parameter validation, and enum type mismatch validation.
+
+- `export-all-decl-info.test.cjs`
+  Covers `handleExportInfo.ts`, including diagnostic-based file filtering, exported variable lists and `refFilePath` generation, `onSave` refresh behavior, and syntax-error skipping during export generation.

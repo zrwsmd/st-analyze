@@ -33,7 +33,7 @@
     "clean": "rimraf lib tsconfig.tsbuildinfo ",
     "langium:generate": "langium generate",
     "lint": "eslint src test --ext ts",
-    "test": "yarn build && node --test --test-concurrency=1 test/external-library-functions.test.cjs test/external-library-structs.test.cjs test/external-library-aliases.test.cjs test/external-library-enums.test.cjs test/signature-help.test.cjs test/cache-complete-provider.test.cjs test/cache-sign-help-provider.test.cjs test/cache-highlight-provider.test.cjs test/cache-reference-provider.test.cjs test/st-scope-provider.test.cjs test/st-validator-provider.test.cjs",
+    "test": "yarn build && node --test --test-concurrency=1 test/external-library-functions.test.cjs test/external-library-structs.test.cjs test/external-library-aliases.test.cjs test/external-library-enums.test.cjs test/signature-help.test.cjs test/cache-complete-provider.test.cjs test/cache-sign-help-provider.test.cjs test/cache-highlight-provider.test.cjs test/cache-reference-provider.test.cjs test/st-scope-provider.test.cjs test/st-validator-provider.test.cjs test/export-all-decl-info.test.cjs",
     "prepare": "yarn clean && yarn build",
     "publish:latest": "npm publish --tag latest --access public",
     "publish:next": "npm --no-git-tag-version version \"$(semver $npm_package_version -i minor)-next.$(git rev-parse --short HEAD)\" && npm publish --tag next",
