@@ -11,16 +11,22 @@ import {
     findFirstFeatures,
     findNextFeatures
 } from 'langium/lsp';
-import { CompletionItemKind, CompletionList, CompletionParams, Position, Range } from 'vscode-languageserver-protocol';
+import { CompletionItem, CompletionItemKind, CompletionList, CompletionParams, Position, Range } from 'vscode-languageserver-protocol';
 import {
+    Case_statement,
+    EnumeratedValue,
     NamedElement,
     Native_Type_Name,
+    St,
+    StEnum,
     Struct_Var_Decl_Init,
     VarDeclarationInit,
     VarInput,
     VarLocal,
     VarOutput,
     isAssignPrefix,
+    isCase_statement,
+    isEnumeratedValue,
     isExpression,
     isFunctionBlock,
     isMemberCall,
@@ -39,7 +45,7 @@ import {
     matchNoBasicAllCacheStrings,
     refOuterFunctionBlockStr
 } from './util/tool.js';
-import { getRelatedElementAndLangiumDoc } from './util/transform.js';
+import { getRelatedElementAndLangiumDoc, getRelatedEnumElementAndLangiumDoc } from './util/transform.js';
 interface InterpretationContext {
     tokens: IToken[];
     stacks: NextFeature[][];
@@ -50,14 +56,42 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         super(services);
     }
 
-    override getCompletion(document: LangiumDocument<AstNode>, params: CompletionParams): Promise<CompletionList | undefined> {
-        return super.getCompletion(document, params);
+    override async getCompletion(document: LangiumDocument<AstNode>, params: CompletionParams): Promise<CompletionList | undefined> {
+        let baseCompletion = await super.getCompletion(document, params);
+        let enumCompletionItems = this.getManualEnumCompletionItems(document, params);
+        if (enumCompletionItems.length === 0) {
+            return baseCompletion;
+        }
+        let mergedItems = [...(baseCompletion?.items ?? []), ...enumCompletionItems];
+        return CompletionList.create(this.deduplicateItems(mergedItems), true);
     }
 
     readonly completionOptions: CompletionProviderOptions = {
-        triggerCharacters: ['.']
+        triggerCharacters: ['.', '#']
         //allCommitCharacters: ['.']
     };
+
+    protected override completionFor(context: CompletionContext, next: NextFeature, acceptor: CompletionAcceptor): MaybePromise<void> {
+        let property = next.property;
+        if (!property) {
+            let assignment = AstUtils.getContainerOfType(next.feature, GrammarAST.isAssignment);
+            property = assignment?.feature;
+        }
+        if (property === 'enumValue') {
+            let enumTypeName = this.getEnumTypeNameBeforeHash(context);
+            if (enumTypeName) {
+                this.hintEnumMembers(enumTypeName, acceptor, context);
+                return;
+            }
+        } else if (property === 'simpleEnumCase') {
+            let enumTypeName = this.getCaseEnumTypeName(context);
+            if (enumTypeName) {
+                this.hintEnumMembers(enumTypeName, acceptor, context);
+                return;
+            }
+        }
+        return super.completionFor(context, next, acceptor);
+    }
 
     hintFunctionBlockDecl(declVarArr: VarInput[] | VarOutput[] | VarLocal[], acceptor: CompletionAcceptor, context: CompletionContext) {
         declVarArr.forEach(decl => {
@@ -179,6 +213,199 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         let textDocument = context.textDocument;
         let text = textDocument.getText(range);
         return text;
+    }
+
+    private getCurrentTokenText(context: CompletionContext) {
+        let startPosition = context.textDocument.positionAt(context.tokenOffset);
+        let range: Range = {
+            start: startPosition,
+            end: context.position
+        };
+        return context.textDocument.getText(range).trim();
+    }
+
+    private getManualEnumCompletionItems(document: LangiumDocument<AstNode>, params: CompletionParams): CompletionItem[] {
+        let textDocument = document.textDocument;
+        let textBeforeCursor = textDocument.getText({
+            start: Position.create(0, 0),
+            end: params.position
+        });
+        let match = textBeforeCursor.match(/([_a-zA-Z][\w_]*)#([_a-zA-Z][\w_]*)?$/);
+        if (!match) {
+            return [];
+        }
+        let enumTypeName = match[1];
+        let partialMemberName = match[2] ?? '';
+        let offset = textDocument.offsetAt(params.position);
+        let syntheticContext: CompletionContext = {
+            document,
+            textDocument,
+            offset,
+            position: params.position,
+            tokenOffset: offset - partialMemberName.length,
+            tokenEndOffset: offset,
+            features: []
+        };
+        return this.buildEnumMemberCompletionItems(enumTypeName, partialMemberName, syntheticContext);
+    }
+
+    private getRootNode(context: CompletionContext): St | undefined {
+        let root = context.document.parseResult.value;
+        if (root.$type === 'St') {
+            return root as St;
+        }
+        return undefined;
+    }
+
+    private getLocalEnumByName(enumTypeName: string | undefined, context: CompletionContext): StEnum | undefined {
+        if (!enumTypeName) {
+            return undefined;
+        }
+        let root = this.getRootNode(context);
+        return root?.types_enum.find(item => item.name.toLowerCase() === enumTypeName.toLowerCase());
+    }
+
+    private getWorkspaceEnumByName(enumTypeName: string | undefined): StEnum | undefined {
+        if (!enumTypeName) {
+            return undefined;
+        }
+        let indexManager = this.services.shared.workspace.IndexManager;
+        let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+        let astNodeLocator = this.services.workspace.AstNodeLocator;
+        for (const description of indexManager.allElements('StEnum')) {
+            if (description.name.toLowerCase() === enumTypeName.toLowerCase()) {
+                let targetDocument = langiumDocuments.getDocument(description.documentUri);
+                if (targetDocument) {
+                    let enumNode = astNodeLocator.getAstNode<StEnum>(targetDocument.parseResult.value, description.path);
+                    if (enumNode) {
+                        return enumNode;
+                    }
+                }
+            }
+        }
+        return undefined;
+    }
+
+    private getEnumMembers(enumTypeName: string | undefined, context: CompletionContext): string[] {
+        if (!enumTypeName) {
+            return [];
+        }
+        let localEnum = this.getLocalEnumByName(enumTypeName, context);
+        if (localEnum) {
+            return localEnum.enum.map(item => item.variable_name);
+        }
+        let workspaceEnum = this.getWorkspaceEnumByName(enumTypeName);
+        if (workspaceEnum) {
+            return workspaceEnum.enum.map(item => item.variable_name);
+        }
+        let result = getRelatedEnumElementAndLangiumDoc(enumTypeName);
+        if (result) {
+            let [enumElement] = result;
+            return enumElement?.enumChild.map(item => item.enumVarName) ?? [];
+        }
+        return [];
+    }
+
+    private getEnumeratedValueTypeName(enumValue: EnumeratedValue | undefined): string | undefined {
+        if (!enumValue) {
+            return undefined;
+        }
+        if (enumValue.enumCacheTypeName) {
+            return enumValue.enumCacheTypeName;
+        }
+        let refNode = enumValue.enumType?.ref;
+        if (refNode) {
+            if (refNode.$type === 'StEnum') {
+                return refNode.name;
+            }
+            if ('elementType' in refNode && refNode.elementType === 'enum' && 'elementName' in refNode) {
+                let elementName = refNode.elementName;
+                if (typeof elementName === 'string') {
+                    return elementName;
+                }
+            }
+        }
+        return enumValue.enumType?.$refText;
+    }
+
+    private getEnumTypeNameBeforeHash(context: CompletionContext): string | undefined {
+        let beforeTokenText = context.textDocument.getText({
+            start: Position.create(0, 0),
+            end: context.textDocument.positionAt(context.tokenOffset)
+        });
+        let match = beforeTokenText.match(/([_a-zA-Z][\w_]*)\s*#\s*$/);
+        return match?.[1];
+    }
+
+    private getCaseEnumTypeName(context: CompletionContext): string | undefined {
+        let node = context.node;
+        if (!node) {
+            return undefined;
+        }
+        let caseStatement = AstUtils.getContainerOfType(node, isCase_statement);
+        if (!caseStatement) {
+            return undefined;
+        }
+        return this.getEnumTypeNameFromCaseStatement(caseStatement);
+    }
+
+    private getEnumTypeNameFromCaseStatement(caseStatement: Case_statement): string | undefined {
+        let caseExpression = caseStatement.caseExpression;
+        if (isEnumeratedValue(caseExpression)) {
+            return this.getEnumeratedValueTypeName(caseExpression);
+        }
+        if (isExpression(caseExpression)) {
+            let prior = caseExpression.prior;
+            if (isEnumeratedValue(prior)) {
+                return this.getEnumeratedValueTypeName(prior);
+            }
+            if (isVariableExpression(prior)) {
+                let refNode = prior.variable.ref;
+                if (isVarDeclarationInit(refNode)) {
+                    let expectType = '';
+                    return handleNoAcceptNativeTypeName(refNode.typeName, expectType);
+                }
+            }
+        }
+        return undefined;
+    }
+
+    private hintEnumMembers(enumTypeName: string | undefined, acceptor: CompletionAcceptor, context: CompletionContext) {
+        let tokenText = this.getCurrentTokenText(context);
+        let enumMembers = this.getEnumMembers(enumTypeName, context);
+        enumMembers
+            .filter(member => member.toLowerCase().startsWith(tokenText.toLowerCase()))
+            .forEach(member => {
+                acceptor(context, {
+                    label: member,
+                    kind: CompletionItemKind.EnumMember,
+                    detail: enumTypeName,
+                    sortText: '0'
+                });
+            });
+    }
+
+    private buildEnumMemberCompletionItems(
+        enumTypeName: string | undefined,
+        tokenText: string,
+        context: CompletionContext
+    ): CompletionItem[] {
+        let completionItems: CompletionItem[] = [];
+        let enumMembers = this.getEnumMembers(enumTypeName, context);
+        enumMembers
+            .filter(member => member.toLowerCase().startsWith(tokenText.toLowerCase()))
+            .forEach(member => {
+                let item = this.fillCompletionItem(context, {
+                    label: member,
+                    kind: CompletionItemKind.EnumMember,
+                    detail: enumTypeName,
+                    sortText: '0'
+                });
+                if (item) {
+                    completionItems.push(item);
+                }
+            });
+        return completionItems;
     }
 
     override completionForKeyword(
