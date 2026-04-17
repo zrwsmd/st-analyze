@@ -39,8 +39,10 @@ import {
     VarDeclaration,
     allFunctionStr,
     basicDataType,
+    extraLibraryEnumStr,
     handleNoAcceptNativeTypeName,
     matchAllCacheStrings,
+    matchExtraLibraryEnumStrings,
     matchFunctionStrings,
     matchNoBasicAllCacheStrings,
     refOuterFunctionBlockStr
@@ -545,6 +547,17 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
                                 sortText: '1'
                             });
                         }
+                    } else if (extraLibraryEnumStr.includes(match)) {
+                        let result = getRelatedEnumElementAndLangiumDoc(match);
+                        if (result) {
+                            let [enumElement] = result;
+                            acceptor(context, {
+                                label: match,
+                                kind: CompletionItemKind.Enum,
+                                detail: enumElement?.elementType,
+                                sortText: '1'
+                            });
+                        }
                     } else {
                         acceptor(context, {
                             label: match,
@@ -607,6 +620,22 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
                     });
                 }
             });
+        } else if (isEnumeratedValue(node)) {
+            let refText = node.enumType?.$refText ?? '';
+            let matchArr = matchExtraLibraryEnumStrings(refText);
+            matchArr.forEach(cacheName => {
+                let result = getRelatedEnumElementAndLangiumDoc(cacheName);
+                if (result) {
+                    let [enumElement] = result;
+                    acceptor(context, {
+                        label: enumElement?.elementName,
+                        kind: CompletionItemKind.Enum,
+                        detail: enumElement?.elementType,
+                        sortText: '1'
+                    });
+                }
+            });
+            return super.completionForCrossReference(context, next, acceptor);
         } else if (isMemberCall(node)) {
             /**
              * 校验比如链式调用，最后一个是基础类型，再.就不应该有提示了,e.g china.province.city.cityId

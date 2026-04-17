@@ -609,6 +609,15 @@ export const characterStringFunctionStr: string[] = [
 
 export const smcBasicFunctionStr: string[] = ['SMC_READAXISINFO', 'SMC_GETTIMENS', 'SMC_PARAMETERNUMBER_COE'];
 export const extraLibraryDerivedStr: string[] = ['AXIS_REF', 'MC_CAM_REF'];
+export const extraLibraryEnumStr: string[] = [
+    'SMC_ERROR',
+    'MC_Direction',
+    'MC_BUFFER_MODE',
+    'SMC_AXIS_STATE',
+    'MC_TAPPETMODE',
+    'SMC_CAM_TYPE',
+    'MC_STARTMODE'
+];
 
 export const allFunctionBlockStr: string[] = keywordStr.concat(refOuterFunctionBlockStr).concat(extraLibraryDerivedStr);
 export const allFunctionStr: string[] = typeConversionFunctionStr
@@ -622,7 +631,7 @@ export const allFunctionStr: string[] = typeConversionFunctionStr
     .concat(characterStringFunctionStr)
     .concat(smcBasicFunctionStr);
 
-export const allCacheStr: string[] = allFunctionBlockStr.concat(allFunctionStr);
+export const allCacheStr: string[] = allFunctionBlockStr.concat(allFunctionStr).concat(extraLibraryEnumStr);
 export const noBasicAllCacheStr: string[] = refOuterFunctionBlockStr.concat(allFunctionStr);
 export const referenceStr: string[] = numericalFunctionStr
     .concat(arithmeticFunctionStr)
@@ -646,6 +655,11 @@ export function matchFunctionStrings(input: string): string[] {
 export function matchAllCacheStrings(input: string): string[] {
     const regex = new RegExp('^' + input, 'i'); // 创建不区分大小写的正则表达式
     return allCacheStr.filter(str => regex.test(str)); // 使用filter方法根据正则表达式进行匹配
+}
+
+export function matchExtraLibraryEnumStrings(input: string): string[] {
+    const regex = new RegExp('^' + input, 'i');
+    return extraLibraryEnumStr.filter(str => regex.test(str));
 }
 
 export function matchNoBasicAllCacheStrings(input: string): string[] {
