@@ -17,3 +17,15 @@
 
 - `signature-help.test.cjs`
   Covers signature help regression checks for both standard library and external library function blocks.
+
+- `cache-complete-provider.test.cjs`
+  Focuses on `cache-complete.ts`, covering external function block type-name completion, external enum type-name completion, enum member completion, and external struct member completion.
+
+- `cache-sign-help-provider.test.cjs`
+  Focuses on `cache-sign-help.ts`, covering signature help for standard library, external library, and custom function blocks.
+
+- `st-scope-provider.test.cjs`
+  Focuses on `st-scope.ts`, covering member scopes for external structs, external function blocks, and custom structs.
+
+- `st-validator-provider.test.cjs`
+  Focuses on `st-validator.ts`, covering alias compatibility, struct member type validation, enum validation, external function block parameter validation, and enum type mismatch validation.

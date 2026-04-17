@@ -37,6 +37,39 @@ function cleanupDocuments(records) {
     }
 }
 
+function visitAst(node, visitor, visited = new WeakSet()) {
+    if (!node || typeof node !== 'object') {
+        return;
+    }
+    if (visited.has(node)) {
+        return;
+    }
+    visited.add(node);
+    visitor(node);
+    for (const value of Object.values(node)) {
+        if (!value) {
+            continue;
+        }
+        if (Array.isArray(value)) {
+            for (const item of value) {
+                visitAst(item, visitor, visited);
+            }
+        } else if (typeof value === 'object') {
+            visitAst(value, visitor, visited);
+        }
+    }
+}
+
+function findAstNodes(root, predicate) {
+    const matches = [];
+    visitAst(root, node => {
+        if (predicate(node)) {
+            matches.push(node);
+        }
+    });
+    return matches;
+}
+
 async function withDocuments(options, callback) {
     const created = [];
     try {
@@ -137,15 +170,45 @@ async function getSignatureHelp(options) {
     );
 }
 
+async function getScopeElementNames(options) {
+    return withDocuments(
+        {
+            main: {
+                text: options.text,
+                label: options.label
+            },
+            extra: options.extra
+        },
+        async ({ mainRecord, services }) => {
+            const root = mainRecord.document.parseResult.value;
+            const targetNode = options.findNode(root, findAstNodes);
+            assert.ok(targetNode, 'Unable to locate target AST node for scope test.');
+            const reference = options.getReference(targetNode);
+            const property = options.property;
+            const scope = services.st.references.ScopeProvider.getScope({
+                container: targetNode,
+                property,
+                reference
+            });
+            return scope
+                .getAllElements()
+                .map(description => description.name)
+                .toArray();
+        }
+    );
+}
+
 function getErrorMessages(diagnostics) {
     return diagnostics.filter(diagnostic => diagnostic.severity === 1).map(diagnostic => diagnostic.message);
 }
 
 module.exports = {
+    findAstNodes,
     getCompletionItems,
     getCompletionLabels,
     getDiagnostics,
     getErrorMessages,
+    getScopeElementNames,
     getSignatureHelp,
     withDocuments
 };
