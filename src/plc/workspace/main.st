@@ -19,6 +19,7 @@ VAR
 	d:TON;
 	mode    : RunMode;
 	libEnum:MC_BUFFER_MODE;
+	e:Province;
 END_VAR
 VAR_IN_OUT
 	Variable: BOOL; (* Comment *)
