@@ -351,9 +351,9 @@ async function handleRoot(st: St, eventType: EventType, historyComposeNode?: Com
         let lexerErrors = parseResult.lexerErrors;
         let parserErrors = parseResult.parserErrors;
         //由词法或者语法错误，这个文件就不生成json了
-        if (lexerErrors.length > 0 || parserErrors.length > 0) {
-            return allElements;
-        }
+        // if (lexerErrors.length > 0 || parserErrors.length > 0) {
+        //     return allElements;
+        // }
     }
     let programArr = st.program;
     let functionArr = st.st_function;
