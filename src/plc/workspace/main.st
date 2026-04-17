@@ -28,19 +28,13 @@ END_VAR
 
 mode:=RunMode#MANUAL;
 libEnum:=MC_BUFFER_MODE#Aborting;
-e.provinceId:=12;
-f:=MC_Direction#negative;
-	
-mode:=RunMode#STOP;
-
-libEnum:=MC_BUFFER_MODE#BlendingPrevious;
-
-
 c.delta_time:= T#3h2m33s11ms;
-
-
-mode:=RunMode#MANUAL;
+d.IN:=1;
 e.city.region.regionName:='Beijing';
+f:=MC_Direction#negative;
+
+
+
 
 
 
