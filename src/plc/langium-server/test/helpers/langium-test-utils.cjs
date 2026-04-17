@@ -17,6 +17,15 @@ function normalizeText(text) {
     return text.replace(/\r\n/g, '\n');
 }
 
+let langiumImportPromise;
+
+function getLangiumModule() {
+    if (!langiumImportPromise) {
+        langiumImportPromise = import('langium');
+    }
+    return langiumImportPromise;
+}
+
 async function createDocument(text, label) {
     const uri = nextUri(label);
     const langiumDocuments = shared.workspace.LangiumDocuments;
@@ -170,6 +179,86 @@ async function getSignatureHelp(options) {
     );
 }
 
+async function getDocumentHighlights(options) {
+    const marker = options.marker ?? '/*cursor*/';
+    const markerOffset = options.text.indexOf(marker);
+    assert.notEqual(markerOffset, -1, `Missing marker ${marker} in highlight source.`);
+
+    const cleanText = options.text.replace(marker, '');
+    return withDocuments(
+        {
+            main: {
+                text: cleanText,
+                label: options.label
+            },
+            extra: options.extra
+        },
+        async ({ mainRecord, services }) => {
+            const position = mainRecord.document.textDocument.positionAt(markerOffset);
+            return (
+                (await services.st.lsp.DocumentHighlightProvider.getDocumentHighlight(mainRecord.document, {
+                    textDocument: { uri: mainRecord.uri.toString() },
+                    position
+                })) ?? []
+            );
+        }
+    );
+}
+
+function collectPrimitiveProperties(node) {
+    if (!node || typeof node !== 'object') {
+        return {};
+    }
+    const primitiveProperties = {};
+    for (const [key, value] of Object.entries(node)) {
+        if (key.startsWith('$') || value === undefined || value === null) {
+            continue;
+        }
+        if (typeof value !== 'object') {
+            primitiveProperties[key] = value;
+        }
+    }
+    return primitiveProperties;
+}
+
+async function findDeclarationAtMarker(options) {
+    const marker = options.marker ?? '/*cursor*/';
+    const markerOffset = options.text.indexOf(marker);
+    assert.notEqual(markerOffset, -1, `Missing marker ${marker} in declaration source.`);
+
+    const cleanText = options.text.replace(marker, '');
+    return withDocuments(
+        {
+            main: {
+                text: cleanText,
+                label: options.label
+            },
+            extra: options.extra
+        },
+        async ({ mainRecord, services }) => {
+            const { CstUtils } = await getLangiumModule();
+            const rootNode = mainRecord.document.parseResult.value.$cstNode;
+            assert.ok(rootNode, 'Unable to locate CST root for declaration test.');
+
+            const selectedNode = CstUtils.findDeclarationNodeAtOffset(
+                rootNode,
+                markerOffset,
+                services.st.parser.GrammarConfig.nameRegexp
+            );
+
+            const declaration = selectedNode ? services.st.references.References.findDeclaration(selectedNode) : undefined;
+            const textDocument = mainRecord.document.textDocument;
+
+            return {
+                selectedText: selectedNode ? textDocument.getText().slice(selectedNode.offset, selectedNode.end) : undefined,
+                selectedAstType: selectedNode?.astNode?.$type,
+                declarationType: declaration?.$type,
+                declarationInfo: collectPrimitiveProperties(declaration)
+            };
+        }
+    );
+}
+
 async function getScopeElementNames(options) {
     return withDocuments(
         {
@@ -203,10 +292,12 @@ function getErrorMessages(diagnostics) {
 }
 
 module.exports = {
+    findDeclarationAtMarker,
     findAstNodes,
     getCompletionItems,
     getCompletionLabels,
     getDiagnostics,
+    getDocumentHighlights,
     getErrorMessages,
     getScopeElementNames,
     getSignatureHelp,

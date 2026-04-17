@@ -24,6 +24,12 @@
 - `cache-sign-help-provider.test.cjs`
   Focuses on `cache-sign-help.ts`, covering signature help for standard library, external library, and custom function blocks.
 
+- `cache-highlight-provider.test.cjs`
+  Focuses on `cache-highlight.ts`, covering the current empty-highlight fallback for local variables and the no-crash guard for external function-block members.
+
+- `cache-reference-provider.test.cjs`
+  Focuses on `cache-reference.ts`, covering declaration resolution for local variables and cached external function-block members.
+
 - `st-scope-provider.test.cjs`
   Focuses on `st-scope.ts`, covering member scopes for external structs, external function blocks, and custom structs.
 
