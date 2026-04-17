@@ -633,13 +633,13 @@ export interface Native_Type_Name extends AstNode {
     Bit_string_type_name?: string;
     Bool_type_name?: string;
     Cache_type_name?: string;
-    Date_And_time_type_name?: string;
+    Date_And_time_type_name?: 'DT' | string;
     Date_type_name?: string;
     Identifier?: Reference<ComposeElement>;
     Integer_type_name?: string;
     Real_type_name?: string;
     String_type_name?: string;
-    Time_Of_Day_type_name?: string;
+    Time_Of_Day_type_name?: 'TOD' | string;
     Time_type_name?: string;
     Unsigned_integer_type_name?: string;
 }

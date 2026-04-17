@@ -116,3 +116,19 @@ END_PROGRAM
     assert.ok(errorMessages.some(message => message.includes('MC_Direction')));
     assert.ok(errorMessages.some(message => message.includes('MC_BUFFER_MODE')));
 });
+
+test('st-validator accepts DT and TOD abbreviations for type names and literals', async () => {
+    const diagnostics = await getDiagnostics({
+        label: 'st-validator-dt-tod-abbreviation',
+        text: `
+PROGRAM Main
+VAR
+    testDateTime: DT := DT#2024-04-16-23:33:00.22;
+    testTod: TOD := TOD#23:33:00.22;
+END_VAR
+END_PROGRAM
+`
+    });
+
+    assert.deepEqual(getErrorMessages(diagnostics), []);
+});

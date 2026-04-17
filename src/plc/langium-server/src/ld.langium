@@ -152,7 +152,7 @@ Variable_Primary infers PrimaryVariable:
 Native_Type_Name:
 		Integer_type_name=Signed_integer_type_name | Unsigned_integer_type_name=Unsigned_integer_type_name |Bool_type_name=Bool_type_name|String_type_name=String_type_name|
      Bit_string_type_name=Bit_string_type_name | Real_type_name=Real_type_name |Time_type_name=Time_type_name|Date_type_name=Date_type_name|
-     Date_And_time_type_name=Date_And_time_type_name|Time_Of_Day_type_name=Time_Of_Day_type_name|
+     Date_And_time_type_name=(Date_And_time_type_name | 'DT')|Time_Of_Day_type_name=(Time_Of_Day_type_name | 'TOD')|
      Array_liters|Identifier=[ComposeElement:Identifier]|Cache_type_name=Cache_type_name
 ;
 

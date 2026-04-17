@@ -98,10 +98,10 @@ export const shouldHintCacheCase = (cacheName: string): boolean => {
 };
 
 //time type regex
-export const TIME_REGEX = /^T#(\d+y)?(\d+m)?(\d+d)?(\d+h)?(\d+m)?(\d+s)?(\d+ms)?$/i;
-export const DATE_REGEX = /DATE#\d{4}-\d{2}-\d{2}/;
-export const DT_REGEX = /DT#\d{4}-\d{2}-\d{2}-\d{2}:\d{2}:\d{2}/;
-export const TOD_REGEX = /TOD#\d{2}:\d{2}:\d{2}\.\d{3}/;
+export const TIME_REGEX = /^(?:TIME|T)#(\d+y)?(\d+m)?(\d+d)?(\d+h)?(\d+m)?(\d+s)?(\d+ms)?$/i;
+export const DATE_REGEX = /^DATE#\d{4}-\d{2}-\d{2}$/i;
+export const DT_REGEX = /^DT#\d{4}-\d{2}-\d{2}-\d{2}:\d{2}:\d{2}(?:\.\d+)?$/i;
+export const TOD_REGEX = /^TOD#\d{2}:\d{2}:\d{2}(?:\.\d+)?$/i;
 
 export const keywordStr: string[] = [
     'SINT',
@@ -681,7 +681,7 @@ export const checkDuplicateName = (arr: Methods[], accept: ValidationAcceptor) =
     });
 };
 
-export function validateTimeFormat(timeType: string): string {
+export function validateTimeFormat(value: string, timeType: string): string {
     let regex: any;
     if (timeType === 'TIME') {
         regex = TIME_REGEX;
@@ -692,7 +692,10 @@ export function validateTimeFormat(timeType: string): string {
     } else if (timeType === 'TIME_OF_DAY') {
         regex = TOD_REGEX;
     }
-    const match = regex.exec(timeType);
+    if (!regex) {
+        return `Invalid ${timeType} format`;
+    }
+    const match = regex.exec(value);
     if (match) {
         return '';
     } else {
@@ -715,6 +718,13 @@ export function basicDataType(expectType: string | undefined, typeName: Native_T
             typeName.Time_Of_Day_type_name ||
             typeName.Cache_type_name;
     }
+    let normalizedTypeName = expectType?.toUpperCase();
+    if (normalizedTypeName === 'DT') {
+        return 'DATE_AND_TIME';
+    }
+    if (normalizedTypeName === 'TOD') {
+        return 'TIME_OF_DAY';
+    }
     return expectType;
 }
 
@@ -723,11 +733,25 @@ const unsignedIntegerTypeStr = ['USINT', 'UINT', 'UDINT', 'ULINT'];
 const bitStringTypeStr = ['BYTE', 'WORD', 'DWORD', 'LWORD'];
 const realTypeStr = ['REAL', 'LREAL'];
 
+function normalizeBuiltinTypeName(typeName: string | undefined): string | undefined {
+    if (!typeName) {
+        return undefined;
+    }
+    let normalizedTypeName = typeName.toUpperCase();
+    if (normalizedTypeName === 'DT') {
+        return 'DATE_AND_TIME';
+    }
+    if (normalizedTypeName === 'TOD') {
+        return 'TIME_OF_DAY';
+    }
+    return normalizedTypeName;
+}
+
 function createNativeTypeNameByName(typeName: string): Native_Type_Name {
     let astTypeName: Native_Type_Name = {
         $type: 'Native_Type_Name'
     };
-    let normalizedTypeName = typeName.toUpperCase();
+    let normalizedTypeName = normalizeBuiltinTypeName(typeName) ?? typeName.toUpperCase();
     if (realTypeStr.includes(normalizedTypeName)) {
         astTypeName.Real_type_name = normalizedTypeName;
     } else if (bitStringTypeStr.includes(normalizedTypeName)) {
@@ -780,7 +804,7 @@ function resolveExternalTypeName(typeName: string | undefined, visitedAlias = ne
     if (!typeName) {
         return {};
     }
-    let normalizedTypeName = typeName.toUpperCase();
+    let normalizedTypeName = normalizeBuiltinTypeName(typeName) ?? typeName.toUpperCase();
     if (
         signedIntegerTypeStr.includes(normalizedTypeName) ||
         unsignedIntegerTypeStr.includes(normalizedTypeName) ||

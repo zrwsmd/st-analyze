@@ -14,6 +14,8 @@ VAR
     dtTimeNow: DATE_AND_TIME:= DT#2021-10-19-13:53:00;
     todTimer: TIME_OF_DAY:= TOD#08:08:59.555;
     t33:TON;
+    testDateTime:DT:=DT#2024-04-16-23:33:00.22;
+	testTod:TOD:=TOD#23:33:00.22;
     // o: DATE :=DATE#2021-10-19;
 END_VAR
 

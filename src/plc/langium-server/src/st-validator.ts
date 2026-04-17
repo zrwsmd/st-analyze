@@ -1279,7 +1279,7 @@ export class StValidator {
                     let isJudgeNeedToHint = judgeNeedToHint(actualType[0], expectType);
                     let [flag, timeType] = this.checkTimeType(expectType);
                     if (flag && actualType[0].toLowerCase() === 'string') {
-                        let validationMsg = validateTimeFormat(timeType);
+                        let validationMsg = validateTimeFormat(varValue.toString(), timeType);
                         if (isMemberCall(finalVariableName)) {
                             //不为空说明正则校验有问题，返回对应的提示信息
                             if (validationMsg !== '') {
@@ -1845,7 +1845,10 @@ export class StValidator {
                          */
                         let [flag, timeType] = this.checkTimeType(expectType);
                         if (flag && actualType[0].toLowerCase() === 'string') {
-                            let validationMsg = validateTimeFormat(timeType);
+                            let initialValueText = isConstant(varInitialValue)
+                                ? varInitialValue.constant.toString()
+                                : varInitialValue.toString();
+                            let validationMsg = validateTimeFormat(initialValueText, timeType);
                             //不为空说明正则校验有问题，返回对应的提示信息
                             if (validationMsg !== '') {
                                 accept('error', validationMsg, {

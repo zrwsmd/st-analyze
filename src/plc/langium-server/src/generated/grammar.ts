@@ -1856,11 +1856,20 @@ export const StGrammar = (): Grammar =>
             "feature": "Date_And_time_type_name",
             "operator": "=",
             "terminal": {
-              "$type": "RuleCall",
-              "rule": {
-                "$ref": "#/rules@110"
-              },
-              "arguments": []
+              "$type": "Alternatives",
+              "elements": [
+                {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$ref": "#/rules@110"
+                  },
+                  "arguments": []
+                },
+                {
+                  "$type": "Keyword",
+                  "value": "DT"
+                }
+              ]
             }
           },
           {
@@ -1868,11 +1877,20 @@ export const StGrammar = (): Grammar =>
             "feature": "Time_Of_Day_type_name",
             "operator": "=",
             "terminal": {
-              "$type": "RuleCall",
-              "rule": {
-                "$ref": "#/rules@111"
-              },
-              "arguments": []
+              "$type": "Alternatives",
+              "elements": [
+                {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$ref": "#/rules@111"
+                  },
+                  "arguments": []
+                },
+                {
+                  "$type": "Keyword",
+                  "value": "TOD"
+                }
+              ]
             }
           },
           {
