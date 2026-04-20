@@ -19,15 +19,33 @@ import { tmpdir } from 'os';
 import { normalize } from 'path';
 import * as process from 'process';
 import * as vscode from 'vscode';
-import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node.js';
+import { LanguageClient, LanguageClientOptions, ServerOptions, Trace, TransportKind } from 'vscode-languageclient/node.js';
 import { getRelatedElementInfoToOuter } from '../../langium-server/src/util/transform.js';
 import { registerShowStFilesCommand } from './handleExportInfo.js';
 
 const LOG_DIR = process.env.GLSP_LOG_DIR;
+const TRACE_SECTION = 'stPlugin.debug';
 let client: LanguageClient;
+let serverOutputChannel: vscode.OutputChannel | undefined;
+let serverTraceChannel: vscode.OutputChannel | undefined;
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
+    serverOutputChannel = vscode.window.createOutputChannel('ST Language Server');
+    serverTraceChannel = vscode.window.createOutputChannel('ST Language Server Trace');
+    context.subscriptions.push(serverOutputChannel, serverTraceChannel);
     client = startLanguageClient(context);
+    context.subscriptions.push(
+        vscode.commands.registerCommand('stPlugin.showLanguageServerOutput', () => serverOutputChannel?.show(true)),
+        vscode.commands.registerCommand('stPlugin.showLanguageServerTrace', () => serverTraceChannel?.show(true)),
+        vscode.workspace.onDidChangeConfiguration(async event => {
+            if (event.affectsConfiguration(TRACE_SECTION) && client) {
+                await client.setTrace(getTraceLevel());
+            }
+        })
+    );
+    client.onDidChangeState(event => {
+        serverOutputChannel?.appendLine(`[client] ${event.oldState} -> ${event.newState}`);
+    });
     let outerfilePath = '';
     let outerfolderPath = '';
     // let langiumDocs = shared.workspace.LangiumDocuments;
@@ -80,7 +98,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 }
 
 function startLanguageClient(context: vscode.ExtensionContext): LanguageClient {
-    const serverModule = context.asAbsolutePath('./dist/main.cjs');
+    const useDebugServerModule = context.extensionMode === vscode.ExtensionMode.Development && process.env.ST_DEBUG === 'true';
+    const serverModule = useDebugServerModule ? context.asAbsolutePath('../langium-server/out/main.cjs') : context.asAbsolutePath('./dist/main.cjs');
     // The debug options for the server
     // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging.
     // By setting `process.env.DEBUG_BREAK` to a truthy value, the language server will wait until a debugger is attached.
@@ -106,6 +125,8 @@ function startLanguageClient(context: vscode.ExtensionContext): LanguageClient {
     const clientOptions: LanguageClientOptions = {
         // Register the server for langium documents
         documentSelector: [{ scheme: 'file', language: 'st' }],
+        outputChannel: serverOutputChannel,
+        traceOutputChannel: serverTraceChannel,
         synchronize: {
             // Notify the server about file changes to langium files contained in the workspace
             fileEvents: fileSystemWatcher
@@ -116,7 +137,11 @@ function startLanguageClient(context: vscode.ExtensionContext): LanguageClient {
     const client = new LanguageClient('plc', 'plc', serverOptions, clientOptions);
 
     // Start the client. This will also launch the server
-    client.start();
+    serverOutputChannel?.appendLine(`[client] Using language server module: ${serverModule}`);
+    void client.start().then(async () => {
+        serverOutputChannel?.appendLine('[client] Language server ready');
+        await client.setTrace(getTraceLevel());
+    });
     return client;
 }
 export function deactivate(): Thenable<void> | undefined {
@@ -128,4 +153,16 @@ export function deactivate(): Thenable<void> | undefined {
 
 function getTempDir() {
     return normalize(tmpdir()).replace(/\\/g, '//');
+}
+
+function getTraceLevel(): Trace {
+    const value = vscode.workspace.getConfiguration(TRACE_SECTION).get<string>('protocol', 'off');
+    switch (value) {
+        case 'messages':
+            return Trace.Messages;
+        case 'verbose':
+            return Trace.Verbose;
+        default:
+            return Trace.Off;
+    }
 }

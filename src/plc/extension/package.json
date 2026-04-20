@@ -31,6 +31,7 @@
   ],
   "scripts": {
     "build": "tsc --noEmit && node esbuild.mjs",
+    "build:debug": "tsc --noEmit && node esbuild.mjs --debug",
     "bundle": "webpack",
     "bundle:prod": "webpack --config ./webpack.prod.js",
     "clean": "rimraf lib tsconfig.tsbuildinfo dist",
@@ -49,8 +50,31 @@
       {
         "command": "getRelatedElementInfo",
         "title": "getRelatedElementInfo"
+      },
+      {
+        "command": "stPlugin.showLanguageServerOutput",
+        "title": "ST: Show Language Server Output"
+      },
+      {
+        "command": "stPlugin.showLanguageServerTrace",
+        "title": "ST: Show Language Server Trace"
       }
     ],
+    "configuration": {
+      "title": "ST Plugin",
+      "properties": {
+        "stPlugin.debug.protocol": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Controls how much LSP protocol trace is written to the ST Language Server Trace output channel."
+        }
+      }
+    },
     "customEditors": [],
     "keybindings": [],
     "menus": {

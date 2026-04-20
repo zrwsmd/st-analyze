@@ -4,6 +4,16 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Build ST Debug Extension",
+      "type": "shell",
+      "command": "yarn workspace st-plugin build:debug",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Build all packages",
       "type": "shell",
       "group": {

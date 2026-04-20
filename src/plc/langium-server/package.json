@@ -29,6 +29,7 @@
   ],
   "scripts": {
     "build": "tsc --noEmit && node esbuild.mjs",
+    "build:debug": "tsc --noEmit && node esbuild.mjs --debug",
     "bundle": "webpack",
     "clean": "rimraf lib tsconfig.tsbuildinfo ",
     "langium:generate": "langium generate",

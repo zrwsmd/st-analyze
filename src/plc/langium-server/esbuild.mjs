@@ -5,7 +5,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const watch = process.argv.includes('--watch');
-const minify = process.argv.includes('--minify');
+const debug = process.argv.includes('--debug') || process.env.ST_DEBUG === 'true';
+const minify = process.argv.includes('--minify') || !debug;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const success = watch ? 'Watch build succeeded' : 'Build succeeded';
 
@@ -62,8 +63,10 @@ const ctx = await esbuild
         loader: { '.ts': 'ts' },
         external: ['vscode'],
         platform: 'node',
-        sourcemap: false,
-        minify: true,
+        sourcemap: debug ? 'linked' : false,
+        sourcesContent: debug,
+        keepNames: debug,
+        minify,
         plugins
     })
     .then(() => {

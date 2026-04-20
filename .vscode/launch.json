@@ -3,36 +3,52 @@
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "ST Extension + Language Server",
+      "configurations": [
+        "St Extension",
+        "Attach to Language Server"
+      ]
+    }
+  ],
   "configurations": [
     {
       "name": "St Extension",
       "type": "extensionHost",
       "request": "launch",
+      "preLaunchTask": "Build ST Debug Extension",
       "sourceMaps": true,
+      "smartStep": true,
       "args": [
         "${workspaceFolder}/src/plc/workspace",
         "--extensionDevelopmentPath=${workspaceFolder}/src/plc/extension"
       ],
+      "env": {
+        "ST_DEBUG": "true",
+        "DEBUG_SOCKET": "6009"
+      },
       "outFiles": [
-        "${workspaceRoot}/src/plc/extension/dist/st-extension.cjs",
-        "${workspaceFolder}/src/plc/langium-server/out/main.cjs",
-      ],
-     
+        "${workspaceFolder}/src/plc/extension/dist/**/*.cjs",
+        "${workspaceFolder}/src/plc/langium-server/out/**/*.cjs"
+      ]
     },
     {
       "name": "Attach to Language Server",
       "type": "node",
       "port": 6009,
       "request": "attach",
+      "restart": true,
+      "timeout": 30000,
       "skipFiles": [
           "<node_internals>/**"
       ],
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceRoot}/src/plc/langium-server/out/**/*.js",
-          "${workspaceFolder}/node_modules/langium/**/*.js"
+        "${workspaceFolder}/src/plc/langium-server/out/**/*.cjs",
+        "${workspaceFolder}/src/plc/extension/dist/main.cjs",
+        "${workspaceFolder}/node_modules/langium/**/*.js"
       ]
-  },
-  ],
- 
+    }
+  ]
 }

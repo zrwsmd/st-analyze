@@ -7,11 +7,15 @@ import { minify as terserMinify } from 'terser';
 import { fileURLToPath } from 'url';
 
 const watch = process.argv.includes('--watch');
-const minify = process.argv.includes('--minify');
+const debug = process.argv.includes('--debug') || process.env.ST_DEBUG === 'true';
+const minify = process.argv.includes('--minify') || !debug;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const success = watch ? 'Watch build succeeded' : 'Build succeeded';
 
-execSync('cd ../langium-server && tsc --noEmit && node esbuild.mjs ', { stdio: 'inherit' });
+const forwardedArgs = [debug ? '--debug' : '', watch ? '--watch' : '', minify && !debug ? '--minify' : '']
+    .filter(Boolean)
+    .join(' ');
+execSync(`cd ../langium-server && tsc --noEmit && node esbuild.mjs ${forwardedArgs}`, { stdio: 'inherit' });
 
 function getTime() {
     const date = new Date();
@@ -22,7 +26,6 @@ function padZeroes(i) {
     return i.toString().padStart(2, '0');
 }
 
-// 定义复制文件的函数
 function copyFile(source, target) {
     fs.copyFileSync(source, target);
     console.log(`Copied ${source} to ${target}`);
@@ -41,8 +44,7 @@ const plugins = [
     }
 ];
 
-// 使用 esbuild 构建入口文件
-const ctx = esbuild
+esbuild
     .build({
         entryPoints: ['src/st-extension.ts'],
         outdir: 'dist',
@@ -56,46 +58,42 @@ const ctx = esbuild
         external: ['vscode'],
         nodePaths: ['node_modules'],
         platform: 'node',
-        sourcemap: false,
-        minify: true
+        sourcemap: debug ? 'linked' : false,
+        sourcesContent: debug,
+        keepNames: debug,
+        minify,
+        plugins
     })
     .then(() => {
-        // 构建完成后复制静态文件
         copyFile(path.resolve(__dirname, '..', 'langium-server', 'out', 'main.cjs'), path.resolve(__dirname, 'dist', 'main.cjs'));
         copyFile(path.resolve(__dirname, '..', 'langium-server', 'out', 'data.json'), path.resolve(__dirname, 'dist', 'data.json'));
-        // copyFile(path.resolve(__dirname, 'src', 'variable.json'), path.resolve(__dirname, 'dist', 'variable.json'));
-        let extensionPath = path.resolve(__dirname, 'dist', 'st-extension.cjs');
-        let mainPath = path.resolve(__dirname, 'dist', 'main.cjs');
-        const extensionCode = fs.readFileSync(extensionPath, 'utf8');
-        const mainCode = fs.readFileSync(mainPath, 'utf8');
-        terserMinify(extensionCode).then(result => {
-            const minifiedCode = result.code; // 将 result.code 赋值给一个新变量
-            if (minifiedCode) {
-                console.log('minify extension.cjs');
-                fs.writeFileSync(extensionPath, minifiedCode, 'utf8'); // 使用新变量进行写入操作
-            }
-        });
-        terserMinify(mainCode).then(result => {
-            const minifiedCode = result.code; // 将 result.code 赋值给一个新变量
-            if (minifiedCode) {
-                console.log('minify main.cjs');
-                fs.writeFileSync(mainPath, minifiedCode, 'utf8'); // 使用新变量进行写入操作
-            }
-        });
+
+        const serverMapPath = path.resolve(__dirname, '..', 'langium-server', 'out', 'main.cjs.map');
+        if (debug && fs.existsSync(serverMapPath)) {
+            copyFile(serverMapPath, path.resolve(__dirname, 'dist', 'main.cjs.map'));
+        }
+
+        if (minify) {
+            const extensionPath = path.resolve(__dirname, 'dist', 'st-extension.cjs');
+            const mainPath = path.resolve(__dirname, 'dist', 'main.cjs');
+            const extensionCode = fs.readFileSync(extensionPath, 'utf8');
+            const mainCode = fs.readFileSync(mainPath, 'utf8');
+
+            terserMinify(extensionCode).then(result => {
+                const minifiedCode = result.code;
+                if (minifiedCode) {
+                    console.log('minify extension.cjs');
+                    fs.writeFileSync(extensionPath, minifiedCode, 'utf8');
+                }
+            });
+
+            terserMinify(mainCode).then(result => {
+                const minifiedCode = result.code;
+                if (minifiedCode) {
+                    console.log('minify main.cjs');
+                    fs.writeFileSync(mainPath, minifiedCode, 'utf8');
+                }
+            });
+        }
     })
     .catch(error => console.log(error));
-
-// 2. 单独保留 globals
-// esbuild.build({
-//     entryPoints: ['src/global.ts'],
-//     bundle: false, // 不打包依赖
-//     platform: 'node',
-//     outfile: 'dist/global.js',
-//     format: 'cjs'
-// });
-// if (watch) {
-//     await ctx.watch();
-// } else {
-//     await ctx.rebuild();
-//     ctx.dispose();
-// }
