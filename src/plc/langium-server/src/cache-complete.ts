@@ -15,11 +15,13 @@ import { CompletionItem, CompletionItemKind, CompletionList, CompletionParams, P
 import {
     Case_statement,
     EnumeratedValue,
+    FunctionBlock,
     NamedElement,
     Native_Type_Name,
     St,
     StEnum,
     Struct_Var_Decl_Init,
+    StructsList,
     VarDeclarationInit,
     VarInput,
     VarLocal,
@@ -61,10 +63,11 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
     override async getCompletion(document: LangiumDocument<AstNode>, params: CompletionParams): Promise<CompletionList | undefined> {
         let baseCompletion = await super.getCompletion(document, params);
         let enumCompletionItems = this.getManualEnumCompletionItems(document, params);
-        if (enumCompletionItems.length === 0) {
+        let memberCompletionItems = this.getManualMemberCompletionItems(document, params);
+        if (enumCompletionItems.length === 0 && memberCompletionItems.length === 0) {
             return baseCompletion;
         }
-        let mergedItems = [...(baseCompletion?.items ?? []), ...enumCompletionItems];
+        let mergedItems = this.mergeSupplementalItems(baseCompletion?.items ?? [], [...enumCompletionItems, ...memberCompletionItems]);
         return CompletionList.create(this.deduplicateItems(mergedItems), true);
     }
 
@@ -226,6 +229,45 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         return context.textDocument.getText(range).trim();
     }
 
+    private mergeSupplementalItems(baseItems: CompletionItem[], supplementalItems: CompletionItem[]): CompletionItem[] {
+        const merged = [...baseItems];
+        const indexByLabel = new Map(baseItems.map((item, index) => [item.label.toLowerCase(), index]));
+        supplementalItems.forEach(item => {
+            const normalized = item.label.toLowerCase();
+            const existingIndex = indexByLabel.get(normalized);
+            if (existingIndex !== undefined) {
+                const existing = merged[existingIndex];
+                if (this.shouldPreferSupplemental(existing, item)) {
+                    merged[existingIndex] = {
+                        ...existing,
+                        detail: item.detail ?? existing.detail
+                    };
+                }
+                return;
+            }
+            indexByLabel.set(normalized, merged.length);
+            merged.push(item);
+        });
+        return merged;
+    }
+
+    private shouldPreferSupplemental(existing: CompletionItem, supplemental: CompletionItem): boolean {
+        const existingDetail = existing.detail ?? '';
+        const supplementalDetail = supplemental.detail ?? '';
+        if (!supplementalDetail) {
+            return false;
+        }
+        if (!existingDetail) {
+            return true;
+        }
+        const existingHasIoHint = existingDetail.includes('输入参数') || existingDetail.includes('输出参数');
+        const supplementalHasIoHint = supplementalDetail.includes('输入参数') || supplementalDetail.includes('输出参数');
+        if (supplementalHasIoHint && !existingHasIoHint) {
+            return true;
+        }
+        return supplementalDetail.length > existingDetail.length;
+    }
+
     private getManualEnumCompletionItems(document: LangiumDocument<AstNode>, params: CompletionParams): CompletionItem[] {
         let textDocument = document.textDocument;
         let textBeforeCursor = textDocument.getText({
@@ -249,6 +291,35 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
             features: []
         };
         return this.buildEnumMemberCompletionItems(enumTypeName, partialMemberName, syntheticContext);
+    }
+
+    private getManualMemberCompletionItems(document: LangiumDocument<AstNode>, params: CompletionParams): CompletionItem[] {
+        let textDocument = document.textDocument;
+        let textBeforeCursor = textDocument.getText({
+            start: Position.create(0, 0),
+            end: params.position
+        });
+        let match = textBeforeCursor.match(/([_a-zA-Z][\w_]*(?:\s*\.\s*[_a-zA-Z][\w_]*)*)\s*\.\s*$/);
+        if (!match) {
+            return [];
+        }
+        let chain = match[1]
+            .split('.')
+            .map(part => part.trim())
+            .filter(Boolean);
+        if (chain.length === 0) {
+            return [];
+        }
+        let members = this.getMembersForChain(chain, document);
+        if (members.length === 0) {
+            return [];
+        }
+        return members.map(member => ({
+            label: member.label,
+            kind: CompletionItemKind.Field,
+            detail: member.detail,
+            sortText: '0'
+        }));
     }
 
     private getRootNode(context: CompletionContext): St | undefined {
@@ -286,6 +357,185 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
             }
         }
         return undefined;
+    }
+
+    private getWorkspaceStructByName(typeName: string | undefined): StructsList | undefined {
+        if (!typeName) {
+            return undefined;
+        }
+        let indexManager = this.services.shared.workspace.IndexManager;
+        let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+        let astNodeLocator = this.services.workspace.AstNodeLocator;
+        for (const description of indexManager.allElements('StructsList')) {
+            if (description.name.toLowerCase() === typeName.toLowerCase()) {
+                let targetDocument = langiumDocuments.getDocument(description.documentUri);
+                if (targetDocument) {
+                    let node = astNodeLocator.getAstNode<StructsList>(targetDocument.parseResult.value, description.path);
+                    if (node) {
+                        return node;
+                    }
+                }
+            }
+        }
+        return undefined;
+    }
+
+    private getWorkspaceFunctionBlockByName(typeName: string | undefined): FunctionBlock | undefined {
+        if (!typeName) {
+            return undefined;
+        }
+        let indexManager = this.services.shared.workspace.IndexManager;
+        let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+        let astNodeLocator = this.services.workspace.AstNodeLocator;
+        for (const description of indexManager.allElements('FunctionBlock')) {
+            if (description.name.toLowerCase() === typeName.toLowerCase()) {
+                let targetDocument = langiumDocuments.getDocument(description.documentUri);
+                if (targetDocument) {
+                    let node = astNodeLocator.getAstNode<FunctionBlock>(targetDocument.parseResult.value, description.path);
+                    if (node) {
+                        return node;
+                    }
+                }
+            }
+        }
+        return undefined;
+    }
+
+    private getMembersForChain(chain: string[], document: LangiumDocument<AstNode>): Array<{ label: string; detail?: string }> {
+        let typeName = this.getVariableTypeByName(chain[0], document);
+        if (!typeName) {
+            return [];
+        }
+        for (let i = 1; i < chain.length; i++) {
+            typeName = this.getMemberTypeByName(typeName, chain[i], document);
+            if (!typeName) {
+                return [];
+            }
+        }
+        return this.getMemberEntriesForType(typeName, document);
+    }
+
+    private getVariableTypeByName(variableName: string, document: LangiumDocument<AstNode>): string | undefined {
+        let root = document.parseResult.value;
+        if (root.$type !== 'St') {
+            return undefined;
+        }
+        let st = root as St;
+        let declarations: VarDeclarationInit[] = [];
+        st.program.forEach(program => {
+            program.inputs.forEach(input => declarations.push(...input.items));
+        });
+        st.function_block.forEach(block => {
+            block.varInputs.forEach(part => declarations.push(...part.items));
+            block.varOutputs.forEach(part => declarations.push(...part.items));
+            block.varLocals.forEach(part => declarations.push(...part.items));
+        });
+        st.st_function.forEach(fn => {
+            fn.varInputs.forEach(part => declarations.push(...part.items));
+            fn.varOutputs.forEach(part => declarations.push(...part.items));
+            fn.varLocals.forEach(part => declarations.push(...part.items));
+        });
+        for (const decl of declarations) {
+            if (decl.variables === variableName || decl.nextVariables.includes(variableName)) {
+                let expectedType = '';
+                let basicType = basicDataType(expectedType, decl.typeName);
+                return basicType || handleNoAcceptNativeTypeName(decl.typeName, expectedType);
+            }
+        }
+        return undefined;
+    }
+
+    private getMemberTypeByName(typeName: string, memberName: string, document: LangiumDocument<AstNode>): string | undefined {
+        let external = getRelatedElementAndLangiumDoc(typeName);
+        if (external) {
+            let [elementNode] = external;
+            let member = elementNode?.varDecls.find(item => item.varName === memberName);
+            return member?.varType;
+        }
+        let localStruct = this.getLocalStructByName(typeName, document) ?? this.getWorkspaceStructByName(typeName);
+        if (localStruct) {
+            for (const item of localStruct.items as Struct_Var_Decl_Init[]) {
+                if (item.variables === memberName || item.nextVariables.includes(memberName)) {
+                    let expectedType = '';
+                    let basicType = basicDataType(expectedType, item.typeName);
+                    return basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
+                }
+            }
+        }
+        let localFunctionBlock = this.getWorkspaceFunctionBlockByName(typeName);
+        if (localFunctionBlock) {
+            let allDecls = [...localFunctionBlock.varInputs, ...localFunctionBlock.varOutputs, ...localFunctionBlock.varLocals];
+            for (const declGroup of allDecls) {
+                for (const item of declGroup.items) {
+                    if (item.variables === memberName || item.nextVariables.includes(memberName)) {
+                        let expectedType = '';
+                        let basicType = basicDataType(expectedType, item.typeName);
+                        return basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
+                    }
+                }
+            }
+        }
+        return undefined;
+    }
+
+    private getLocalStructByName(typeName: string | undefined, document: LangiumDocument<AstNode>): StructsList | undefined {
+        if (!typeName) {
+            return undefined;
+        }
+        let root = document.parseResult.value;
+        if (root.$type !== 'St') {
+            return undefined;
+        }
+        return (root as St).types_struct.find(item => item.name.toLowerCase() === typeName.toLowerCase());
+    }
+
+    private getMemberEntriesForType(typeName: string, document: LangiumDocument<AstNode>): Array<{ label: string; detail?: string }> {
+        let external = getRelatedElementAndLangiumDoc(typeName);
+        if (external) {
+            let [elementNode] = external;
+            return (elementNode?.varDecls ?? []).map(item => ({
+                label: item.varName,
+                detail: this.getVarDeclDetail(item)
+            }));
+        }
+        let localStruct = this.getLocalStructByName(typeName, document) ?? this.getWorkspaceStructByName(typeName);
+        if (localStruct) {
+            let entries: Array<{ label: string; detail?: string }> = [];
+            for (const item of localStruct.items as Struct_Var_Decl_Init[]) {
+                let expectedType = '';
+                let basicType = basicDataType(expectedType, item.typeName);
+                let detail = basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
+                entries.push({ label: item.variables, detail });
+                item.nextVariables.forEach(nextVariable => entries.push({ label: nextVariable, detail }));
+            }
+            return entries;
+        }
+        let functionBlock = this.getWorkspaceFunctionBlockByName(typeName);
+        if (functionBlock) {
+            let entries: Array<{ label: string; detail?: string }> = [];
+            let groups = [
+                ...functionBlock.varInputs.map(group => ({ kind: 'VAR_INPUT', items: group.items })),
+                ...functionBlock.varOutputs.map(group => ({ kind: 'VAR_OUTPUT', items: group.items })),
+                ...functionBlock.varLocals.map(group => ({ kind: 'VAR', items: group.items }))
+            ];
+            for (const group of groups) {
+                for (const item of group.items) {
+                    let expectedType = '';
+                    let basicType = basicDataType(expectedType, item.typeName);
+                    let detailType = basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
+                    let detail = this.getVarDeclDetail({
+                        $type: 'VarDeclaration',
+                        varName: item.variables,
+                        varType: detailType,
+                        varGlobalType: group.kind
+                    } as VarDeclaration);
+                    entries.push({ label: item.variables, detail });
+                    item.nextVariables.forEach(nextVariable => entries.push({ label: nextVariable, detail }));
+                }
+            }
+            return entries;
+        }
+        return [];
     }
 
     private getEnumMembers(enumTypeName: string | undefined, context: CompletionContext): string[] {
@@ -640,7 +890,7 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
             /**
              * 校验比如链式调用，最后一个是基础类型，再.就不应该有提示了,e.g china.province.city.cityId
              */
-            let previous = node.previous;
+            let previous = node.previous ?? node.prior;
             if (isMemberCall(previous)) {
                 //isMemberCall(previous) china.province.city
                 let element = previous.element;

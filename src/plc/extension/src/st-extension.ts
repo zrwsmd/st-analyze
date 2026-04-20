@@ -15,16 +15,17 @@
  ********************************************************************************/
 import 'reflect-metadata';
 
-// import * as path from 'node:path';
+import * as path from 'node:path';
 import { tmpdir } from 'os';
 import { normalize } from 'path';
 import * as process from 'process';
 import * as vscode from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient/node.js';
+import { URI } from 'vscode-uri';
+import { shared } from '../../langium-server/main.js';
+import { St } from '../../langium-server/src/generated/ast.js';
 import { getRelatedElementInfoToOuter } from '../../langium-server/src/util/transform.js';
 import { registerShowStFilesCommand } from './handleExportInfo.js';
-// import { URI } from 'vscode-uri';
-// import { shared } from '../../langium-server/main.js';
 
 const LOG_DIR = process.env.GLSP_LOG_DIR;
 let client: LanguageClient;
@@ -33,6 +34,14 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     client = startLanguageClient(context);
     let outerfilePath = '';
     let outerfolderPath = '';
+    let langiumDocs = shared.workspace.LangiumDocuments;
+    const rootPath = path.resolve(__dirname, '..', '..');
+    const sourceUri = path.join(rootPath, 'workspace', 'program2.st');
+    // /console.log(sourceUri);
+    const rootUri = URI.file(sourceUri).toString();
+    const document = await langiumDocs.getOrCreateDocument(URI.parse(rootUri));
+    const root = document.parseResult.value as St;
+    console.log(root);
     await vscode.commands.executeCommand('devUni.prjView.compileCheckFath').then((result: any) => {
         outerfilePath = result.filePath;
         outerfolderPath = result.folderPath;
@@ -43,14 +52,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         //console.log(result);
     });
     // `
-    // let langiumDocs = shared.workspace.LangiumDocuments;
-    // const rootPath = path.resolve(__dirname, '..', '..');
-    // const sourceUri = path.join(rootPath, 'workspace', 'main.st');
-    // // /console.log(sourceUri);
-    // const rootUri = URI.file(sourceUri).toString();
-    // const document = await langiumDocs.getOrCreateDocument(URI.parse(rootUri));
-    // const root = document.parseResult.value as St;
-    // console.log(root);
+
     registerShowStFilesCommand(context);
     // vscode.commands.executeCommand('exportAllDeclInfo');
 

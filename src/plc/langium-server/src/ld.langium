@@ -11,15 +11,15 @@ entry St:
 
 Program:
   'PROGRAM' name=VarEnchanceDecl
-    (inputs+=Inputs_List_single
-         stStatements=Statement_list)*
-         'END_PROGRAM'
-     ;
+    (inputs+=Inputs_List_single)*
+    (stStatements=Statement_list)?
+    'END_PROGRAM'
+;
 
 StFunction:
     'FUNCTION' name=Identifier ':' variable_type=Native_Type_Name
-     (((varInputs+=VarInput)|(varOutputs+=VarOutput)|(varLocals+=VarLocal))*
-      (statementList+=Statement_list_single) )*
+     ((varInputs+=VarInput)|(varOutputs+=VarOutput)|(varLocals+=VarLocal))*
+      (statementList+=Statement_list_single)*
     'END_FUNCTION'
 ;
 
@@ -54,9 +54,9 @@ OuterName returns string:
 FunctionBlock:
     'FUNCTION_BLOCK' ('PUBLIC' | 'INTERNAL')? ('FINAL')? name=Identifier
  //('EXTENDS' extender=[FunctionBlock:Identifier])? ('IMPLEMENTS' implementer=[Interface:Identifier])?
-     (((varInputs+=VarInput)|(varOutputs+=VarOutput)|(varLocals+=VarLocal))*
+     ((varInputs+=VarInput)|(varOutputs+=VarOutput)|(varLocals+=VarLocal))*
      (methods+=Methods)*
-      (statementList+=Statement_list_single) )*
+      (statementList+=Statement_list_single)*
 
     // (statements+=Statements)*
     'END_FUNCTION_BLOCK'
@@ -316,8 +316,8 @@ EnumeratedValue infers Expression:
 
 
 FunctionExpression infers Expression:
-    {infer FunctionExpression} (prefixValidateElement=Integer)?
-    refFunctionName=RefFunctionOrBlockName  params=Invoke_subrule (suffixValidateElement=Integer)?;
+    {infer FunctionExpression}
+    refFunctionName=RefFunctionOrBlockName  params=Invoke_subrule;
 
 
 type Universe=NamedElement|StFunction;
@@ -330,13 +330,16 @@ VariableExpression infers Expression:
 
 /* ST statements */
 Statement_list:
-statements+=Statement (statements+=Statement)*;
+(statements+=Statement)*;
 
 Statement_list_single:
 statements=Statement;
 
 Statement:
-((Selection_statement | Function_invoke_or_assign_statement (';') | Iteration_statement))? ;
+Selection_statement (';')?
+| Function_invoke_or_assign_statement (';')
+| Iteration_statement (';')?
+;
 
 Action_call_statement:
 actionName=[Universe:VarEnchanceDecl];
@@ -346,7 +349,15 @@ Function_invoke_or_assign_statement:
 statement=(Function_invoke_or_assign | ReturnParse) ;
 
 Function_invoke_or_assign:
-(assignPrefix=AssignPrefix|id=MemberCall) (assign=Assignment_subrule | params+=Invoke_subrule)*;
+assignPrefix=AssignPrefix assign=Assignment_subrule
+| id=FunctionExpression
+| id=StatementReceiver (assign=Assignment_subrule | params+=Invoke_subrule)+;
+
+StatementReceiver infers MemberCall:
+    prior=VariableExpression
+	({infer MemberCall.previous=current}
+        "." element=[NamedElement:Identifier]
+    )*;
 
 AssignPrefix:
   varEnchanceDecl=[Universe:VarEnchanceDecl];
@@ -381,7 +392,7 @@ Case_statement:
 
 //case_element = case_list ":" statement_list;
 Case_element:
-caseList=Case_list ':' statements=Statement_list_single;
+caseList=Case_list ':' statements=Statement_list;
 
 //case_list = case_list_element {"," case_list_element};
 Case_list:

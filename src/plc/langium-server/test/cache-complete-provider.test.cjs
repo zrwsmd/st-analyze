@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { getCompletionLabels } = require('./helpers/langium-test-utils.cjs');
+const { getCompletionItems, getCompletionLabels } = require('./helpers/langium-test-utils.cjs');
 
 test('cache-complete provides external function block type-name completion', async () => {
     const labels = await getCompletionLabels({
@@ -70,4 +70,118 @@ END_PROGRAM
     assert.ok(labels.includes('Number_of_pairs'));
     assert.ok(labels.includes('IsAbsolute'));
     assert.ok(labels.includes('MC_TP_Array'));
+});
+
+test('cache-complete preserves function block member detail text after dot', async () => {
+    const items = await getCompletionItems({
+        label: 'cache-complete-function-block-member-detail',
+        text: `
+PROGRAM Main
+VAR
+    d: TON;
+END_VAR
+
+d./*cursor*/
+END_PROGRAM
+`
+    });
+
+    const pt = items.find(item => item.label === 'PT');
+    const q = items.find(item => item.label === 'Q');
+
+    assert.ok(pt?.detail?.includes('输入参数'));
+    assert.ok(pt?.detail?.includes('TIME'));
+    assert.ok(q?.detail?.includes('输出参数'));
+    assert.ok(q?.detail?.includes('BOOL'));
+});
+
+test('cache-complete provides custom struct member completion after dot', async () => {
+    const labels = await getCompletionLabels({
+        label: 'cache-complete-custom-struct-members',
+        extra: [
+            {
+                label: 'china',
+                text: `
+TYPE
+    China: STRUCT
+        provinceId, qw, iuy, bb: INT;
+        province: Province;
+        a: CTU;
+    END_STRUCT
+END_TYPE
+`
+            },
+            {
+                label: 'province',
+                text: `
+TYPE
+    Province: STRUCT
+        provinceId: INT;
+        aabbcc: BOOL;
+        city: City;
+    END_STRUCT
+END_TYPE
+`
+            }
+        ],
+        text: `
+PROGRAM Main
+VAR
+    g: China;
+END_VAR
+
+g./*cursor*/
+END_PROGRAM
+`
+    });
+
+    assert.ok(labels.includes('provinceId'));
+    assert.ok(labels.includes('province'));
+    assert.ok(labels.includes('a'));
+});
+
+test('cache-complete does not duplicate custom struct member completion items after dot', async () => {
+    const items = await getCompletionItems({
+        label: 'cache-complete-custom-struct-no-duplicates',
+        extra: [
+            {
+                label: 'china',
+                text: `
+TYPE
+    China: STRUCT
+        provinceId, qw, iuy, bb: INT;
+        province: Province;
+        a: CTU;
+    END_STRUCT
+END_TYPE
+`
+            },
+            {
+                label: 'province',
+                text: `
+TYPE
+    Province: STRUCT
+        provinceId: INT;
+        aabbcc: BOOL;
+        city: City;
+    END_STRUCT
+END_TYPE
+`
+            }
+        ],
+        text: `
+PROGRAM Main
+VAR
+    g: China;
+END_VAR
+
+g./*cursor*/
+END_PROGRAM
+`
+    });
+
+    const labels = items.map(item => item.label);
+    assert.equal(labels.filter(label => label === 'provinceId').length, 1);
+    assert.equal(labels.filter(label => label === 'province').length, 1);
+    assert.equal(labels.filter(label => label === 'a').length, 1);
 });

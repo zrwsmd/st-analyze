@@ -122,7 +122,11 @@ export class StLinker extends DefaultLinker {
                     if (this.langiumDocuments().hasDocument(description.documentUri)) {
                         const linkedNode = this.loadAstNode(description);
                         const outerElement = this.getOuterCacheElement(ref.$refText);
-                        ref._ref = linkedNode ?? outerElement ?? this.createLinkingError(refInfo, description);
+                        if (linkedNode || outerElement) {
+                            ref._ref = linkedNode ?? outerElement;
+                        } else if (description.documentUri.toString() !== document.uri.toString()) {
+                            ref._ref = this.createLinkingError(refInfo, description);
+                        }
                     }
                 }
             } catch (err) {
@@ -148,6 +152,9 @@ export class StLinker extends DefaultLinker {
             const element = this.getOuterCacheElement(refInfo.reference.$refText);
             if (element) {
                 return { node: element, descr: description };
+            }
+            if (description.documentUri.toString() === AstUtils.getDocument(refInfo.container).uri.toString()) {
+                return { descr: description };
             }
             return {
                 descr: description,

@@ -9,6 +9,7 @@ import {
     SignatureInformation,
 } from "vscode-languageserver";
 import {
+    isFunctionExpression,
     isFunction_invoke_or_assign,
     isFunctionBlock,
     isInvoke_subrule,
@@ -180,6 +181,181 @@ export class CacheSignatureHelpProvider extends AbstractSignatureHelpProvider {
                                  * vscode默认的字体宽度不同(启动插件就不同,虽然平时测试貌似字体宽度相同),
                                  * 导致无法设置空格规则,所需要写到markdown块里面，使得宽度相同
                                  */
+                                let markdown: MarkupContent = {
+                                    kind: MarkupKind.Markdown,
+                                    value: [
+                                        "```typescript",
+                                        signatureInformationLabel,
+                                        "```",
+                                    ].join("\n"),
+                                };
+                                let signatureInformation: SignatureInformation = {
+                                    label: `FUNCTION_BLOCK ${refFbNode.name}\n`,
+                                    documentation: markdown,
+                                };
+                                signatureInformationArr.push(signatureInformation);
+                                let signatureHelp: SignatureHelp = {
+                                    signatures: signatureInformationArr,
+                                };
+                                return signatureHelp;
+                            }
+                        }
+                        let cacheSignatureHelp = this.getCacheSignatureHelp(
+                            this.getVarDeclarationCacheName(refNode)
+                        );
+                        if (cacheSignatureHelp) {
+                            return cacheSignatureHelp;
+                        }
+                    }
+                }
+                let cacheSignatureHelp = this.getCacheSignatureHelp(cacheName);
+                if (cacheSignatureHelp) {
+                    return cacheSignatureHelp;
+                }
+            } else if (isFunctionExpression(container)) {
+                let refFunctionName = container.refFunctionName;
+                let refNode = refFunctionName.refFunctionName?.ref;
+                let cacheName = refFunctionName.refFunctionName?.$refText ?? refFunctionName.Cache_type_name;
+                if (refNode) {
+                    if (isStFunction(refNode)) {
+                        let varInputs = refNode.varInputs;
+                        let varOutputs = refNode.varOutputs;
+                        let inMax = findMaxVariablesLength(varInputs);
+                        let outMax = findMaxVariablesLength(varOutputs);
+                        let max = Math.max(inMax, outMax);
+                        let functionName = refNode.name;
+                        let returnTypeName = refNode.variable_type;
+                        let returnType: string | undefined = "";
+                        returnType = basicDataType(returnType, returnTypeName);
+                        if (returnType === undefined) {
+                            returnType = returnTypeName.Identifier?.$refText;
+                        }
+                        let signatureInformationArr: SignatureInformation[] = [];
+                        let signatureInformationLabel = "";
+                        varInputs.forEach((varInput) => {
+                            let items = varInput.items;
+                            for (let i = 0; i < items.length; i++) {
+                                const item = items[i];
+                                let nextVariableArr = item.nextVariables;
+                                let padding = getPadding(item.variables, max);
+                                let expectType: string | undefined = "";
+                                let typeName = item.typeName;
+                                expectType = basicDataType(expectType, typeName);
+                                signatureInformationLabel += `\nVAR_INPUT${" ".repeat(8)}${
+                                    item.variables
+                                }${" ".repeat(padding)}${expectType}`;
+                                if (nextVariableArr.length > 0) {
+                                    nextVariableArr.forEach((nextVariable) => {
+                                        let nextVarPadding = getPadding(nextVariable, max);
+                                        signatureInformationLabel += `\nVAR_INPUT${" ".repeat(
+                                            8
+                                        )}${nextVariable}${" ".repeat(
+                                            nextVarPadding
+                                        )}${expectType}`;
+                                    });
+                                }
+                            }
+                        });
+                        varOutputs.forEach((varOutput) => {
+                            let items = varOutput.items;
+                            for (let i = 0; i < items.length; i++) {
+                                const item = items[i];
+                                let nextVariableArr = item.nextVariables;
+                                let padding = getPadding(item.variables, max);
+                                let expectType: string | undefined = "";
+                                let typeName = item.typeName;
+                                expectType = basicDataType(expectType, typeName);
+                                signatureInformationLabel += `\nVAR_OUTPUT${" ".repeat(7)}${
+                                    item.variables
+                                }${" ".repeat(padding)}${expectType}`;
+                                if (nextVariableArr.length > 0) {
+                                    nextVariableArr.forEach((nextVariable) => {
+                                        let nextVarPadding = getPadding(nextVariable, max);
+                                        signatureInformationLabel += `\nVAR_OUTPUT${" ".repeat(
+                                            7
+                                        )}${nextVariable}${" ".repeat(
+                                            nextVarPadding
+                                        )}${expectType}`;
+                                    });
+                                }
+                            }
+                        });
+                        let markdown: MarkupContent = {
+                            kind: MarkupKind.Markdown,
+                            value: ["```typescript", signatureInformationLabel, "```"].join(
+                                "\n"
+                            ),
+                        };
+                        let signatureInformation: SignatureInformation = {
+                            label: `FUNCTION ${functionName}:${returnType}\n`,
+                            documentation: markdown,
+                        };
+                        signatureInformationArr.push(signatureInformation);
+                        let signatureHelp: SignatureHelp = {
+                            signatures: signatureInformationArr,
+                        };
+                        return signatureHelp;
+                    } else if (isVarDeclarationInit(refNode)) {
+                        let typeName = refNode.typeName;
+                        let identifier = typeName.Identifier;
+                        if (identifier) {
+                            let refFbNode = identifier.ref;
+                            if (isFunctionBlock(refFbNode)) {
+                                let varInputs = refFbNode.varInputs;
+                                let varOutputs = refFbNode.varOutputs;
+                                let signatureInformationArr: SignatureInformation[] = [];
+                                let signatureInformationLabel = "";
+                                let inMax = findMaxVariablesLength(varInputs);
+                                let outMax = findMaxVariablesLength(varOutputs);
+                                let max = Math.max(inMax, outMax);
+                                varInputs.forEach((varInput) => {
+                                    let items = varInput.items;
+                                    for (let i = 0; i < items.length; i++) {
+                                        const item = items[i];
+                                        let nextVariableArr = item.nextVariables;
+                                        let padding = getPadding(item.variables, max);
+                                        let expectType: string | undefined = "";
+                                        let typeName = item.typeName;
+                                        expectType = basicDataType(expectType, typeName);
+                                        signatureInformationLabel += `\nVAR_INPUT${" ".repeat(8)}${
+                                            item.variables
+                                        }${" ".repeat(padding)}${expectType}`;
+                                        if (nextVariableArr.length > 0) {
+                                            nextVariableArr.forEach((nextVariable) => {
+                                                let nextVarPadding = getPadding(nextVariable, max);
+                                                signatureInformationLabel += `\nVAR_INPUT${" ".repeat(
+                                                    8
+                                                )}${nextVariable}${" ".repeat(
+                                                    nextVarPadding
+                                                )}${expectType}`;
+                                            });
+                                        }
+                                    }
+                                });
+                                varOutputs.forEach((varOutput) => {
+                                    let items = varOutput.items;
+                                    for (let i = 0; i < items.length; i++) {
+                                        const item = items[i];
+                                        let nextVariableArr = item.nextVariables;
+                                        let padding = getPadding(item.variables, max);
+                                        let expectType: string | undefined = "";
+                                        let typeName = item.typeName;
+                                        expectType = basicDataType(expectType, typeName);
+                                        signatureInformationLabel += `\nVAR_OUTPUT${" ".repeat(7)}${
+                                            item.variables
+                                        }${" ".repeat(padding)}${expectType}`;
+                                        if (nextVariableArr.length > 0) {
+                                            nextVariableArr.forEach((nextVariable) => {
+                                                let nextVarPadding = getPadding(nextVariable, max);
+                                                signatureInformationLabel += `\nVAR_OUTPUT${" ".repeat(
+                                                    7
+                                                )}${nextVariable}${" ".repeat(
+                                                    nextVarPadding
+                                                )}${expectType}`;
+                                            });
+                                        }
+                                    }
+                                });
                                 let markdown: MarkupContent = {
                                     kind: MarkupKind.Markdown,
                                     value: [

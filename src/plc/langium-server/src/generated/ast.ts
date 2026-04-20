@@ -379,7 +379,7 @@ export interface Case_element extends AstNode {
     readonly $container: Case_statement;
     readonly $type: 'Case_element';
     caseList: Case_list;
-    statements: Statement_list_single;
+    statements: Statement_list;
 }
 
 export const Case_element = 'Case_element';
@@ -490,7 +490,7 @@ export interface Function_invoke_or_assign extends AstNode {
     readonly $type: 'Function_invoke_or_assign';
     assign?: Assignment_subrule;
     assignPrefix?: AssignPrefix;
-    id?: Expression;
+    id?: Expression | MemberCall;
     params: Array<Invoke_subrule>;
 }
 
@@ -773,7 +773,15 @@ export function isSt(item: unknown): item is St {
 }
 
 export interface Statement_list extends AstNode {
-    readonly $container: Case_statement | For_statement | If_statement | Methods | Program | Repeat_statement | While_statement;
+    readonly $container:
+        | Case_element
+        | Case_statement
+        | For_statement
+        | If_statement
+        | Methods
+        | Program
+        | Repeat_statement
+        | While_statement;
     readonly $type: 'Statement_list';
     statements: Array<Statement>;
 }
@@ -785,7 +793,7 @@ export function isStatement_list(item: unknown): item is Statement_list {
 }
 
 export interface Statement_list_single extends AstNode {
-    readonly $container: Case_element | FunctionBlock | StFunction;
+    readonly $container: FunctionBlock | StFunction;
     readonly $type: 'Statement_list_single';
     statements: Statement;
 }
@@ -967,9 +975,7 @@ export function isEnumeratedValue(item: unknown): item is EnumeratedValue {
 export interface FunctionExpression extends Expression {
     readonly $type: 'FunctionExpression';
     params: Invoke_subrule;
-    prefixValidateElement?: string;
     refFunctionName: RefFunctionOrBlockName;
-    suffixValidateElement?: string;
 }
 
 export const FunctionExpression = 'FunctionExpression';
@@ -979,11 +985,13 @@ export function isFunctionExpression(item: unknown): item is FunctionExpression 
 }
 
 export interface MemberCall extends Expression {
+    readonly $container: Function_invoke_or_assign | MemberCall;
     readonly $type: 'MemberCall';
     arguments: Array<Expression>;
     element?: Reference<NamedElement>;
     explicitOperationCall: boolean;
-    previous?: Expression;
+    previous?: Expression | MemberCall;
+    prior?: Expression;
 }
 
 export const MemberCall = 'MemberCall';
@@ -1579,11 +1587,9 @@ export class StAstReflection extends AbstractAstReflection {
                         { name: 'left' },
                         { name: 'operator' },
                         { name: 'params' },
-                        { name: 'prefixValidateElement' },
                         { name: 'prior' },
                         { name: 'refFunctionName' },
                         { name: 'right' },
-                        { name: 'suffixValidateElement' },
                         { name: 'value' }
                     ]
                 };

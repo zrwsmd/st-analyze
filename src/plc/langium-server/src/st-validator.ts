@@ -277,10 +277,7 @@ export class StValidator {
                         let caseListElements = caseList.caseListElement;
                         let case_statements_list = element.statements;
                         if (case_statements_list) {
-                            let statements = case_statements_list.statements;
-                            let statementsArr: Statement[] = [];
-                            statementsArr.push(statements);
-                            this.handleStatements(statementsArr, accept);
+                            this.handleStatements(this.normalizeStatements(case_statements_list), accept);
                         }
                         if (caseListElements.length > 0) {
                             caseListElements.forEach(caseListElement => {
@@ -359,6 +356,13 @@ export class StValidator {
         });
     }
 
+    private normalizeStatements(statementsNode?: { statements?: Statement[] | Statement }): Statement[] {
+        if (!statementsNode || statementsNode.statements === undefined) {
+            return [];
+        }
+        return Array.isArray(statementsNode.statements) ? statementsNode.statements : [statementsNode.statements];
+    }
+
     private handleCondition(expressionType: string, condition: Expression, accept: ValidationAcceptor) {
         if (expressionType === 'Expression') {
             let left = condition.left;
@@ -402,7 +406,9 @@ export class StValidator {
         let astNode: MemberCall | VariableExpression | undefined;
         let universe: Universe | undefined;
         if (variableParent) {
-            if (isMemberCall(variableParent)) {
+            if (isFunctionExpression(variableParent)) {
+                this.handleFunctionExpression(variableParent, accept, variableParent, expectType);
+            } else if (isMemberCall(variableParent)) {
                 let memberCall = variableParent as MemberCall;
                 astNode = memberCall;
                 // let previousNode = memberCall.previous as MemberCall;
@@ -842,7 +848,6 @@ export class StValidator {
         if (selectRefFunctionName.refFunctionName) {
             let refNode = selectRefFunctionName.refFunctionName.ref;
             let params = functionExpression.params;
-            this.validatePrefixSuffixElement(functionExpression, accept);
             let paramTypeArr: any[] = [];
             if (refNode) {
                 if (isStFunction(refNode)) {
@@ -861,7 +866,6 @@ export class StValidator {
                 }
             }
         } else if (selectRefFunctionName.Cache_type_name) {
-            this.validatePrefixSuffixElement(functionExpression, accept);
             //有可能是ToN这种，需要都转化为大写TON
             let cacheName = selectRefFunctionName.Cache_type_name;
             let returnType = this.getCacheFunctionReturnType(cacheName);
@@ -1003,23 +1007,6 @@ export class StValidator {
                 }
             }
         });
-    }
-
-    private validatePrefixSuffixElement(functionExpression: FunctionExpression, accept: ValidationAcceptor) {
-        let prefixValidateElement = functionExpression.prefixValidateElement;
-        let suffixValidateElement = functionExpression.suffixValidateElement;
-        if (prefixValidateElement) {
-            accept('error', `invalid Identifier near '${prefixValidateElement}'`, {
-                node: functionExpression,
-                property: 'prefixValidateElement'
-            });
-        }
-        if (suffixValidateElement) {
-            accept('error', `invalid Identifier near '${suffixValidateElement}'`, {
-                node: functionExpression,
-                property: 'suffixValidateElement'
-            });
-        }
     }
 
     private normalizeTypeAlias(typeName: string | undefined, visitedAlias = new Set<string>()): string | undefined {

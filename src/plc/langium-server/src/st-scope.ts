@@ -1,18 +1,30 @@
 import { DefaultScopeProvider, LangiumCoreServices, ReferenceInfo, Scope, ScopeOptions, StreamScope, stream } from 'langium';
 import { isCacheType, isFunctionBlockType, isStructType } from './descriptions.js';
 import {
+    Function_invoke_or_assign,
     FunctionBlock,
+    FunctionExpression,
+    Invoke_subrule,
     MemberCall,
+    Param_assignment,
     Struct_Var_Decl_Init,
     StructsList,
     VarDeclarationInit,
     VarInput,
     VarLocal,
     VarOutput,
-    isNative_Type_Name
+    VariableExpression,
+    isFunctionExpression,
+    isFunction_invoke_or_assign,
+    isInvoke_subrule,
+    isNative_Type_Name,
+    isParam_assignment,
+    isVarDeclarationInit,
+    isVariableExpression
 } from './generated/ast.js';
 import { inferType } from './infer.js';
-import { getRelatedElementAndLangiumDoc } from './util/transform.js';
+import { handleNoAcceptNativeTypeName } from './util/tool.js';
+import { getRelatedElementAndLangiumDoc, getRelatedEnumElementAndLangiumDoc } from './util/transform.js';
 
 export class StScopeProvider extends DefaultScopeProvider {
     constructor(services: LangiumCoreServices) {
@@ -22,7 +34,7 @@ export class StScopeProvider extends DefaultScopeProvider {
     override getScope(context: ReferenceInfo): Scope {
         if (context.property === 'element') {
             const memberCall = context.container as MemberCall;
-            const previous = memberCall.previous;
+            const previous = memberCall.previous ?? memberCall.prior;
             if (!previous) {
                 return super.getScope(context);
             }
@@ -41,6 +53,10 @@ export class StScopeProvider extends DefaultScopeProvider {
             }
             //console.log(previousType);
         } else if (context.property === 'variable') {
+            const enumScope = this.scopeEnumMembersForExpectedParam(context);
+            if (enumScope) {
+                return enumScope;
+            }
             return super.getScope(context);
         }
         //重名函数处理，有问题
@@ -70,6 +86,70 @@ export class StScopeProvider extends DefaultScopeProvider {
         // }
 
         return super.getScope(context);
+    }
+
+    private scopeEnumMembersForExpectedParam(context: ReferenceInfo): Scope | undefined {
+        const container = context.container;
+        if (!isVariableExpression(container)) {
+            return undefined;
+        }
+        const enumType = this.getExpectedEnumTypeForVariable(container);
+        if (!enumType) {
+            return undefined;
+        }
+        const result = getRelatedEnumElementAndLangiumDoc(enumType);
+        if (!result) {
+            return undefined;
+        }
+        const [enumElement] = result;
+        const members = enumElement?.enumChild.map(item => item.enumVarName) ?? [];
+        if (members.length === 0) {
+            return undefined;
+        }
+        const enumDescriptions = stream(members)
+            .map(member => this.descriptions.createDescription(container, member))
+            .nonNullable();
+        return this.createScope(enumDescriptions, super.getScope(context));
+    }
+
+    private getExpectedEnumTypeForVariable(container: VariableExpression): string | undefined {
+        const expression = container.$container;
+        const paramAssignment = expression?.$container;
+        const invoke = paramAssignment?.$container;
+        const call = invoke?.$container;
+        if (!isParam_assignment(paramAssignment) || !isInvoke_subrule(invoke)) {
+            return undefined;
+        }
+        const paramName = paramAssignment.ParamName;
+        if (!paramName) {
+            return undefined;
+        }
+        const callType = this.getInvokedTypeName(call);
+        if (!callType) {
+            return undefined;
+        }
+        const result = getRelatedElementAndLangiumDoc(callType);
+        const [elementNode] = result ?? [];
+        const expectedDecl = elementNode?.varDecls.find(varDecl => varDecl.varName === paramName);
+        return expectedDecl?.varType;
+    }
+
+    private getInvokedTypeName(call: unknown): string | undefined {
+        if (isFunction_invoke_or_assign(call) && call.assignPrefix) {
+            const refNode = call.assignPrefix.varEnchanceDecl.ref;
+            if (isVarDeclarationInit(refNode)) {
+                return handleNoAcceptNativeTypeName(refNode.typeName, '');
+            }
+            return call.assignPrefix.varEnchanceDecl.$refText;
+        }
+        if (isFunctionExpression(call) && call.refFunctionName.refFunctionName) {
+            const refNode = call.refFunctionName.refFunctionName.ref;
+            if (isVarDeclarationInit(refNode)) {
+                return handleNoAcceptNativeTypeName(refNode.typeName, '');
+            }
+            return call.refFunctionName.refFunctionName.$refText;
+        }
+        return undefined;
     }
 
     private scopeCache(cacheName: string): Scope | undefined {

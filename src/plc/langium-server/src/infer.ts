@@ -1,11 +1,9 @@
 import { AstNode } from 'langium';
 
 import { createCacheType, createErrorType, createFunctionBlockType, createStructType, TypeDescription } from './descriptions.js';
-import { resolveNativeTypeName } from './util/tool.js';
 import {
     Alias,
     Expression,
-    Native_Type_Name,
     isAlias,
     isExpression,
     isFunctionBlock,
@@ -14,9 +12,13 @@ import {
     isStruct_Var_Decl_Init,
     isStructsList,
     isVarDeclarationInit,
+    isVariableExpression,
+    Native_Type_Name,
     Struct_Var_Decl_Init,
+    VarDeclarationInit,
     VariableExpression
 } from './generated/ast.js';
+import { resolveNativeTypeName } from './util/tool.js';
 
 export function inferType(node: AstNode, cache: Map<AstNode, TypeDescription | undefined>): TypeDescription {
     let type: TypeDescription | undefined;
@@ -34,8 +36,19 @@ export function inferType(node: AstNode, cache: Map<AstNode, TypeDescription | u
         if (currentNode) {
             if (isStruct_Var_Decl_Init(currentNode)) {
                 type = inferStructDeclaration(currentNode, cache);
+            } else if (isVarDeclarationInit(currentNode)) {
+                type = inferVarDeclaration(currentNode, cache);
             }
         }
+        if (!type) {
+            if (node.previous) {
+                type = inferType(node.previous, cache);
+            } else if (node.prior) {
+                type = inferType(node.prior, cache);
+            }
+        }
+    } else if (isVariableExpression(node)) {
+        type = inferVariableExpressionCall(node, cache);
     } else if (isExpression(node)) {
         type = inferExpressionRef(node, cache);
     } else if (isVarDeclarationInit(node)) {
@@ -64,6 +77,10 @@ function inferStructDeclaration(node: Struct_Var_Decl_Init, cache: Map<AstNode, 
     return inferNativeTypeName(typeName, cache);
 }
 
+function inferVarDeclaration(node: VarDeclarationInit, cache: Map<AstNode, TypeDescription | undefined>) {
+    return inferNativeTypeName(node.typeName, cache);
+}
+
 function inferAliasDeclaration(node: Alias, cache: Map<AstNode, TypeDescription | undefined>) {
     return inferNativeTypeName(node.refName, cache);
 }
@@ -85,9 +102,14 @@ function inferNativeTypeName(typeName: Native_Type_Name, cache: Map<AstNode, Typ
 }
 
 function inferExpressionRef(node: Expression, cache: Map<AstNode, TypeDescription | undefined>): TypeDescription {
-    let p = node.prior as VariableExpression;
-    let type = inferVariableExpressionCall(p, cache);
-    return type;
+    let prior = node.prior;
+    if (prior) {
+        if (isVariableExpression(prior)) {
+            return inferVariableExpressionCall(prior, cache);
+        }
+        return inferType(prior, cache);
+    }
+    return createErrorType('Could not infer type for this expression', node);
 }
 // function inferMemberCall(node: MemberCall, cache: Map<AstNode, string | undefined>): string | undefined {
 //     const element = node.element?.ref;
