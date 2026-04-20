@@ -67,7 +67,8 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         if (enumCompletionItems.length === 0 && memberCompletionItems.length === 0) {
             return baseCompletion;
         }
-        let mergedItems = this.mergeSupplementalItems(baseCompletion?.items ?? [], [...enumCompletionItems, ...memberCompletionItems]);
+        let mergedItems = this.mergeSupplementalItems(baseCompletion?.items ?? [], enumCompletionItems);
+        mergedItems = this.mergeOverrideItems(mergedItems, memberCompletionItems);
         return CompletionList.create(this.deduplicateItems(mergedItems), true);
     }
 
@@ -251,6 +252,22 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         return merged;
     }
 
+    private mergeOverrideItems(baseItems: CompletionItem[], overrideItems: CompletionItem[]): CompletionItem[] {
+        const merged = [...baseItems];
+        const indexByLabel = new Map(baseItems.map((item, index) => [item.label.toLowerCase(), index]));
+        overrideItems.forEach(item => {
+            const normalized = item.label.toLowerCase();
+            const existingIndex = indexByLabel.get(normalized);
+            if (existingIndex !== undefined) {
+                merged[existingIndex] = item;
+            } else {
+                indexByLabel.set(normalized, merged.length);
+                merged.push(item);
+            }
+        });
+        return merged;
+    }
+
     private shouldPreferSupplemental(existing: CompletionItem, supplemental: CompletionItem): boolean {
         const existingDetail = existing.detail ?? '';
         const supplementalDetail = supplemental.detail ?? '';
@@ -317,7 +334,7 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         return members.map(member => ({
             label: member.label,
             kind: CompletionItemKind.Field,
-            detail: member.detail,
+            detail: `[DBG-MEMBER-20260420] ${member.detail ?? ''}`.trim(),
             sortText: '0'
         }));
     }

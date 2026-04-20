@@ -185,3 +185,39 @@ END_PROGRAM
     assert.equal(labels.filter(label => label === 'province').length, 1);
     assert.equal(labels.filter(label => label === 'a').length, 1);
 });
+
+test('cache-complete prefers custom struct member detail over outer variable detail for same name', async () => {
+    const items = await getCompletionItems({
+        label: 'cache-complete-custom-struct-detail-override',
+        extra: [
+            {
+                label: 'china',
+                text: `
+TYPE
+    China: STRUCT
+        a: CTU;
+        bb: INT;
+    END_STRUCT
+END_TYPE
+`
+            }
+        ],
+        text: `
+PROGRAM Main
+VAR
+    a: INT;
+    bb: STRING;
+    g: China;
+END_VAR
+
+g./*cursor*/
+END_PROGRAM
+`
+    });
+
+    const a = items.find(item => item.label === 'a');
+    const bb = items.find(item => item.label === 'bb');
+
+    assert.ok(a?.detail?.includes('CTU'));
+    assert.ok(bb?.detail?.includes('INT'));
+});
