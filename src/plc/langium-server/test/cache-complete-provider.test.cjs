@@ -95,6 +95,24 @@ END_PROGRAM
     assert.ok(q?.detail?.includes('BOOL'));
 });
 
+test('cache-complete orders function block members with inputs before outputs', async () => {
+    const items = await getCompletionItems({
+        label: 'cache-complete-function-block-member-order',
+        text: `
+PROGRAM Main
+VAR
+    d: TON;
+END_VAR
+
+d./*cursor*/
+END_PROGRAM
+`
+    });
+
+    const orderedLabels = items.filter(item => ['IN', 'PT', 'Q', 'ET'].includes(item.label)).map(item => item.label);
+    assert.deepEqual(orderedLabels, ['IN', 'PT', 'Q', 'ET']);
+});
+
 test('cache-complete provides custom struct member completion after dot', async () => {
     const labels = await getCompletionLabels({
         label: 'cache-complete-custom-struct-members',

@@ -35262,6 +35262,9 @@ var _CacheCompletionProvider = class _CacheCompletionProvider extends DefaultCom
     }
     let mergedItems = this.mergeSupplementalItems((_a = baseCompletion == null ? void 0 : baseCompletion.items) != null ? _a : [], enumCompletionItems);
     mergedItems = this.mergeOverrideItems(mergedItems, memberCompletionItems);
+    if (memberCompletionItems.length > 0) {
+      mergedItems = this.prioritizeItems(mergedItems, memberCompletionItems);
+    }
     return import_vscode_languageserver_protocol2.CompletionList.create(this.deduplicateItems(mergedItems), true);
   }
   completionFor(context, next, acceptor) {
@@ -35435,6 +35438,12 @@ var _CacheCompletionProvider = class _CacheCompletionProvider extends DefaultCom
     });
     return merged;
   }
+  prioritizeItems(baseItems, orderedItems) {
+    const orderedLabels = new Set(orderedItems.map((item) => item.label.toLowerCase()));
+    const preferredItems = this.deduplicateItems(orderedItems);
+    const remainingItems = baseItems.filter((item) => !orderedLabels.has(item.label.toLowerCase()));
+    return [...preferredItems, ...remainingItems];
+  }
   shouldPreferSupplemental(existing, supplemental) {
     var _a, _b;
     const existingDetail = (_a = existing.detail) != null ? _a : "";
@@ -35495,12 +35504,19 @@ var _CacheCompletionProvider = class _CacheCompletionProvider extends DefaultCom
     if (members.length === 0) {
       return [];
     }
-    return members.map((member) => ({
-      label: member.label,
-      kind: import_vscode_languageserver_protocol2.CompletionItemKind.Field,
-      detail: member.detail,
-      sortText: "0"
-    }));
+    const orderedMembers = [...members].sort((left, right) => {
+      var _a, _b;
+      return ((_a = left.sortText) != null ? _a : "").localeCompare((_b = right.sortText) != null ? _b : "");
+    });
+    return orderedMembers.map((member) => {
+      var _a;
+      return {
+        label: member.label,
+        kind: import_vscode_languageserver_protocol2.CompletionItemKind.Field,
+        detail: member.detail,
+        sortText: (_a = member.sortText) != null ? _a : "0"
+      };
+    });
   }
   getRootNode(context) {
     let root2 = context.document.parseResult.value;
@@ -35764,12 +35780,15 @@ var _CacheCompletionProvider = class _CacheCompletionProvider extends DefaultCom
     let localStruct = (_a = this.getLocalStructByName(typeName, document)) != null ? _a : await this.getWorkspaceStructByName(typeName, document);
     if (localStruct) {
       let entries = [];
+      let sequence = 0;
       for (const item of localStruct.items) {
         let expectedType = "";
         let basicType = basicDataType(expectedType, item.typeName);
         let detail = basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
-        entries.push({ label: item.variables, detail });
-        item.nextVariables.forEach((nextVariable) => entries.push({ label: nextVariable, detail }));
+        entries.push({ label: item.variables, detail, sortText: this.buildMemberSortText(1, sequence++) });
+        item.nextVariables.forEach(
+          (nextVariable) => entries.push({ label: nextVariable, detail, sortText: this.buildMemberSortText(1, sequence++) })
+        );
       }
       return entries;
     }
@@ -35781,6 +35800,7 @@ var _CacheCompletionProvider = class _CacheCompletionProvider extends DefaultCom
         ...functionBlock.varOutputs.map((group) => ({ kind: "VAR_OUTPUT", items: group.items })),
         ...functionBlock.varLocals.map((group) => ({ kind: "VAR", items: group.items }))
       ];
+      let sequence = 0;
       for (const group of groups) {
         for (const item of group.items) {
           let expectedType = "";
@@ -35792,8 +35812,18 @@ var _CacheCompletionProvider = class _CacheCompletionProvider extends DefaultCom
             varType: detailType,
             varGlobalType: group.kind
           });
-          entries.push({ label: item.variables, detail });
-          item.nextVariables.forEach((nextVariable) => entries.push({ label: nextVariable, detail }));
+          entries.push({
+            label: item.variables,
+            detail,
+            sortText: this.buildMemberSortText(this.getMemberGroupRank(group.kind), sequence++)
+          });
+          item.nextVariables.forEach(
+            (nextVariable) => entries.push({
+              label: nextVariable,
+              detail,
+              sortText: this.buildMemberSortText(this.getMemberGroupRank(group.kind), sequence++)
+            })
+          );
         }
       }
       return entries;
@@ -35801,12 +35831,25 @@ var _CacheCompletionProvider = class _CacheCompletionProvider extends DefaultCom
     let external = getRelatedElementAndLangiumDoc(typeName);
     if (external) {
       let [elementNode] = external;
-      return ((_b = elementNode == null ? void 0 : elementNode.varDecls) != null ? _b : []).map((item) => ({
+      return ((_b = elementNode == null ? void 0 : elementNode.varDecls) != null ? _b : []).map((item, index) => ({
         label: item.varName,
-        detail: this.getVarDeclDetail(item)
+        detail: this.getVarDeclDetail(item),
+        sortText: this.buildMemberSortText(this.getMemberGroupRank(item.varGlobalType), index)
       }));
     }
     return [];
+  }
+  getMemberGroupRank(varGlobalType) {
+    if (varGlobalType === "VAR_INPUT") {
+      return 0;
+    }
+    if (varGlobalType === "VAR_OUTPUT") {
+      return 1;
+    }
+    return 2;
+  }
+  buildMemberSortText(groupRank, sequence) {
+    return `${String(groupRank).padStart(2, "0")}_${String(sequence).padStart(4, "0")}`;
   }
   getEnumMembers(enumTypeName, context) {
     var _a;

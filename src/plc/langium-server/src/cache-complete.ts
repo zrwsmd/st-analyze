@@ -57,6 +57,12 @@ interface InterpretationContext {
     stacks: NextFeature[][];
 }
 
+interface MemberCompletionEntry {
+    label: string;
+    detail?: string;
+    sortText?: string;
+}
+
 export class CacheCompletionProvider extends DefaultCompletionProvider {
     constructor(public services: LangiumServices) {
         super(services);
@@ -71,6 +77,9 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         }
         let mergedItems = this.mergeSupplementalItems(baseCompletion?.items ?? [], enumCompletionItems);
         mergedItems = this.mergeOverrideItems(mergedItems, memberCompletionItems);
+        if (memberCompletionItems.length > 0) {
+            mergedItems = this.prioritizeItems(mergedItems, memberCompletionItems);
+        }
         return CompletionList.create(this.deduplicateItems(mergedItems), true);
     }
 
@@ -270,6 +279,13 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         return merged;
     }
 
+    private prioritizeItems(baseItems: CompletionItem[], orderedItems: CompletionItem[]): CompletionItem[] {
+        const orderedLabels = new Set(orderedItems.map(item => item.label.toLowerCase()));
+        const preferredItems = this.deduplicateItems(orderedItems);
+        const remainingItems = baseItems.filter(item => !orderedLabels.has(item.label.toLowerCase()));
+        return [...preferredItems, ...remainingItems];
+    }
+
     private shouldPreferSupplemental(existing: CompletionItem, supplemental: CompletionItem): boolean {
         const existingDetail = existing.detail ?? '';
         const supplementalDetail = supplemental.detail ?? '';
@@ -333,11 +349,12 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         if (members.length === 0) {
             return [];
         }
-        return members.map(member => ({
+        const orderedMembers = [...members].sort((left, right) => (left.sortText ?? '').localeCompare(right.sortText ?? ''));
+        return orderedMembers.map(member => ({
             label: member.label,
             kind: CompletionItemKind.Field,
             detail: member.detail,
-            sortText: '0'
+            sortText: member.sortText ?? '0'
         }));
     }
 
@@ -528,7 +545,7 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
     private async getMembersForChain(
         chain: string[],
         document: LangiumDocument<AstNode>
-    ): Promise<Array<{ label: string; detail?: string }>> {
+    ): Promise<MemberCompletionEntry[]> {
         let typeName = this.getVariableTypeByName(chain[0], document);
         if (!typeName) {
             return [];
@@ -623,27 +640,31 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
     private async getMemberEntriesForType(
         typeName: string,
         document: LangiumDocument<AstNode>
-    ): Promise<Array<{ label: string; detail?: string }>> {
+    ): Promise<MemberCompletionEntry[]> {
         let localStruct = this.getLocalStructByName(typeName, document) ?? (await this.getWorkspaceStructByName(typeName, document));
         if (localStruct) {
-            let entries: Array<{ label: string; detail?: string }> = [];
+            let entries: MemberCompletionEntry[] = [];
+            let sequence = 0;
             for (const item of localStruct.items as Struct_Var_Decl_Init[]) {
                 let expectedType = '';
                 let basicType = basicDataType(expectedType, item.typeName);
                 let detail = basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
-                entries.push({ label: item.variables, detail });
-                item.nextVariables.forEach(nextVariable => entries.push({ label: nextVariable, detail }));
+                entries.push({ label: item.variables, detail, sortText: this.buildMemberSortText(1, sequence++) });
+                item.nextVariables.forEach(nextVariable =>
+                    entries.push({ label: nextVariable, detail, sortText: this.buildMemberSortText(1, sequence++) })
+                );
             }
             return entries;
         }
         let functionBlock = await this.getWorkspaceFunctionBlockByName(typeName, document);
         if (functionBlock) {
-            let entries: Array<{ label: string; detail?: string }> = [];
+            let entries: MemberCompletionEntry[] = [];
             let groups = [
                 ...functionBlock.varInputs.map((group: VarInput) => ({ kind: 'VAR_INPUT', items: group.items })),
                 ...functionBlock.varOutputs.map((group: VarOutput) => ({ kind: 'VAR_OUTPUT', items: group.items })),
                 ...functionBlock.varLocals.map((group: VarLocal) => ({ kind: 'VAR', items: group.items }))
             ];
+            let sequence = 0;
             for (const group of groups) {
                 for (const item of group.items) {
                     let expectedType = '';
@@ -655,8 +676,18 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
                         varType: detailType,
                         varGlobalType: group.kind
                     } as VarDeclaration);
-                    entries.push({ label: item.variables, detail });
-                    item.nextVariables.forEach((nextVariable: string) => entries.push({ label: nextVariable, detail }));
+                    entries.push({
+                        label: item.variables,
+                        detail,
+                        sortText: this.buildMemberSortText(this.getMemberGroupRank(group.kind), sequence++)
+                    });
+                    item.nextVariables.forEach((nextVariable: string) =>
+                        entries.push({
+                            label: nextVariable,
+                            detail,
+                            sortText: this.buildMemberSortText(this.getMemberGroupRank(group.kind), sequence++)
+                        })
+                    );
                 }
             }
             return entries;
@@ -664,12 +695,27 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         let external = getRelatedElementAndLangiumDoc(typeName);
         if (external) {
             let [elementNode] = external;
-            return (elementNode?.varDecls ?? []).map(item => ({
+            return (elementNode?.varDecls ?? []).map((item, index) => ({
                 label: item.varName,
-                detail: this.getVarDeclDetail(item)
+                detail: this.getVarDeclDetail(item),
+                sortText: this.buildMemberSortText(this.getMemberGroupRank(item.varGlobalType), index)
             }));
         }
         return [];
+    }
+
+    private getMemberGroupRank(varGlobalType: string | undefined): number {
+        if (varGlobalType === 'VAR_INPUT') {
+            return 0;
+        }
+        if (varGlobalType === 'VAR_OUTPUT') {
+            return 1;
+        }
+        return 2;
+    }
+
+    private buildMemberSortText(groupRank: number, sequence: number): string {
+        return `${String(groupRank).padStart(2, '0')}_${String(sequence).padStart(4, '0')}`;
     }
 
     private getEnumMembers(enumTypeName: string | undefined, context: CompletionContext): string[] {
