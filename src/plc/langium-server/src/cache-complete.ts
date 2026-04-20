@@ -334,7 +334,7 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         return members.map(member => ({
             label: member.label,
             kind: CompletionItemKind.Field,
-            detail: `[DBG-MEMBER-20260420] ${member.detail ?? ''}`.trim(),
+            detail: member.detail,
             sortText: '0'
         }));
     }

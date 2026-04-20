@@ -27,6 +27,7 @@ VAR_IN_OUT
 	Variable: BOOL; (* Comment *)
 END_VAR
 
+
 mode := RunMode#MANUAL;
 libEnum := MC_BUFFER_MODE#Aborting;
 c.delta_time := T#3h2m33s11ms;
@@ -37,8 +38,7 @@ f := MC_Direction#fastest;
 
 
 
-mode:=RunMode#MANUAL;
-
+mode := RunMode#MANUAL;
 
 
 
