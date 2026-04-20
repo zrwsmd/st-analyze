@@ -1,5 +1,5 @@
 import type { IToken } from 'chevrotain';
-import { AstNode, AstNodeDescription, AstUtils, GrammarAST, GrammarUtils, LangiumDocument, MaybePromise, TextDocument } from 'langium';
+import { AstNode, AstNodeDescription, AstUtils, GrammarAST, GrammarUtils, LangiumDocument, MaybePromise, TextDocument, URI } from 'langium';
 import {
     CompletionAcceptor,
     CompletionContext,
@@ -11,6 +11,8 @@ import {
     findFirstFeatures,
     findNextFeatures
 } from 'langium/lsp';
+import fs from 'node:fs';
+import path from 'node:path';
 import { CompletionItem, CompletionItemKind, CompletionList, CompletionParams, Position, Range } from 'vscode-languageserver-protocol';
 import {
     Case_statement,
@@ -63,7 +65,7 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
     override async getCompletion(document: LangiumDocument<AstNode>, params: CompletionParams): Promise<CompletionList | undefined> {
         let baseCompletion = await super.getCompletion(document, params);
         let enumCompletionItems = this.getManualEnumCompletionItems(document, params);
-        let memberCompletionItems = this.getManualMemberCompletionItems(document, params);
+        let memberCompletionItems = await this.getManualMemberCompletionItems(document, params);
         if (enumCompletionItems.length === 0 && memberCompletionItems.length === 0) {
             return baseCompletion;
         }
@@ -310,7 +312,7 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         return this.buildEnumMemberCompletionItems(enumTypeName, partialMemberName, syntheticContext);
     }
 
-    private getManualMemberCompletionItems(document: LangiumDocument<AstNode>, params: CompletionParams): CompletionItem[] {
+    private async getManualMemberCompletionItems(document: LangiumDocument<AstNode>, params: CompletionParams): Promise<CompletionItem[]> {
         let textDocument = document.textDocument;
         let textBeforeCursor = textDocument.getText({
             start: Position.create(0, 0),
@@ -327,7 +329,7 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         if (chain.length === 0) {
             return [];
         }
-        let members = this.getMembersForChain(chain, document);
+        let members = await this.getMembersForChain(chain, document);
         if (members.length === 0) {
             return [];
         }
@@ -376,9 +378,16 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         return undefined;
     }
 
-    private getWorkspaceStructByName(typeName: string | undefined): StructsList | undefined {
+    private async getWorkspaceStructByName(
+        typeName: string | undefined,
+        document?: LangiumDocument<AstNode>
+    ): Promise<StructsList | undefined> {
         if (!typeName) {
             return undefined;
+        }
+        const siblingStruct = await this.getSiblingStructByName(typeName, document);
+        if (siblingStruct) {
+            return siblingStruct;
         }
         let indexManager = this.services.shared.workspace.IndexManager;
         let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
@@ -386,20 +395,64 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         for (const description of indexManager.allElements('StructsList')) {
             if (description.name.toLowerCase() === typeName.toLowerCase()) {
                 let targetDocument = langiumDocuments.getDocument(description.documentUri);
-                if (targetDocument) {
-                    let node = astNodeLocator.getAstNode<StructsList>(targetDocument.parseResult.value, description.path);
-                    if (node) {
-                        return node;
+                try {
+                    if (!targetDocument) {
+                        if (description.documentUri.fsPath && !fs.existsSync(description.documentUri.fsPath)) {
+                            continue;
+                        }
+                        targetDocument = await langiumDocuments.getOrCreateDocument(description.documentUri);
                     }
+                    if (targetDocument) {
+                        let node = astNodeLocator.getAstNode<StructsList>(targetDocument.parseResult.value, description.path);
+                        if (node) {
+                            return node;
+                        }
+                    }
+                } catch {
+                    continue;
                 }
             }
         }
         return undefined;
     }
 
-    private getWorkspaceFunctionBlockByName(typeName: string | undefined): FunctionBlock | undefined {
+    private async getSiblingStructByName(typeName: string, document?: LangiumDocument<AstNode>): Promise<StructsList | undefined> {
+        if (!document?.uri.fsPath) {
+            return undefined;
+        }
+        let dir = path.dirname(document.uri.fsPath);
+        if (!fs.existsSync(dir)) {
+            return undefined;
+        }
+        let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+        let candidates: Array<{ fileName: string; struct: StructsList }> = [];
+        for (const fileName of fs.readdirSync(dir)) {
+            if (!fileName.toLowerCase().endsWith('.st')) {
+                continue;
+            }
+            let uri = URI.file(path.join(dir, fileName));
+            let targetDocument = await langiumDocuments.getOrCreateDocument(uri);
+            let root = targetDocument.parseResult.value;
+            if (root.$type === 'St') {
+                let struct = (root as St).types_struct.find(item => item.name.toLowerCase() === typeName.toLowerCase());
+                if (struct) {
+                    candidates.push({ fileName, struct });
+                }
+            }
+        }
+        return this.selectPreferredSiblingType(typeName, candidates)?.struct;
+    }
+
+    private async getWorkspaceFunctionBlockByName(
+        typeName: string | undefined,
+        document?: LangiumDocument<AstNode>
+    ): Promise<FunctionBlock | undefined> {
         if (!typeName) {
             return undefined;
+        }
+        const siblingFunctionBlock = await this.getSiblingFunctionBlockByName(typeName, document);
+        if (siblingFunctionBlock) {
+            return siblingFunctionBlock;
         }
         let indexManager = this.services.shared.workspace.IndexManager;
         let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
@@ -407,29 +460,86 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         for (const description of indexManager.allElements('FunctionBlock')) {
             if (description.name.toLowerCase() === typeName.toLowerCase()) {
                 let targetDocument = langiumDocuments.getDocument(description.documentUri);
-                if (targetDocument) {
-                    let node = astNodeLocator.getAstNode<FunctionBlock>(targetDocument.parseResult.value, description.path);
-                    if (node) {
-                        return node;
+                try {
+                    if (!targetDocument) {
+                        if (description.documentUri.fsPath && !fs.existsSync(description.documentUri.fsPath)) {
+                            continue;
+                        }
+                        targetDocument = await langiumDocuments.getOrCreateDocument(description.documentUri);
                     }
+                    if (targetDocument) {
+                        let node = astNodeLocator.getAstNode<FunctionBlock>(targetDocument.parseResult.value, description.path);
+                        if (node) {
+                            return node;
+                        }
+                    }
+                } catch {
+                    continue;
                 }
             }
         }
         return undefined;
     }
 
-    private getMembersForChain(chain: string[], document: LangiumDocument<AstNode>): Array<{ label: string; detail?: string }> {
+    private async getSiblingFunctionBlockByName(typeName: string, document?: LangiumDocument<AstNode>): Promise<FunctionBlock | undefined> {
+        if (!document?.uri.fsPath) {
+            return undefined;
+        }
+        let dir = path.dirname(document.uri.fsPath);
+        if (!fs.existsSync(dir)) {
+            return undefined;
+        }
+        let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+        let candidates: Array<{ fileName: string; functionBlock: FunctionBlock }> = [];
+        for (const fileName of fs.readdirSync(dir)) {
+            if (!fileName.toLowerCase().endsWith('.st')) {
+                continue;
+            }
+            let uri = URI.file(path.join(dir, fileName));
+            let targetDocument = await langiumDocuments.getOrCreateDocument(uri);
+            let root = targetDocument.parseResult.value;
+            if (root.$type === 'St') {
+                let functionBlock = (root as St).function_block.find(item => item.name.toLowerCase() === typeName.toLowerCase());
+                if (functionBlock) {
+                    candidates.push({ fileName, functionBlock });
+                }
+            }
+        }
+        return this.selectPreferredSiblingType(typeName, candidates)?.functionBlock;
+    }
+
+    private selectPreferredSiblingType<T extends { fileName: string }>(typeName: string, candidates: T[]): T | undefined {
+        if (candidates.length === 0) {
+            return undefined;
+        }
+        const normalizedTypeName = typeName.toLowerCase();
+        return [...candidates].sort((left, right) => {
+            const leftBaseName = path.basename(left.fileName, path.extname(left.fileName)).toLowerCase();
+            const rightBaseName = path.basename(right.fileName, path.extname(right.fileName)).toLowerCase();
+            const leftScore = leftBaseName === normalizedTypeName ? 0 : 1;
+            const rightScore = rightBaseName === normalizedTypeName ? 0 : 1;
+            if (leftScore !== rightScore) {
+                return leftScore - rightScore;
+            }
+            return left.fileName.localeCompare(right.fileName);
+        })[0];
+    }
+
+    private async getMembersForChain(
+        chain: string[],
+        document: LangiumDocument<AstNode>
+    ): Promise<Array<{ label: string; detail?: string }>> {
         let typeName = this.getVariableTypeByName(chain[0], document);
         if (!typeName) {
             return [];
         }
         for (let i = 1; i < chain.length; i++) {
-            typeName = this.getMemberTypeByName(typeName, chain[i], document);
+            typeName = await this.getMemberTypeByName(typeName, chain[i], document);
             if (!typeName) {
                 return [];
             }
         }
-        return this.getMemberEntriesForType(typeName, document);
+        return await this.getMemberEntriesForType(typeName, document);
     }
 
     private getVariableTypeByName(variableName: string, document: LangiumDocument<AstNode>): string | undefined {
@@ -462,8 +572,12 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         return undefined;
     }
 
-    private getMemberTypeByName(typeName: string, memberName: string, document: LangiumDocument<AstNode>): string | undefined {
-        let localStruct = this.getLocalStructByName(typeName, document) ?? this.getWorkspaceStructByName(typeName);
+    private async getMemberTypeByName(
+        typeName: string,
+        memberName: string,
+        document: LangiumDocument<AstNode>
+    ): Promise<string | undefined> {
+        let localStruct = this.getLocalStructByName(typeName, document) ?? (await this.getWorkspaceStructByName(typeName, document));
         if (localStruct) {
             for (const item of localStruct.items as Struct_Var_Decl_Init[]) {
                 if (item.variables === memberName || item.nextVariables.includes(memberName)) {
@@ -473,7 +587,7 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
                 }
             }
         }
-        let localFunctionBlock = this.getWorkspaceFunctionBlockByName(typeName);
+        let localFunctionBlock = await this.getWorkspaceFunctionBlockByName(typeName, document);
         if (localFunctionBlock) {
             let allDecls = [...localFunctionBlock.varInputs, ...localFunctionBlock.varOutputs, ...localFunctionBlock.varLocals];
             for (const declGroup of allDecls) {
@@ -506,8 +620,11 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         return (root as St).types_struct.find(item => item.name.toLowerCase() === typeName.toLowerCase());
     }
 
-    private getMemberEntriesForType(typeName: string, document: LangiumDocument<AstNode>): Array<{ label: string; detail?: string }> {
-        let localStruct = this.getLocalStructByName(typeName, document) ?? this.getWorkspaceStructByName(typeName);
+    private async getMemberEntriesForType(
+        typeName: string,
+        document: LangiumDocument<AstNode>
+    ): Promise<Array<{ label: string; detail?: string }>> {
+        let localStruct = this.getLocalStructByName(typeName, document) ?? (await this.getWorkspaceStructByName(typeName, document));
         if (localStruct) {
             let entries: Array<{ label: string; detail?: string }> = [];
             for (const item of localStruct.items as Struct_Var_Decl_Init[]) {
@@ -519,13 +636,13 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
             }
             return entries;
         }
-        let functionBlock = this.getWorkspaceFunctionBlockByName(typeName);
+        let functionBlock = await this.getWorkspaceFunctionBlockByName(typeName, document);
         if (functionBlock) {
             let entries: Array<{ label: string; detail?: string }> = [];
             let groups = [
-                ...functionBlock.varInputs.map(group => ({ kind: 'VAR_INPUT', items: group.items })),
-                ...functionBlock.varOutputs.map(group => ({ kind: 'VAR_OUTPUT', items: group.items })),
-                ...functionBlock.varLocals.map(group => ({ kind: 'VAR', items: group.items }))
+                ...functionBlock.varInputs.map((group: VarInput) => ({ kind: 'VAR_INPUT', items: group.items })),
+                ...functionBlock.varOutputs.map((group: VarOutput) => ({ kind: 'VAR_OUTPUT', items: group.items })),
+                ...functionBlock.varLocals.map((group: VarLocal) => ({ kind: 'VAR', items: group.items }))
             ];
             for (const group of groups) {
                 for (const item of group.items) {
@@ -539,7 +656,7 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
                         varGlobalType: group.kind
                     } as VarDeclaration);
                     entries.push({ label: item.variables, detail });
-                    item.nextVariables.forEach(nextVariable => entries.push({ label: nextVariable, detail }));
+                    item.nextVariables.forEach((nextVariable: string) => entries.push({ label: nextVariable, detail }));
                 }
             }
             return entries;
