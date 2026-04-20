@@ -38,7 +38,7 @@ f := MC_Direction#fastest;
 
 
 
-mode := RunMode#MANUAL;
+
 
 
 

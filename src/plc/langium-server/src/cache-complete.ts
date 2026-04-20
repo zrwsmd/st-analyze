@@ -463,12 +463,6 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
     }
 
     private getMemberTypeByName(typeName: string, memberName: string, document: LangiumDocument<AstNode>): string | undefined {
-        let external = getRelatedElementAndLangiumDoc(typeName);
-        if (external) {
-            let [elementNode] = external;
-            let member = elementNode?.varDecls.find(item => item.varName === memberName);
-            return member?.varType;
-        }
         let localStruct = this.getLocalStructByName(typeName, document) ?? this.getWorkspaceStructByName(typeName);
         if (localStruct) {
             for (const item of localStruct.items as Struct_Var_Decl_Init[]) {
@@ -492,6 +486,12 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
                 }
             }
         }
+        let external = getRelatedElementAndLangiumDoc(typeName);
+        if (external) {
+            let [elementNode] = external;
+            let member = elementNode?.varDecls.find(item => item.varName === memberName);
+            return member?.varType;
+        }
         return undefined;
     }
 
@@ -507,14 +507,6 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
     }
 
     private getMemberEntriesForType(typeName: string, document: LangiumDocument<AstNode>): Array<{ label: string; detail?: string }> {
-        let external = getRelatedElementAndLangiumDoc(typeName);
-        if (external) {
-            let [elementNode] = external;
-            return (elementNode?.varDecls ?? []).map(item => ({
-                label: item.varName,
-                detail: this.getVarDeclDetail(item)
-            }));
-        }
         let localStruct = this.getLocalStructByName(typeName, document) ?? this.getWorkspaceStructByName(typeName);
         if (localStruct) {
             let entries: Array<{ label: string; detail?: string }> = [];
@@ -551,6 +543,14 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
                 }
             }
             return entries;
+        }
+        let external = getRelatedElementAndLangiumDoc(typeName);
+        if (external) {
+            let [elementNode] = external;
+            return (elementNode?.varDecls ?? []).map(item => ({
+                label: item.varName,
+                detail: this.getVarDeclDetail(item)
+            }));
         }
         return [];
     }
@@ -907,7 +907,7 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
             /**
              * 校验比如链式调用，最后一个是基础类型，再.就不应该有提示了,e.g china.province.city.cityId
              */
-            let previous = node.previous ?? node.prior;
+            let previous = node.previous;
             if (isMemberCall(previous)) {
                 //isMemberCall(previous) china.province.city
                 let element = previous.element;
