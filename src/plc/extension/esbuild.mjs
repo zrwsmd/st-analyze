@@ -31,6 +31,12 @@ function copyFile(source, target) {
     console.log(`Copied ${source} to ${target}`);
 }
 
+function removeFileIfExists(filePath) {
+    if (fs.existsSync(filePath)) {
+        fs.rmSync(filePath, { force: true });
+    }
+}
+
 const plugins = [
     {
         name: 'watch-plugin',
@@ -71,6 +77,9 @@ esbuild
         const serverMapPath = path.resolve(__dirname, '..', 'langium-server', 'out', 'main.cjs.map');
         if (debug && fs.existsSync(serverMapPath)) {
             copyFile(serverMapPath, path.resolve(__dirname, 'dist', 'main.cjs.map'));
+        } else if (!debug) {
+            removeFileIfExists(path.resolve(__dirname, 'dist', 'main.cjs.map'));
+            removeFileIfExists(path.resolve(__dirname, 'dist', 'st-extension.cjs.map'));
         }
 
         if (minify) {

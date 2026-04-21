@@ -19,6 +19,12 @@ function padZeroes(i) {
     return i.toString().padStart(2, '0');
 }
 
+function removeFileIfExists(filePath) {
+    if (fs.existsSync(filePath)) {
+        fs.rmSync(filePath, { force: true });
+    }
+}
+
 const plugins = [
     {
         name: 'watch-plugin',
@@ -71,6 +77,9 @@ const ctx = await esbuild
     })
     .then(() => {
         saveCacheData();
+        if (!debug) {
+            removeFileIfExists(path.join('out', 'main.cjs.map'));
+        }
     })
     .catch(error => console.log(error));
 

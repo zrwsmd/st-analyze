@@ -3,3 +3,4 @@ lib
 src
 tsconfig.json
 tsconfig.tsbuildinfo
+dist/**/*.map
