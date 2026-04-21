@@ -13,9 +13,15 @@ const {
     shared
 } = require('./helpers/export-info-test-utils.cjs');
 
-const diagnosticError = message => ({
+const diagnosticError = (message, range) => ({
     severity: 0,
-    message
+    message,
+    range
+});
+
+const diagnosticRange = (startLine, startCharacter, endLine, endCharacter) => ({
+    start: { line: startLine, character: startCharacter },
+    end: { line: endLine, character: endCharacter }
 });
 
 test('loadInitializeAvaiableFile skips files with VSCode error diagnostics', async () => {
@@ -51,6 +57,38 @@ END_PROGRAM
             .sort();
 
         assert.deepEqual(normalizedPaths, [workspace.filePathByRelativePath['good.st'].toLowerCase()]);
+    } finally {
+        await cleanupWorkspace(workspace);
+    }
+});
+
+test('loadInitializeAvaiableFile keeps files when VSCode errors are only in expressions', async () => {
+    const handleExportInfo = await loadHandleExportInfoModule();
+    const workspace = await createWorkspace({
+        'expr-only.st': `PROGRAM ExprOnly
+VAR
+    value: INT;
+END_VAR
+
+value := missingValue;
+END_PROGRAM
+`
+    });
+
+    try {
+        configureVscodeMock({
+            workspaceRoot: workspace.workspaceRoot,
+            diagnosticsByPath: {
+                [workspace.filePathByRelativePath['expr-only.st']]: [
+                    diagnosticError('unknown variable', diagnosticRange(5, 0, 5, 20))
+                ]
+            }
+        });
+
+        const files = await handleExportInfo.loadInitializeAvaiableFile('.st');
+        const normalizedPaths = files.map(file => file.fsPath.toLowerCase());
+
+        assert.deepEqual(normalizedPaths, [workspace.filePathByRelativePath['expr-only.st'].toLowerCase()]);
     } finally {
         await cleanupWorkspace(workspace);
     }
@@ -244,6 +282,64 @@ END_PROGRAM
             getVarDecl(program, 'customMode').refFilePath,
             `${workspace.uriByRelativePath['types.st'].toString()}@enum`
         );
+    } finally {
+        await cleanupWorkspace(workspace);
+    }
+});
+
+test('handleBusiness keeps exporting declarations on onSave when only expressions have errors', async () => {
+    const handleExportInfo = await loadHandleExportInfoModule();
+    const workspace = await createWorkspace({
+        'main.st': `
+PROGRAM PLC_PRG
+VAR
+    value: INT;
+END_VAR
+
+value := 1;
+END_PROGRAM
+`
+    });
+
+    try {
+        configureVscodeMock({
+            workspaceRoot: workspace.workspaceRoot,
+            diagnosticsByPath: {}
+        });
+
+        const allFiles = [workspace.uriByRelativePath['main.st']];
+        const initialResult = await handleExportInfo.handleBusiness([], allFiles, 'basic', shared.workspace.LangiumDocumentFactory);
+
+        const changedMainText = `
+PROGRAM PLC_PRG
+VAR
+    value: INT;
+END_VAR
+
+value := missingValue;
+END_PROGRAM
+`;
+
+        configureVscodeMock({
+            workspaceRoot: workspace.workspaceRoot,
+            diagnosticsByPath: {
+                [workspace.filePathByRelativePath['main.st']]: [
+                    diagnosticError('unknown variable', diagnosticRange(6, 0, 6, 21))
+                ]
+            }
+        });
+
+        const savedResult = await handleExportInfo.handleBusiness(
+            initialResult,
+            allFiles,
+            'onSave',
+            shared.workspace.LangiumDocumentFactory,
+            createChangeDocument(workspace.uriByRelativePath['main.st'], changedMainText, 2)
+        );
+
+        const mainComposeNode = getComposeNode(savedResult, workspace.uriByRelativePath['main.st']);
+        const program = getElement(mainComposeNode, 'PLC_PRG', 'program');
+        assert.equal(getVarDecl(program, 'value').varType, 'INT');
     } finally {
         await cleanupWorkspace(workspace);
     }

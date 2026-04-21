@@ -626,8 +626,8 @@ var require_umd = __commonJS({
 // ../../../.langium-export-info-test/vscode.mock.cjs
 var require_vscode_mock = __commonJS({
   "../../../.langium-export-info-test/vscode.mock.cjs"(exports2, module2) {
-    var fs4 = require("fs");
-    var path2 = require("path");
+    var fs5 = require("fs");
+    var path3 = require("path");
     var { URI: URI3 } = require_umd();
     function getState() {
       if (!globalThis.__HANDLE_EXPORTINFO_VSCODE_MOCK__) {
@@ -639,11 +639,11 @@ var require_vscode_mock = __commonJS({
       return globalThis.__HANDLE_EXPORTINFO_VSCODE_MOCK__;
     }
     function walkFiles(rootDir, collected = []) {
-      if (!rootDir || !fs4.existsSync(rootDir)) {
+      if (!rootDir || !fs5.existsSync(rootDir)) {
         return collected;
       }
-      for (const entry of fs4.readdirSync(rootDir, { withFileTypes: true })) {
-        const absolutePath = path2.join(rootDir, entry.name);
+      for (const entry of fs5.readdirSync(rootDir, { withFileTypes: true })) {
+        const absolutePath = path3.join(rootDir, entry.name);
         if (entry.isDirectory()) {
           walkFiles(absolutePath, collected);
         } else {
@@ -687,7 +687,7 @@ var require_vscode_mock = __commonJS({
       },
       async openTextDocument(uri) {
         const normalizedUri = ensureUri(uri);
-        const text = fs4.readFileSync(normalizedUri.fsPath, "utf8");
+        const text = fs5.readFileSync(normalizedUri.fsPath, "utf8");
         return {
           uri: normalizedUri,
           fsPath: normalizedUri.fsPath,
@@ -4101,7 +4101,7 @@ var require_main = __commonJS({
     exports2.createMessageConnection = exports2.createServerSocketTransport = exports2.createClientSocketTransport = exports2.createServerPipeTransport = exports2.createClientPipeTransport = exports2.generateRandomPipeName = exports2.StreamMessageWriter = exports2.StreamMessageReader = exports2.SocketMessageWriter = exports2.SocketMessageReader = exports2.PortMessageWriter = exports2.PortMessageReader = exports2.IPCMessageWriter = exports2.IPCMessageReader = void 0;
     var ril_1 = require_ril();
     ril_1.default.install();
-    var path2 = require("path");
+    var path3 = require("path");
     var os = require("os");
     var crypto_1 = require("crypto");
     var net_1 = require("net");
@@ -4237,9 +4237,9 @@ var require_main = __commonJS({
       }
       let result;
       if (XDG_RUNTIME_DIR) {
-        result = path2.join(XDG_RUNTIME_DIR, `vscode-ipc-${randomSuffix}.sock`);
+        result = path3.join(XDG_RUNTIME_DIR, `vscode-ipc-${randomSuffix}.sock`);
       } else {
-        result = path2.join(os.tmpdir(), `vscode-${randomSuffix}.sock`);
+        result = path3.join(os.tmpdir(), `vscode-${randomSuffix}.sock`);
       }
       const limit = safeIpcPathLengths.get(process.platform);
       if (limit !== void 0 && result.length > limit) {
@@ -9340,8 +9340,8 @@ var require_files = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.resolveModulePath = exports2.FileSystem = exports2.resolveGlobalYarnPath = exports2.resolveGlobalNodePath = exports2.resolve = exports2.uriToFilePath = void 0;
     var url = require("url");
-    var path2 = require("path");
-    var fs4 = require("fs");
+    var path3 = require("path");
+    var fs5 = require("fs");
     var child_process_1 = require("child_process");
     function uriToFilePath(uri) {
       let parsed = url.parse(uri);
@@ -9359,7 +9359,7 @@ var require_files = __commonJS({
           segments.shift();
         }
       }
-      return path2.normalize(segments.join("/"));
+      return path3.normalize(segments.join("/"));
     }
     exports2.uriToFilePath = uriToFilePath;
     function isWindows() {
@@ -9388,9 +9388,9 @@ var require_files = __commonJS({
         let env = process.env;
         let newEnv = /* @__PURE__ */ Object.create(null);
         Object.keys(env).forEach((key) => newEnv[key] = env[key]);
-        if (nodePath && fs4.existsSync(nodePath)) {
+        if (nodePath && fs5.existsSync(nodePath)) {
           if (newEnv[nodePathKey]) {
-            newEnv[nodePathKey] = nodePath + path2.delimiter + newEnv[nodePathKey];
+            newEnv[nodePathKey] = nodePath + path3.delimiter + newEnv[nodePathKey];
           } else {
             newEnv[nodePathKey] = nodePath;
           }
@@ -9463,9 +9463,9 @@ var require_files = __commonJS({
         }
         if (prefix.length > 0) {
           if (isWindows()) {
-            return path2.join(prefix, "node_modules");
+            return path3.join(prefix, "node_modules");
           } else {
-            return path2.join(prefix, "lib", "node_modules");
+            return path3.join(prefix, "lib", "node_modules");
           }
         }
         return void 0;
@@ -9505,7 +9505,7 @@ var require_files = __commonJS({
           try {
             let yarn = JSON.parse(line);
             if (yarn.type === "log") {
-              return path2.join(yarn.data, "node_modules");
+              return path3.join(yarn.data, "node_modules");
             }
           } catch (e) {
           }
@@ -9528,24 +9528,24 @@ var require_files = __commonJS({
         if (process.platform === "win32") {
           _isCaseSensitive = false;
         } else {
-          _isCaseSensitive = !fs4.existsSync(__filename.toUpperCase()) || !fs4.existsSync(__filename.toLowerCase());
+          _isCaseSensitive = !fs5.existsSync(__filename.toUpperCase()) || !fs5.existsSync(__filename.toLowerCase());
         }
         return _isCaseSensitive;
       }
       FileSystem2.isCaseSensitive = isCaseSensitive;
       function isParent(parent, child) {
         if (isCaseSensitive()) {
-          return path2.normalize(child).indexOf(path2.normalize(parent)) === 0;
+          return path3.normalize(child).indexOf(path3.normalize(parent)) === 0;
         } else {
-          return path2.normalize(child).toLowerCase().indexOf(path2.normalize(parent).toLowerCase()) === 0;
+          return path3.normalize(child).toLowerCase().indexOf(path3.normalize(parent).toLowerCase()) === 0;
         }
       }
       FileSystem2.isParent = isParent;
     })(FileSystem || (exports2.FileSystem = FileSystem = {}));
     function resolveModulePath(workspaceRoot, moduleName, nodePath, tracer) {
       if (nodePath) {
-        if (!path2.isAbsolute(nodePath)) {
-          nodePath = path2.join(workspaceRoot, nodePath);
+        if (!path3.isAbsolute(nodePath)) {
+          nodePath = path3.join(workspaceRoot, nodePath);
         }
         return resolve2(moduleName, nodePath, nodePath, tracer).then((value) => {
           if (FileSystem.isParent(nodePath, value)) {
@@ -9927,8 +9927,8 @@ __export(handleExportInfo_exports, {
 });
 module.exports = __toCommonJS(handleExportInfo_exports);
 var import_multimap = __toESM(require_multimap(), 1);
-var fs3 = __toESM(require("fs"), 1);
-var path = __toESM(require("path"), 1);
+var fs4 = __toESM(require("fs"), 1);
+var path2 = __toESM(require("path"), 1);
 var vscode = __toESM(require_vscode_mock(), 1);
 
 // ../../../node_modules/vscode-languageserver-textdocument/lib/esm/main.js
@@ -14736,19 +14736,19 @@ function toKey(value) {
 var toKey_default = toKey;
 
 // ../../../node_modules/lodash-es/_baseGet.js
-function baseGet(object, path2) {
-  path2 = castPath_default(path2, object);
-  var index = 0, length = path2.length;
+function baseGet(object, path3) {
+  path3 = castPath_default(path3, object);
+  var index = 0, length = path3.length;
   while (object != null && index < length) {
-    object = object[toKey_default(path2[index++])];
+    object = object[toKey_default(path3[index++])];
   }
   return index && index == length ? object : void 0;
 }
 var baseGet_default = baseGet;
 
 // ../../../node_modules/lodash-es/get.js
-function get(object, path2, defaultValue) {
-  var result = object == null ? void 0 : baseGet_default(object, path2);
+function get(object, path3, defaultValue) {
+  var result = object == null ? void 0 : baseGet_default(object, path3);
   return result === void 0 ? defaultValue : result;
 }
 var get_default = get;
@@ -15660,11 +15660,11 @@ function baseHasIn(object, key) {
 var baseHasIn_default = baseHasIn;
 
 // ../../../node_modules/lodash-es/_hasPath.js
-function hasPath(object, path2, hasFunc) {
-  path2 = castPath_default(path2, object);
-  var index = -1, length = path2.length, result = false;
+function hasPath(object, path3, hasFunc) {
+  path3 = castPath_default(path3, object);
+  var index = -1, length = path3.length, result = false;
   while (++index < length) {
-    var key = toKey_default(path2[index]);
+    var key = toKey_default(path3[index]);
     if (!(result = object != null && hasFunc(object, key))) {
       break;
     }
@@ -15679,21 +15679,21 @@ function hasPath(object, path2, hasFunc) {
 var hasPath_default = hasPath;
 
 // ../../../node_modules/lodash-es/hasIn.js
-function hasIn(object, path2) {
-  return object != null && hasPath_default(object, path2, baseHasIn_default);
+function hasIn(object, path3) {
+  return object != null && hasPath_default(object, path3, baseHasIn_default);
 }
 var hasIn_default = hasIn;
 
 // ../../../node_modules/lodash-es/_baseMatchesProperty.js
 var COMPARE_PARTIAL_FLAG6 = 1;
 var COMPARE_UNORDERED_FLAG4 = 2;
-function baseMatchesProperty(path2, srcValue) {
-  if (isKey_default(path2) && isStrictComparable_default(srcValue)) {
-    return matchesStrictComparable_default(toKey_default(path2), srcValue);
+function baseMatchesProperty(path3, srcValue) {
+  if (isKey_default(path3) && isStrictComparable_default(srcValue)) {
+    return matchesStrictComparable_default(toKey_default(path3), srcValue);
   }
   return function(object) {
-    var objValue = get_default(object, path2);
-    return objValue === void 0 && objValue === srcValue ? hasIn_default(object, path2) : baseIsEqual_default(srcValue, objValue, COMPARE_PARTIAL_FLAG6 | COMPARE_UNORDERED_FLAG4);
+    var objValue = get_default(object, path3);
+    return objValue === void 0 && objValue === srcValue ? hasIn_default(object, path3) : baseIsEqual_default(srcValue, objValue, COMPARE_PARTIAL_FLAG6 | COMPARE_UNORDERED_FLAG4);
   };
 }
 var baseMatchesProperty_default = baseMatchesProperty;
@@ -15707,16 +15707,16 @@ function baseProperty(key) {
 var baseProperty_default = baseProperty;
 
 // ../../../node_modules/lodash-es/_basePropertyDeep.js
-function basePropertyDeep(path2) {
+function basePropertyDeep(path3) {
   return function(object) {
-    return baseGet_default(object, path2);
+    return baseGet_default(object, path3);
   };
 }
 var basePropertyDeep_default = basePropertyDeep;
 
 // ../../../node_modules/lodash-es/property.js
-function property(path2) {
-  return isKey_default(path2) ? baseProperty_default(toKey_default(path2)) : basePropertyDeep_default(path2);
+function property(path3) {
+  return isKey_default(path3) ? baseProperty_default(toKey_default(path3)) : basePropertyDeep_default(path3);
 }
 var property_default = property;
 
@@ -16084,8 +16084,8 @@ function baseHas(object, key) {
 var baseHas_default = baseHas;
 
 // ../../../node_modules/lodash-es/has.js
-function has(object, path2) {
-  return object != null && hasPath_default(object, path2, baseHas_default);
+function has(object, path3) {
+  return object != null && hasPath_default(object, path3, baseHas_default);
 }
 var has_default = has;
 
@@ -16233,14 +16233,14 @@ function negate(predicate) {
 var negate_default = negate;
 
 // ../../../node_modules/lodash-es/_baseSet.js
-function baseSet(object, path2, value, customizer) {
+function baseSet(object, path3, value, customizer) {
   if (!isObject_default(object)) {
     return object;
   }
-  path2 = castPath_default(path2, object);
-  var index = -1, length = path2.length, lastIndex = length - 1, nested = object;
+  path3 = castPath_default(path3, object);
+  var index = -1, length = path3.length, lastIndex = length - 1, nested = object;
   while (nested != null && ++index < length) {
-    var key = toKey_default(path2[index]), newValue = value;
+    var key = toKey_default(path3[index]), newValue = value;
     if (key === "__proto__" || key === "constructor" || key === "prototype") {
       return object;
     }
@@ -16248,7 +16248,7 @@ function baseSet(object, path2, value, customizer) {
       var objValue = nested[key];
       newValue = customizer ? customizer(objValue, key, nested) : void 0;
       if (newValue === void 0) {
-        newValue = isObject_default(objValue) ? objValue : isIndex_default(path2[index + 1]) ? [] : {};
+        newValue = isObject_default(objValue) ? objValue : isIndex_default(path3[index + 1]) ? [] : {};
       }
     }
     assignValue_default(nested, key, newValue);
@@ -16262,9 +16262,9 @@ var baseSet_default = baseSet;
 function basePickBy(object, paths, predicate) {
   var index = -1, length = paths.length, result = {};
   while (++index < length) {
-    var path2 = paths[index], value = baseGet_default(object, path2);
-    if (predicate(value, path2)) {
-      baseSet_default(result, castPath_default(path2, object), value);
+    var path3 = paths[index], value = baseGet_default(object, path3);
+    if (predicate(value, path3)) {
+      baseSet_default(result, castPath_default(path3, object), value);
     }
   }
   return result;
@@ -16280,8 +16280,8 @@ function pickBy(object, predicate) {
     return [prop];
   });
   predicate = baseIteratee_default(predicate);
-  return basePickBy_default(object, props, function(value, path2) {
-    return predicate(value, path2[0]);
+  return basePickBy_default(object, props, function(value, path3) {
+    return predicate(value, path3[0]);
   });
 }
 var pickBy_default = pickBy;
@@ -17878,12 +17878,12 @@ function assignCategoriesMapProp(tokenTypes) {
     singleAssignCategoriesToksMap([], currTokType);
   });
 }
-function singleAssignCategoriesToksMap(path2, nextNode) {
-  forEach_default(path2, (pathNode) => {
+function singleAssignCategoriesToksMap(path3, nextNode) {
+  forEach_default(path3, (pathNode) => {
     nextNode.categoryMatchesMap[pathNode.tokenTypeIdx] = true;
   });
   forEach_default(nextNode.CATEGORIES, (nextCategory) => {
-    const newPath = path2.concat(nextNode);
+    const newPath = path3.concat(nextNode);
     if (!includes_default(newPath, nextCategory)) {
       singleAssignCategoriesToksMap(newPath, nextCategory);
     }
@@ -18727,10 +18727,10 @@ var GastRefResolverVisitor = class extends GAstVisitor {
 
 // ../../../node_modules/chevrotain/lib/src/parse/grammar/interpreter.js
 var AbstractNextPossibleTokensWalker = class extends RestWalker {
-  constructor(topProd, path2) {
+  constructor(topProd, path3) {
     super();
     this.topProd = topProd;
-    this.path = path2;
+    this.path = path3;
     this.possibleTokTypes = [];
     this.nextProductionName = "";
     this.nextProductionOccurrence = 0;
@@ -18774,9 +18774,9 @@ var AbstractNextPossibleTokensWalker = class extends RestWalker {
   }
 };
 var NextAfterTokenWalker = class extends AbstractNextPossibleTokensWalker {
-  constructor(topProd, path2) {
-    super(topProd, path2);
-    this.path = path2;
+  constructor(topProd, path3) {
+    super(topProd, path3);
+    this.path = path3;
     this.nextTerminalName = "";
     this.nextTerminalOccurrence = 0;
     this.nextTerminalName = this.path.lastTok.name;
@@ -19384,10 +19384,10 @@ function initializeArrayOfArrays(size) {
   }
   return result;
 }
-function pathToHashKeys(path2) {
+function pathToHashKeys(path3) {
   let keys2 = [""];
-  for (let i = 0; i < path2.length; i++) {
-    const tokType = path2[i];
+  for (let i = 0; i < path3.length; i++) {
+    const tokType = path3[i];
     const longerKeys = [];
     for (let j = 0; j < keys2.length; j++) {
       const currShorterKey = keys2[j];
@@ -19627,7 +19627,7 @@ function validateRuleIsOverridden(ruleName, definedRulesNames, className) {
   }
   return errors;
 }
-function validateNoLeftRecursion(topRule, currRule, errMsgProvider, path2 = []) {
+function validateNoLeftRecursion(topRule, currRule, errMsgProvider, path3 = []) {
   const errors = [];
   const nextNonTerminals = getFirstNoneTerminal(currRule.definition);
   if (isEmpty_default(nextNonTerminals)) {
@@ -19639,15 +19639,15 @@ function validateNoLeftRecursion(topRule, currRule, errMsgProvider, path2 = []) 
       errors.push({
         message: errMsgProvider.buildLeftRecursionError({
           topLevelRule: topRule,
-          leftRecursionPath: path2
+          leftRecursionPath: path3
         }),
         type: ParserDefinitionErrorType.LEFT_RECURSION,
         ruleName
       });
     }
-    const validNextSteps = difference_default(nextNonTerminals, path2.concat([topRule]));
+    const validNextSteps = difference_default(nextNonTerminals, path3.concat([topRule]));
     const errorsFromNextSteps = flatMap_default(validNextSteps, (currRefRule) => {
-      const newPath = clone_default(path2);
+      const newPath = clone_default(path3);
       newPath.push(currRefRule);
       return validateNoLeftRecursion(topRule, currRefRule, errMsgProvider, newPath);
     });
@@ -22507,7 +22507,7 @@ var LLStarLookaheadStrategy = class extends LLkLookaheadStrategy {
       occurrence: prodOccurrence,
       prodType: "Alternation",
       rule
-    }), (currAlt) => map_default(currAlt, (path2) => path2[0]));
+    }), (currAlt) => map_default(currAlt, (path3) => path3[0]));
     if (isLL1Sequence(partialAlts, false) && !dynamicTokensEnabled) {
       const choiceToAlt = reduce_default(partialAlts, (result, currAlt, idx) => {
         forEach_default(currAlt, (currTokType) => {
@@ -22652,7 +22652,7 @@ function adaptivePredict(dfaCaches, decision, predicateSet, logging) {
 function performLookahead(dfa, s0, predicateSet, logging) {
   let previousD = s0;
   let i = 1;
-  const path2 = [];
+  const path3 = [];
   let t = this.LA(i++);
   while (true) {
     let d = getExistingTargetState(previousD, t);
@@ -22660,13 +22660,13 @@ function performLookahead(dfa, s0, predicateSet, logging) {
       d = computeLookaheadTarget.apply(this, [dfa, previousD, t, i, predicateSet, logging]);
     }
     if (d === DFA_ERROR) {
-      return buildAdaptivePredictError(path2, previousD, t);
+      return buildAdaptivePredictError(path3, previousD, t);
     }
     if (d.isAcceptState === true) {
       return d.prediction;
     }
     previousD = d;
-    path2.push(t);
+    path3.push(t);
     t = this.LA(i++);
   }
 }
@@ -22739,13 +22739,13 @@ function getProductionDslName2(prod) {
     throw Error("non exhaustive match");
   }
 }
-function buildAdaptivePredictError(path2, previous, current) {
+function buildAdaptivePredictError(path3, previous, current) {
   const nextTransitions = flatMap_default(previous.configs.elements, (e) => e.state.transitions);
   const nextTokenTypes = uniqBy_default(nextTransitions.filter((e) => e instanceof AtomTransition).map((e) => e.tokenType), (e) => e.tokenTypeIdx);
   return {
     actualToken: current,
     possibleTokenTypes: nextTokenTypes,
-    tokenPath: path2
+    tokenPath: path3
   };
 }
 function getExistingTargetState(state, token) {
@@ -26131,12 +26131,12 @@ var DefaultReferences = class {
     const nameNode = this.nameProvider.getNameNode(targetNode);
     if (nameNode) {
       const doc = getDocument(targetNode);
-      const path2 = this.nodeLocator.getAstNodePath(targetNode);
+      const path3 = this.nodeLocator.getAstNodePath(targetNode);
       return {
         sourceUri: doc.uri,
-        sourcePath: path2,
+        sourcePath: path3,
         targetUri: doc.uri,
-        targetPath: path2,
+        targetPath: path3,
         segment: toDocumentSegment(nameNode),
         local: true
       };
@@ -27144,9 +27144,9 @@ var DefaultAstNodeDescriptionProvider = class {
   }
   createDescription(node, name, document = getDocument(node)) {
     name !== null && name !== void 0 ? name : name = this.nameProvider.getName(node);
-    const path2 = this.astNodeLocator.getAstNodePath(node);
+    const path3 = this.astNodeLocator.getAstNodePath(node);
     if (!name) {
-      throw new Error(`Node at path ${path2} has no name.`);
+      throw new Error(`Node at path ${path3} has no name.`);
     }
     let nameNodeSegment;
     const nameSegmentGetter = () => {
@@ -27162,7 +27162,7 @@ var DefaultAstNodeDescriptionProvider = class {
       selectionSegment: toDocumentSegment(node.$cstNode),
       type: node.$type,
       documentUri: document.uri,
-      path: path2
+      path: path3
     };
   }
 };
@@ -27226,8 +27226,8 @@ var DefaultAstNodeLocator = class {
     }
     return $containerProperty;
   }
-  getAstNode(node, path2) {
-    const segments = path2.split(this.segmentSeparator);
+  getAstNode(node, path3) {
+    const segments = path3.split(this.segmentSeparator);
     return segments.reduce((previousValue, currentValue) => {
       if (!previousValue || currentValue.length === 0) {
         return previousValue;
@@ -29026,6 +29026,10 @@ var Native_Type_Name = "Native_Type_Name";
 function isNative_Type_Name(item) {
   return reflection2.isInstance(item, Native_Type_Name);
 }
+var Param_assignment = "Param_assignment";
+function isParam_assignment(item) {
+  return reflection2.isInstance(item, Param_assignment);
+}
 var RefFunctionOrBlockName = "RefFunctionOrBlockName";
 function isRefFunctionOrBlockName(item) {
   return reflection2.isInstance(item, RefFunctionOrBlockName);
@@ -29594,11 +29598,9 @@ var StAstReflection = class extends AbstractAstReflection {
             { name: "left" },
             { name: "operator" },
             { name: "params" },
-            { name: "prefixValidateElement" },
             { name: "prior" },
             { name: "refFunctionName" },
             { name: "right" },
-            { name: "suffixValidateElement" },
             { name: "value" }
           ]
         };
@@ -32906,6 +32908,8 @@ var import_node2 = __toESM(require_node3());
 var LdLSPServices = Symbol("LdLSPServices");
 
 // src/cache-complete.ts
+var import_node_fs = __toESM(require("fs"));
+var import_node_path = __toESM(require("path"));
 var import_vscode_languageserver_protocol2 = __toESM(require_main3());
 var CacheCompletionProvider = class extends DefaultCompletionProvider {
   constructor(services) {
@@ -32920,10 +32924,15 @@ var CacheCompletionProvider = class extends DefaultCompletionProvider {
     var _a;
     let baseCompletion = await super.getCompletion(document, params);
     let enumCompletionItems = this.getManualEnumCompletionItems(document, params);
-    if (enumCompletionItems.length === 0) {
+    let memberCompletionItems = await this.getManualMemberCompletionItems(document, params);
+    if (enumCompletionItems.length === 0 && memberCompletionItems.length === 0) {
       return baseCompletion;
     }
-    let mergedItems = [...(_a = baseCompletion == null ? void 0 : baseCompletion.items) != null ? _a : [], ...enumCompletionItems];
+    let mergedItems = this.mergeSupplementalItems((_a = baseCompletion == null ? void 0 : baseCompletion.items) != null ? _a : [], enumCompletionItems);
+    mergedItems = this.mergeOverrideItems(mergedItems, memberCompletionItems);
+    if (memberCompletionItems.length > 0) {
+      mergedItems = this.prioritizeItems(mergedItems, memberCompletionItems);
+    }
     return import_vscode_languageserver_protocol2.CompletionList.create(this.deduplicateItems(mergedItems), true);
   }
   completionFor(context, next, acceptor) {
@@ -33060,6 +33069,66 @@ var CacheCompletionProvider = class extends DefaultCompletionProvider {
     };
     return context.textDocument.getText(range).trim();
   }
+  mergeSupplementalItems(baseItems, supplementalItems) {
+    const merged = [...baseItems];
+    const indexByLabel = new Map(baseItems.map((item, index) => [item.label.toLowerCase(), index]));
+    supplementalItems.forEach((item) => {
+      var _a;
+      const normalized = item.label.toLowerCase();
+      const existingIndex = indexByLabel.get(normalized);
+      if (existingIndex !== void 0) {
+        const existing = merged[existingIndex];
+        if (this.shouldPreferSupplemental(existing, item)) {
+          merged[existingIndex] = {
+            ...existing,
+            detail: (_a = item.detail) != null ? _a : existing.detail
+          };
+        }
+        return;
+      }
+      indexByLabel.set(normalized, merged.length);
+      merged.push(item);
+    });
+    return merged;
+  }
+  mergeOverrideItems(baseItems, overrideItems) {
+    const merged = [...baseItems];
+    const indexByLabel = new Map(baseItems.map((item, index) => [item.label.toLowerCase(), index]));
+    overrideItems.forEach((item) => {
+      const normalized = item.label.toLowerCase();
+      const existingIndex = indexByLabel.get(normalized);
+      if (existingIndex !== void 0) {
+        merged[existingIndex] = item;
+      } else {
+        indexByLabel.set(normalized, merged.length);
+        merged.push(item);
+      }
+    });
+    return merged;
+  }
+  prioritizeItems(baseItems, orderedItems) {
+    const orderedLabels = new Set(orderedItems.map((item) => item.label.toLowerCase()));
+    const preferredItems = this.deduplicateItems(orderedItems);
+    const remainingItems = baseItems.filter((item) => !orderedLabels.has(item.label.toLowerCase()));
+    return [...preferredItems, ...remainingItems];
+  }
+  shouldPreferSupplemental(existing, supplemental) {
+    var _a, _b;
+    const existingDetail = (_a = existing.detail) != null ? _a : "";
+    const supplementalDetail = (_b = supplemental.detail) != null ? _b : "";
+    if (!supplementalDetail) {
+      return false;
+    }
+    if (!existingDetail) {
+      return true;
+    }
+    const existingHasIoHint = existingDetail.includes("\u8F93\u5165\u53C2\u6570") || existingDetail.includes("\u8F93\u51FA\u53C2\u6570");
+    const supplementalHasIoHint = supplementalDetail.includes("\u8F93\u5165\u53C2\u6570") || supplementalDetail.includes("\u8F93\u51FA\u53C2\u6570");
+    if (supplementalHasIoHint && !existingHasIoHint) {
+      return true;
+    }
+    return supplementalDetail.length > existingDetail.length;
+  }
   getManualEnumCompletionItems(document, params) {
     var _a;
     let textDocument = document.textDocument;
@@ -33084,6 +33153,38 @@ var CacheCompletionProvider = class extends DefaultCompletionProvider {
       features: []
     };
     return this.buildEnumMemberCompletionItems(enumTypeName, partialMemberName, syntheticContext);
+  }
+  async getManualMemberCompletionItems(document, params) {
+    let textDocument = document.textDocument;
+    let textBeforeCursor = textDocument.getText({
+      start: import_vscode_languageserver_protocol2.Position.create(0, 0),
+      end: params.position
+    });
+    let match = textBeforeCursor.match(/([_a-zA-Z][\w_]*(?:\s*\.\s*[_a-zA-Z][\w_]*)*)\s*\.\s*$/);
+    if (!match) {
+      return [];
+    }
+    let chain = match[1].split(".").map((part) => part.trim()).filter(Boolean);
+    if (chain.length === 0) {
+      return [];
+    }
+    let members = await this.getMembersForChain(chain, document);
+    if (members.length === 0) {
+      return [];
+    }
+    const orderedMembers = [...members].sort((left, right) => {
+      var _a, _b;
+      return ((_a = left.sortText) != null ? _a : "").localeCompare((_b = right.sortText) != null ? _b : "");
+    });
+    return orderedMembers.map((member) => {
+      var _a;
+      return {
+        label: member.label,
+        kind: import_vscode_languageserver_protocol2.CompletionItemKind.Field,
+        detail: member.detail,
+        sortText: (_a = member.sortText) != null ? _a : "0"
+      };
+    });
   }
   getRootNode(context) {
     let root2 = context.document.parseResult.value;
@@ -33118,6 +33219,305 @@ var CacheCompletionProvider = class extends DefaultCompletionProvider {
       }
     }
     return void 0;
+  }
+  async getWorkspaceStructByName(typeName, document) {
+    if (!typeName) {
+      return void 0;
+    }
+    const siblingStruct = await this.getSiblingStructByName(typeName, document);
+    if (siblingStruct) {
+      return siblingStruct;
+    }
+    let indexManager = this.services.shared.workspace.IndexManager;
+    let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+    let astNodeLocator = this.services.workspace.AstNodeLocator;
+    for (const description of indexManager.allElements("StructsList")) {
+      if (description.name.toLowerCase() === typeName.toLowerCase()) {
+        let targetDocument = langiumDocuments.getDocument(description.documentUri);
+        try {
+          if (!targetDocument) {
+            if (description.documentUri.fsPath && !import_node_fs.default.existsSync(description.documentUri.fsPath)) {
+              continue;
+            }
+            targetDocument = await langiumDocuments.getOrCreateDocument(description.documentUri);
+          }
+          if (targetDocument) {
+            let node = astNodeLocator.getAstNode(targetDocument.parseResult.value, description.path);
+            if (node) {
+              return node;
+            }
+          }
+        } catch {
+          continue;
+        }
+      }
+    }
+    return void 0;
+  }
+  async getSiblingStructByName(typeName, document) {
+    var _a;
+    if (!(document == null ? void 0 : document.uri.fsPath)) {
+      return void 0;
+    }
+    let dir = import_node_path.default.dirname(document.uri.fsPath);
+    if (!import_node_fs.default.existsSync(dir)) {
+      return void 0;
+    }
+    let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+    let candidates = [];
+    for (const fileName of import_node_fs.default.readdirSync(dir)) {
+      if (!fileName.toLowerCase().endsWith(".st")) {
+        continue;
+      }
+      let uri = URI2.file(import_node_path.default.join(dir, fileName));
+      let targetDocument = await langiumDocuments.getOrCreateDocument(uri);
+      let root2 = targetDocument.parseResult.value;
+      if (root2.$type === "St") {
+        let struct = root2.types_struct.find((item) => item.name.toLowerCase() === typeName.toLowerCase());
+        if (struct) {
+          candidates.push({ fileName, struct });
+        }
+      }
+    }
+    return (_a = this.selectPreferredSiblingType(typeName, candidates)) == null ? void 0 : _a.struct;
+  }
+  async getWorkspaceFunctionBlockByName(typeName, document) {
+    if (!typeName) {
+      return void 0;
+    }
+    const siblingFunctionBlock = await this.getSiblingFunctionBlockByName(typeName, document);
+    if (siblingFunctionBlock) {
+      return siblingFunctionBlock;
+    }
+    let indexManager = this.services.shared.workspace.IndexManager;
+    let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+    let astNodeLocator = this.services.workspace.AstNodeLocator;
+    for (const description of indexManager.allElements("FunctionBlock")) {
+      if (description.name.toLowerCase() === typeName.toLowerCase()) {
+        let targetDocument = langiumDocuments.getDocument(description.documentUri);
+        try {
+          if (!targetDocument) {
+            if (description.documentUri.fsPath && !import_node_fs.default.existsSync(description.documentUri.fsPath)) {
+              continue;
+            }
+            targetDocument = await langiumDocuments.getOrCreateDocument(description.documentUri);
+          }
+          if (targetDocument) {
+            let node = astNodeLocator.getAstNode(targetDocument.parseResult.value, description.path);
+            if (node) {
+              return node;
+            }
+          }
+        } catch {
+          continue;
+        }
+      }
+    }
+    return void 0;
+  }
+  async getSiblingFunctionBlockByName(typeName, document) {
+    var _a;
+    if (!(document == null ? void 0 : document.uri.fsPath)) {
+      return void 0;
+    }
+    let dir = import_node_path.default.dirname(document.uri.fsPath);
+    if (!import_node_fs.default.existsSync(dir)) {
+      return void 0;
+    }
+    let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+    let candidates = [];
+    for (const fileName of import_node_fs.default.readdirSync(dir)) {
+      if (!fileName.toLowerCase().endsWith(".st")) {
+        continue;
+      }
+      let uri = URI2.file(import_node_path.default.join(dir, fileName));
+      let targetDocument = await langiumDocuments.getOrCreateDocument(uri);
+      let root2 = targetDocument.parseResult.value;
+      if (root2.$type === "St") {
+        let functionBlock = root2.function_block.find((item) => item.name.toLowerCase() === typeName.toLowerCase());
+        if (functionBlock) {
+          candidates.push({ fileName, functionBlock });
+        }
+      }
+    }
+    return (_a = this.selectPreferredSiblingType(typeName, candidates)) == null ? void 0 : _a.functionBlock;
+  }
+  selectPreferredSiblingType(typeName, candidates) {
+    if (candidates.length === 0) {
+      return void 0;
+    }
+    const normalizedTypeName = typeName.toLowerCase();
+    return [...candidates].sort((left, right) => {
+      const leftBaseName = import_node_path.default.basename(left.fileName, import_node_path.default.extname(left.fileName)).toLowerCase();
+      const rightBaseName = import_node_path.default.basename(right.fileName, import_node_path.default.extname(right.fileName)).toLowerCase();
+      const leftScore = leftBaseName === normalizedTypeName ? 0 : 1;
+      const rightScore = rightBaseName === normalizedTypeName ? 0 : 1;
+      if (leftScore !== rightScore) {
+        return leftScore - rightScore;
+      }
+      return left.fileName.localeCompare(right.fileName);
+    })[0];
+  }
+  async getMembersForChain(chain, document) {
+    let typeName = this.getVariableTypeByName(chain[0], document);
+    if (!typeName) {
+      return [];
+    }
+    for (let i = 1; i < chain.length; i++) {
+      typeName = await this.getMemberTypeByName(typeName, chain[i], document);
+      if (!typeName) {
+        return [];
+      }
+    }
+    return await this.getMemberEntriesForType(typeName, document);
+  }
+  getVariableTypeByName(variableName, document) {
+    let root2 = document.parseResult.value;
+    if (root2.$type !== "St") {
+      return void 0;
+    }
+    let st3 = root2;
+    let declarations = [];
+    st3.program.forEach((program) => {
+      program.inputs.forEach((input) => declarations.push(...input.items));
+    });
+    st3.function_block.forEach((block2) => {
+      block2.varInputs.forEach((part) => declarations.push(...part.items));
+      block2.varOutputs.forEach((part) => declarations.push(...part.items));
+      block2.varLocals.forEach((part) => declarations.push(...part.items));
+    });
+    st3.st_function.forEach((fn) => {
+      fn.varInputs.forEach((part) => declarations.push(...part.items));
+      fn.varOutputs.forEach((part) => declarations.push(...part.items));
+      fn.varLocals.forEach((part) => declarations.push(...part.items));
+    });
+    for (const decl of declarations) {
+      if (decl.variables === variableName || decl.nextVariables.includes(variableName)) {
+        let expectedType = "";
+        let basicType = basicDataType(expectedType, decl.typeName);
+        return basicType || handleNoAcceptNativeTypeName(decl.typeName, expectedType);
+      }
+    }
+    return void 0;
+  }
+  async getMemberTypeByName(typeName, memberName, document) {
+    var _a;
+    let localStruct = (_a = this.getLocalStructByName(typeName, document)) != null ? _a : await this.getWorkspaceStructByName(typeName, document);
+    if (localStruct) {
+      for (const item of localStruct.items) {
+        if (item.variables === memberName || item.nextVariables.includes(memberName)) {
+          let expectedType = "";
+          let basicType = basicDataType(expectedType, item.typeName);
+          return basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
+        }
+      }
+    }
+    let localFunctionBlock = await this.getWorkspaceFunctionBlockByName(typeName, document);
+    if (localFunctionBlock) {
+      let allDecls = [...localFunctionBlock.varInputs, ...localFunctionBlock.varOutputs, ...localFunctionBlock.varLocals];
+      for (const declGroup of allDecls) {
+        for (const item of declGroup.items) {
+          if (item.variables === memberName || item.nextVariables.includes(memberName)) {
+            let expectedType = "";
+            let basicType = basicDataType(expectedType, item.typeName);
+            return basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
+          }
+        }
+      }
+    }
+    let external = getRelatedElementAndLangiumDoc(typeName);
+    if (external) {
+      let [elementNode] = external;
+      let member = elementNode == null ? void 0 : elementNode.varDecls.find((item) => item.varName === memberName);
+      return member == null ? void 0 : member.varType;
+    }
+    return void 0;
+  }
+  getLocalStructByName(typeName, document) {
+    if (!typeName) {
+      return void 0;
+    }
+    let root2 = document.parseResult.value;
+    if (root2.$type !== "St") {
+      return void 0;
+    }
+    return root2.types_struct.find((item) => item.name.toLowerCase() === typeName.toLowerCase());
+  }
+  async getMemberEntriesForType(typeName, document) {
+    var _a, _b;
+    let localStruct = (_a = this.getLocalStructByName(typeName, document)) != null ? _a : await this.getWorkspaceStructByName(typeName, document);
+    if (localStruct) {
+      let entries = [];
+      let sequence = 0;
+      for (const item of localStruct.items) {
+        let expectedType = "";
+        let basicType = basicDataType(expectedType, item.typeName);
+        let detail = basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
+        entries.push({ label: item.variables, detail, sortText: this.buildMemberSortText(1, sequence++) });
+        item.nextVariables.forEach(
+          (nextVariable) => entries.push({ label: nextVariable, detail, sortText: this.buildMemberSortText(1, sequence++) })
+        );
+      }
+      return entries;
+    }
+    let functionBlock = await this.getWorkspaceFunctionBlockByName(typeName, document);
+    if (functionBlock) {
+      let entries = [];
+      let groups = [
+        ...functionBlock.varInputs.map((group) => ({ kind: "VAR_INPUT", items: group.items })),
+        ...functionBlock.varOutputs.map((group) => ({ kind: "VAR_OUTPUT", items: group.items })),
+        ...functionBlock.varLocals.map((group) => ({ kind: "VAR", items: group.items }))
+      ];
+      let sequence = 0;
+      for (const group of groups) {
+        for (const item of group.items) {
+          let expectedType = "";
+          let basicType = basicDataType(expectedType, item.typeName);
+          let detailType = basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
+          let detail = this.getVarDeclDetail({
+            $type: "VarDeclaration",
+            varName: item.variables,
+            varType: detailType,
+            varGlobalType: group.kind
+          });
+          entries.push({
+            label: item.variables,
+            detail,
+            sortText: this.buildMemberSortText(this.getMemberGroupRank(group.kind), sequence++)
+          });
+          item.nextVariables.forEach(
+            (nextVariable) => entries.push({
+              label: nextVariable,
+              detail,
+              sortText: this.buildMemberSortText(this.getMemberGroupRank(group.kind), sequence++)
+            })
+          );
+        }
+      }
+      return entries;
+    }
+    let external = getRelatedElementAndLangiumDoc(typeName);
+    if (external) {
+      let [elementNode] = external;
+      return ((_b = elementNode == null ? void 0 : elementNode.varDecls) != null ? _b : []).map((item, index) => ({
+        label: item.varName,
+        detail: this.getVarDeclDetail(item),
+        sortText: this.buildMemberSortText(this.getMemberGroupRank(item.varGlobalType), index)
+      }));
+    }
+    return [];
+  }
+  getMemberGroupRank(varGlobalType) {
+    if (varGlobalType === "VAR_INPUT") {
+      return 0;
+    }
+    if (varGlobalType === "VAR_OUTPUT") {
+      return 1;
+    }
+    return 2;
+  }
+  buildMemberSortText(groupRank, sequence) {
+    return `${String(groupRank).padStart(2, "0")}_${String(sequence).padStart(4, "0")}`;
   }
   getEnumMembers(enumTypeName, context) {
     var _a;
@@ -33784,7 +34184,7 @@ var CacheReference = class extends DefaultReferences {
 var import_vscode_languageserver12 = __toESM(require_main4());
 var CacheSignatureHelpProvider = class extends AbstractSignatureHelpProvider {
   getSignatureFromElement(element, cancelToken) {
-    var _a;
+    var _a, _b, _c, _d, _e;
     if (isInvoke_subrule(element)) {
       let container = element.$container;
       if (isFunction_invoke_or_assign(container)) {
@@ -33804,6 +34204,183 @@ var CacheSignatureHelpProvider = class extends AbstractSignatureHelpProvider {
             returnType = basicDataType(returnType, returnTypeName);
             if (returnType === void 0) {
               returnType = (_a = returnTypeName.Identifier) == null ? void 0 : _a.$refText;
+            }
+            let signatureInformationArr = [];
+            let signatureInformationLabel = "";
+            varInputs.forEach((varInput) => {
+              let items = varInput.items;
+              for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                let nextVariableArr = item.nextVariables;
+                let padding = getPadding(item.variables, max);
+                let expectType = "";
+                let typeName = item.typeName;
+                expectType = basicDataType(expectType, typeName);
+                signatureInformationLabel += `
+VAR_INPUT${" ".repeat(8)}${item.variables}${" ".repeat(padding)}${expectType}`;
+                if (nextVariableArr.length > 0) {
+                  nextVariableArr.forEach((nextVariable) => {
+                    let nextVarPadding = getPadding(nextVariable, max);
+                    signatureInformationLabel += `
+VAR_INPUT${" ".repeat(
+                      8
+                    )}${nextVariable}${" ".repeat(
+                      nextVarPadding
+                    )}${expectType}`;
+                  });
+                }
+              }
+            });
+            varOutputs.forEach((varOutput) => {
+              let items = varOutput.items;
+              for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                let nextVariableArr = item.nextVariables;
+                let padding = getPadding(item.variables, max);
+                let expectType = "";
+                let typeName = item.typeName;
+                expectType = basicDataType(expectType, typeName);
+                signatureInformationLabel += `
+VAR_OUTPUT${" ".repeat(7)}${item.variables}${" ".repeat(padding)}${expectType}`;
+                if (nextVariableArr.length > 0) {
+                  nextVariableArr.forEach((nextVariable) => {
+                    let nextVarPadding = getPadding(nextVariable, max);
+                    signatureInformationLabel += `
+VAR_OUTPUT${" ".repeat(
+                      7
+                    )}${nextVariable}${" ".repeat(
+                      nextVarPadding
+                    )}${expectType}`;
+                  });
+                }
+              }
+            });
+            let markdown = {
+              kind: import_vscode_languageserver12.MarkupKind.Markdown,
+              value: ["```typescript", signatureInformationLabel, "```"].join(
+                "\n"
+              )
+            };
+            let signatureInformation = {
+              label: `FUNCTION ${functionName}:${returnType}
+`,
+              documentation: markdown
+            };
+            signatureInformationArr.push(signatureInformation);
+            let signatureHelp = {
+              signatures: signatureInformationArr
+            };
+            return signatureHelp;
+          } else if (isVarDeclarationInit(refNode)) {
+            let typeName = refNode.typeName;
+            let identifier = typeName.Identifier;
+            if (identifier) {
+              let refFbNode = identifier.ref;
+              if (isFunctionBlock(refFbNode)) {
+                let varInputs = refFbNode.varInputs;
+                let varOutputs = refFbNode.varOutputs;
+                let signatureInformationArr = [];
+                let signatureInformationLabel = "";
+                let inMax = findMaxVariablesLength(varInputs);
+                let outMax = findMaxVariablesLength(varOutputs);
+                let max = Math.max(inMax, outMax);
+                varInputs.forEach((varInput) => {
+                  let items = varInput.items;
+                  for (let i = 0; i < items.length; i++) {
+                    const item = items[i];
+                    let nextVariableArr = item.nextVariables;
+                    let padding = getPadding(item.variables, max);
+                    let expectType = "";
+                    let typeName2 = item.typeName;
+                    expectType = basicDataType(expectType, typeName2);
+                    signatureInformationLabel += `
+VAR_INPUT${" ".repeat(8)}${item.variables}${" ".repeat(padding)}${expectType}`;
+                    if (nextVariableArr.length > 0) {
+                      nextVariableArr.forEach((nextVariable) => {
+                        let nextVarPadding = getPadding(nextVariable, max);
+                        signatureInformationLabel += `
+VAR_INPUT${" ".repeat(
+                          8
+                        )}${nextVariable}${" ".repeat(
+                          nextVarPadding
+                        )}${expectType}`;
+                      });
+                    }
+                  }
+                });
+                varOutputs.forEach((varOutput) => {
+                  let items = varOutput.items;
+                  for (let i = 0; i < items.length; i++) {
+                    const item = items[i];
+                    let nextVariableArr = item.nextVariables;
+                    let padding = getPadding(item.variables, max);
+                    let expectType = "";
+                    let typeName2 = item.typeName;
+                    expectType = basicDataType(expectType, typeName2);
+                    signatureInformationLabel += `
+VAR_OUTPUT${" ".repeat(7)}${item.variables}${" ".repeat(padding)}${expectType}`;
+                    if (nextVariableArr.length > 0) {
+                      nextVariableArr.forEach((nextVariable) => {
+                        let nextVarPadding = getPadding(nextVariable, max);
+                        signatureInformationLabel += `
+VAR_OUTPUT${" ".repeat(
+                          7
+                        )}${nextVariable}${" ".repeat(
+                          nextVarPadding
+                        )}${expectType}`;
+                      });
+                    }
+                  }
+                });
+                let markdown = {
+                  kind: import_vscode_languageserver12.MarkupKind.Markdown,
+                  value: [
+                    "```typescript",
+                    signatureInformationLabel,
+                    "```"
+                  ].join("\n")
+                };
+                let signatureInformation = {
+                  label: `FUNCTION_BLOCK ${refFbNode.name}
+`,
+                  documentation: markdown
+                };
+                signatureInformationArr.push(signatureInformation);
+                let signatureHelp = {
+                  signatures: signatureInformationArr
+                };
+                return signatureHelp;
+              }
+            }
+            let cacheSignatureHelp2 = this.getCacheSignatureHelp(
+              this.getVarDeclarationCacheName(refNode)
+            );
+            if (cacheSignatureHelp2) {
+              return cacheSignatureHelp2;
+            }
+          }
+        }
+        let cacheSignatureHelp = this.getCacheSignatureHelp(cacheName);
+        if (cacheSignatureHelp) {
+          return cacheSignatureHelp;
+        }
+      } else if (isFunctionExpression(container)) {
+        let refFunctionName = container.refFunctionName;
+        let refNode = (_b = refFunctionName.refFunctionName) == null ? void 0 : _b.ref;
+        let cacheName = (_d = (_c = refFunctionName.refFunctionName) == null ? void 0 : _c.$refText) != null ? _d : refFunctionName.Cache_type_name;
+        if (refNode) {
+          if (isStFunction(refNode)) {
+            let varInputs = refNode.varInputs;
+            let varOutputs = refNode.varOutputs;
+            let inMax = findMaxVariablesLength(varInputs);
+            let outMax = findMaxVariablesLength(varOutputs);
+            let max = Math.max(inMax, outMax);
+            let functionName = refNode.name;
+            let returnTypeName = refNode.variable_type;
+            let returnType = "";
+            returnType = basicDataType(returnType, returnTypeName);
+            if (returnType === void 0) {
+              returnType = (_e = returnTypeName.Identifier) == null ? void 0 : _e.$refText;
             }
             let signatureInformationArr = [];
             let signatureInformationLabel = "";
@@ -34235,34 +34812,30 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             }
           },
           {
-            "$type": "Group",
-            "elements": [
-              {
-                "$type": "Assignment",
-                "feature": "inputs",
-                "operator": "+=",
-                "terminal": {
-                  "$type": "RuleCall",
-                  "rule": {
-                    "$ref": "#/rules@11"
-                  },
-                  "arguments": []
-                }
+            "$type": "Assignment",
+            "feature": "inputs",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@11"
               },
-              {
-                "$type": "Assignment",
-                "feature": "stStatements",
-                "operator": "=",
-                "terminal": {
-                  "$type": "RuleCall",
-                  "rule": {
-                    "$ref": "#/rules@74"
-                  },
-                  "arguments": []
-                }
-              }
-            ],
+              "arguments": []
+            },
             "cardinality": "*"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "stStatements",
+            "operator": "=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@74"
+              },
+              "arguments": []
+            },
+            "cardinality": "?"
           },
           {
             "$type": "Keyword",
@@ -34294,7 +34867,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@114"
+                "$ref": "#/rules@115"
               },
               "arguments": []
             }
@@ -34316,63 +34889,58 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             }
           },
           {
-            "$type": "Group",
+            "$type": "Alternatives",
             "elements": [
               {
-                "$type": "Alternatives",
-                "elements": [
-                  {
-                    "$type": "Assignment",
-                    "feature": "varInputs",
-                    "operator": "+=",
-                    "terminal": {
-                      "$type": "RuleCall",
-                      "rule": {
-                        "$ref": "#/rules@12"
-                      },
-                      "arguments": []
-                    }
-                  },
-                  {
-                    "$type": "Assignment",
-                    "feature": "varOutputs",
-                    "operator": "+=",
-                    "terminal": {
-                      "$type": "RuleCall",
-                      "rule": {
-                        "$ref": "#/rules@13"
-                      },
-                      "arguments": []
-                    }
-                  },
-                  {
-                    "$type": "Assignment",
-                    "feature": "varLocals",
-                    "operator": "+=",
-                    "terminal": {
-                      "$type": "RuleCall",
-                      "rule": {
-                        "$ref": "#/rules@14"
-                      },
-                      "arguments": []
-                    }
-                  }
-                ],
-                "cardinality": "*"
-              },
-              {
                 "$type": "Assignment",
-                "feature": "statementList",
+                "feature": "varInputs",
                 "operator": "+=",
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@75"
+                    "$ref": "#/rules@12"
+                  },
+                  "arguments": []
+                }
+              },
+              {
+                "$type": "Assignment",
+                "feature": "varOutputs",
+                "operator": "+=",
+                "terminal": {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$ref": "#/rules@13"
+                  },
+                  "arguments": []
+                }
+              },
+              {
+                "$type": "Assignment",
+                "feature": "varLocals",
+                "operator": "+=",
+                "terminal": {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$ref": "#/rules@14"
                   },
                   "arguments": []
                 }
               }
             ],
+            "cardinality": "*"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "statementList",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@75"
+              },
+              "arguments": []
+            },
             "cardinality": "*"
           },
           {
@@ -34401,7 +34969,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@114"
+                "$ref": "#/rules@115"
               },
               "arguments": []
             }
@@ -34675,7 +35243,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@114"
+              "$ref": "#/rules@115"
             },
             "arguments": []
           },
@@ -34708,14 +35276,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@103"
-                },
-                "arguments": []
-              },
-              {
-                "$type": "RuleCall",
-                "rule": {
-                  "$ref": "#/rules@112"
+                  "$ref": "#/rules@104"
                 },
                 "arguments": []
               },
@@ -34729,7 +35290,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@107"
+                  "$ref": "#/rules@114"
+                },
+                "arguments": []
+              },
+              {
+                "$type": "RuleCall",
+                "rule": {
+                  "$ref": "#/rules@108"
                 },
                 "arguments": []
               }
@@ -34741,14 +35309,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@135"
+                  "$ref": "#/rules@136"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@114"
+                  "$ref": "#/rules@115"
                 },
                 "arguments": []
               }
@@ -34800,82 +35368,77 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@114"
+                "$ref": "#/rules@115"
               },
               "arguments": []
             }
           },
           {
-            "$type": "Group",
+            "$type": "Alternatives",
             "elements": [
               {
-                "$type": "Alternatives",
-                "elements": [
-                  {
-                    "$type": "Assignment",
-                    "feature": "varInputs",
-                    "operator": "+=",
-                    "terminal": {
-                      "$type": "RuleCall",
-                      "rule": {
-                        "$ref": "#/rules@12"
-                      },
-                      "arguments": []
-                    }
-                  },
-                  {
-                    "$type": "Assignment",
-                    "feature": "varOutputs",
-                    "operator": "+=",
-                    "terminal": {
-                      "$type": "RuleCall",
-                      "rule": {
-                        "$ref": "#/rules@13"
-                      },
-                      "arguments": []
-                    }
-                  },
-                  {
-                    "$type": "Assignment",
-                    "feature": "varLocals",
-                    "operator": "+=",
-                    "terminal": {
-                      "$type": "RuleCall",
-                      "rule": {
-                        "$ref": "#/rules@14"
-                      },
-                      "arguments": []
-                    }
-                  }
-                ],
-                "cardinality": "*"
-              },
-              {
                 "$type": "Assignment",
-                "feature": "methods",
+                "feature": "varInputs",
                 "operator": "+=",
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@5"
+                    "$ref": "#/rules@12"
                   },
                   "arguments": []
-                },
-                "cardinality": "*"
+                }
               },
               {
                 "$type": "Assignment",
-                "feature": "statementList",
+                "feature": "varOutputs",
                 "operator": "+=",
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@75"
+                    "$ref": "#/rules@13"
+                  },
+                  "arguments": []
+                }
+              },
+              {
+                "$type": "Assignment",
+                "feature": "varLocals",
+                "operator": "+=",
+                "terminal": {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$ref": "#/rules@14"
                   },
                   "arguments": []
                 }
               }
             ],
+            "cardinality": "*"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "methods",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@5"
+              },
+              "arguments": []
+            },
+            "cardinality": "*"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "statementList",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@75"
+              },
+              "arguments": []
+            },
             "cardinality": "*"
           },
           {
@@ -35143,7 +35706,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@114"
+                "$ref": "#/rules@115"
               },
               "arguments": []
             }
@@ -35246,7 +35809,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@134"
+                  "$ref": "#/rules@135"
                 },
                 "arguments": []
               }
@@ -35358,7 +35921,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@134"
+                  "$ref": "#/rules@135"
                 },
                 "arguments": []
               }
@@ -35497,7 +36060,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@114"
+                "$ref": "#/rules@115"
               },
               "arguments": []
             }
@@ -35670,7 +36233,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@135"
+                    "$ref": "#/rules@136"
                   },
                   "arguments": []
                 }
@@ -35823,7 +36386,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
         "terminal": {
           "$type": "RuleCall",
           "rule": {
-            "$ref": "#/rules@114"
+            "$ref": "#/rules@115"
           },
           "arguments": []
         }
@@ -35848,7 +36411,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@102"
+                "$ref": "#/rules@103"
               },
               "arguments": []
             }
@@ -35860,7 +36423,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@105"
+                "$ref": "#/rules@106"
               },
               "arguments": []
             }
@@ -35872,7 +36435,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@108"
+                "$ref": "#/rules@109"
               },
               "arguments": []
             }
@@ -35884,7 +36447,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@109"
+                "$ref": "#/rules@110"
               },
               "arguments": []
             }
@@ -35896,7 +36459,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@106"
+                "$ref": "#/rules@107"
               },
               "arguments": []
             }
@@ -35908,7 +36471,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@104"
+                "$ref": "#/rules@105"
               },
               "arguments": []
             }
@@ -35920,7 +36483,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@112"
+                "$ref": "#/rules@113"
               },
               "arguments": []
             }
@@ -35932,7 +36495,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@113"
+                "$ref": "#/rules@114"
               },
               "arguments": []
             }
@@ -35947,7 +36510,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                 {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@110"
+                    "$ref": "#/rules@111"
                   },
                   "arguments": []
                 },
@@ -35968,7 +36531,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                 {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@111"
+                    "$ref": "#/rules@112"
                   },
                   "arguments": []
                 },
@@ -35998,7 +36561,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               "terminal": {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@114"
+                  "$ref": "#/rules@115"
                 },
                 "arguments": []
               },
@@ -36012,7 +36575,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@103"
+                "$ref": "#/rules@104"
               },
               "arguments": []
             }
@@ -36126,7 +36689,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@135"
+              "$ref": "#/rules@136"
             },
             "arguments": []
           }
@@ -36147,7 +36710,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@135"
+          "$ref": "#/rules@136"
         },
         "arguments": []
       },
@@ -36168,7 +36731,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@117"
+              "$ref": "#/rules@118"
+            },
+            "arguments": []
+          },
+          {
+            "$type": "RuleCall",
+            "rule": {
+              "$ref": "#/rules@120"
             },
             "arguments": []
           },
@@ -36176,13 +36746,6 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "$type": "RuleCall",
             "rule": {
               "$ref": "#/rules@119"
-            },
-            "arguments": []
-          },
-          {
-            "$type": "RuleCall",
-            "rule": {
-              "$ref": "#/rules@118"
             },
             "arguments": []
           }
@@ -36231,7 +36794,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@117"
+                  "$ref": "#/rules@118"
+                },
+                "arguments": []
+              },
+              {
+                "$type": "RuleCall",
+                "rule": {
+                  "$ref": "#/rules@120"
                 },
                 "arguments": []
               },
@@ -36239,13 +36809,6 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                 "$type": "RuleCall",
                 "rule": {
                   "$ref": "#/rules@119"
-                },
-                "arguments": []
-              },
-              {
-                "$type": "RuleCall",
-                "rule": {
-                  "$ref": "#/rules@118"
                 },
                 "arguments": []
               }
@@ -36273,7 +36836,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@106"
+                  "$ref": "#/rules@107"
                 },
                 "arguments": []
               },
@@ -36296,7 +36859,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@117"
+                  "$ref": "#/rules@118"
+                },
+                "arguments": []
+              },
+              {
+                "$type": "RuleCall",
+                "rule": {
+                  "$ref": "#/rules@120"
                 },
                 "arguments": []
               },
@@ -36304,13 +36874,6 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                 "$type": "RuleCall",
                 "rule": {
                   "$ref": "#/rules@119"
-                },
-                "arguments": []
-              },
-              {
-                "$type": "RuleCall",
-                "rule": {
-                  "$ref": "#/rules@118"
                 },
                 "arguments": []
               }
@@ -36335,14 +36898,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@105"
+              "$ref": "#/rules@106"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@102"
+              "$ref": "#/rules@103"
             },
             "arguments": []
           }
@@ -36368,7 +36931,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@104"
+                  "$ref": "#/rules@105"
                 },
                 "arguments": []
               },
@@ -36396,14 +36959,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@135"
+                  "$ref": "#/rules@136"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@116"
+                  "$ref": "#/rules@117"
                 },
                 "arguments": [],
                 "cardinality": "?"
@@ -36427,7 +36990,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@107"
+          "$ref": "#/rules@108"
         },
         "arguments": []
       },
@@ -36449,14 +37012,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@120"
+              "$ref": "#/rules@121"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@121"
+              "$ref": "#/rules@122"
             },
             "arguments": []
           }
@@ -36640,7 +37203,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@135"
+                "$ref": "#/rules@136"
               },
               "arguments": []
             }
@@ -36656,7 +37219,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@135"
+                "$ref": "#/rules@136"
               },
               "arguments": []
             }
@@ -36683,7 +37246,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@112"
+                  "$ref": "#/rules@113"
                 },
                 "arguments": []
               },
@@ -36777,7 +37340,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@122"
+          "$ref": "#/rules@123"
         },
         "arguments": []
       },
@@ -36798,7 +37361,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@124"
+              "$ref": "#/rules@125"
             },
             "arguments": []
           },
@@ -36829,7 +37392,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@123"
+              "$ref": "#/rules@124"
             },
             "arguments": []
           },
@@ -36860,7 +37423,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@126"
+              "$ref": "#/rules@127"
             },
             "arguments": []
           },
@@ -36891,7 +37454,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@125"
+              "$ref": "#/rules@126"
             },
             "arguments": []
           },
@@ -36925,7 +37488,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@111"
+                  "$ref": "#/rules@112"
                 },
                 "arguments": []
               },
@@ -37008,7 +37571,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@135"
+          "$ref": "#/rules@136"
         },
         "arguments": []
       },
@@ -37026,7 +37589,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@135"
+          "$ref": "#/rules@136"
         },
         "arguments": []
       },
@@ -37047,7 +37610,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@135"
+              "$ref": "#/rules@136"
             },
             "arguments": []
           },
@@ -37061,7 +37624,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@135"
+                  "$ref": "#/rules@136"
                 },
                 "arguments": []
               }
@@ -37087,7 +37650,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@113"
+              "$ref": "#/rules@114"
             },
             "arguments": []
           },
@@ -37163,7 +37726,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@135"
+          "$ref": "#/rules@136"
         },
         "arguments": []
       },
@@ -37181,7 +37744,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@135"
+          "$ref": "#/rules@136"
         },
         "arguments": []
       },
@@ -37199,7 +37762,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@135"
+          "$ref": "#/rules@136"
         },
         "arguments": []
       },
@@ -37223,7 +37786,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@110"
+                  "$ref": "#/rules@111"
                 },
                 "arguments": []
               },
@@ -37792,7 +38355,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@97"
+              "$ref": "#/rules@98"
             },
             "arguments": []
           },
@@ -37824,7 +38387,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@97"
+                    "$ref": "#/rules@98"
                   },
                   "arguments": []
                 }
@@ -37958,7 +38521,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@98"
+              "$ref": "#/rules@99"
             },
             "arguments": []
           }
@@ -38003,7 +38566,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                   "terminal": {
                     "$type": "RuleCall",
                     "rule": {
-                      "$ref": "#/rules@114"
+                      "$ref": "#/rules@115"
                     },
                     "arguments": []
                   },
@@ -38017,7 +38580,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@103"
+                    "$ref": "#/rules@104"
                   },
                   "arguments": []
                 }
@@ -38035,7 +38598,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@114"
+                "$ref": "#/rules@115"
               },
               "arguments": []
             }
@@ -38068,19 +38631,6 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           },
           {
             "$type": "Assignment",
-            "feature": "prefixValidateElement",
-            "operator": "=",
-            "terminal": {
-              "$type": "RuleCall",
-              "rule": {
-                "$ref": "#/rules@135"
-              },
-              "arguments": []
-            },
-            "cardinality": "?"
-          },
-          {
-            "$type": "Assignment",
             "feature": "refFunctionName",
             "operator": "=",
             "terminal": {
@@ -38098,23 +38648,10 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@83"
+                "$ref": "#/rules@84"
               },
               "arguments": []
             }
-          },
-          {
-            "$type": "Assignment",
-            "feature": "suffixValidateElement",
-            "operator": "=",
-            "terminal": {
-              "$type": "RuleCall",
-              "rule": {
-                "$ref": "#/rules@135"
-              },
-              "arguments": []
-            },
-            "cardinality": "?"
           }
         ]
       },
@@ -38143,7 +38680,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               "terminal": {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@114"
+                  "$ref": "#/rules@115"
                 },
                 "arguments": []
               },
@@ -38157,7 +38694,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@103"
+                "$ref": "#/rules@104"
               },
               "arguments": []
             }
@@ -38220,34 +38757,17 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
       "$type": "ParserRule",
       "name": "Statement_list",
       "definition": {
-        "$type": "Group",
-        "elements": [
-          {
-            "$type": "Assignment",
-            "feature": "statements",
-            "operator": "+=",
-            "terminal": {
-              "$type": "RuleCall",
-              "rule": {
-                "$ref": "#/rules@76"
-              },
-              "arguments": []
-            }
+        "$type": "Assignment",
+        "feature": "statements",
+        "operator": "+=",
+        "terminal": {
+          "$type": "RuleCall",
+          "rule": {
+            "$ref": "#/rules@76"
           },
-          {
-            "$type": "Assignment",
-            "feature": "statements",
-            "operator": "+=",
-            "terminal": {
-              "$type": "RuleCall",
-              "rule": {
-                "$ref": "#/rules@76"
-              },
-              "arguments": []
-            },
-            "cardinality": "*"
-          }
-        ]
+          "arguments": []
+        },
+        "cardinality": "*"
       },
       "definesHiddenTokens": false,
       "entry": false,
@@ -38286,11 +38806,21 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
         "$type": "Alternatives",
         "elements": [
           {
-            "$type": "RuleCall",
-            "rule": {
-              "$ref": "#/rules@85"
-            },
-            "arguments": []
+            "$type": "Group",
+            "elements": [
+              {
+                "$type": "RuleCall",
+                "rule": {
+                  "$ref": "#/rules@86"
+                },
+                "arguments": []
+              },
+              {
+                "$type": "Keyword",
+                "value": ";",
+                "cardinality": "?"
+              }
+            ]
           },
           {
             "$type": "Group",
@@ -38309,14 +38839,23 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             ]
           },
           {
-            "$type": "RuleCall",
-            "rule": {
-              "$ref": "#/rules@91"
-            },
-            "arguments": []
+            "$type": "Group",
+            "elements": [
+              {
+                "$type": "RuleCall",
+                "rule": {
+                  "$ref": "#/rules@92"
+                },
+                "arguments": []
+              },
+              {
+                "$type": "Keyword",
+                "value": ";",
+                "cardinality": "?"
+              }
+            ]
           }
-        ],
-        "cardinality": "?"
+        ]
       },
       "definesHiddenTokens": false,
       "entry": false,
@@ -38374,7 +38913,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@81"
+                "$ref": "#/rules@82"
               },
               "arguments": []
             }
@@ -38392,14 +38931,55 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
       "$type": "ParserRule",
       "name": "Function_invoke_or_assign",
       "definition": {
-        "$type": "Group",
+        "$type": "Alternatives",
         "elements": [
           {
-            "$type": "Alternatives",
+            "$type": "Group",
             "elements": [
               {
                 "$type": "Assignment",
                 "feature": "assignPrefix",
+                "operator": "=",
+                "terminal": {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$ref": "#/rules@81"
+                  },
+                  "arguments": []
+                }
+              },
+              {
+                "$type": "Assignment",
+                "feature": "assign",
+                "operator": "=",
+                "terminal": {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$ref": "#/rules@83"
+                  },
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          {
+            "$type": "Assignment",
+            "feature": "id",
+            "operator": "=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@71"
+              },
+              "arguments": []
+            }
+          },
+          {
+            "$type": "Group",
+            "elements": [
+              {
+                "$type": "Assignment",
+                "feature": "id",
                 "operator": "=",
                 "terminal": {
                   "$type": "RuleCall",
@@ -38410,44 +38990,101 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                 }
               },
               {
-                "$type": "Assignment",
-                "feature": "id",
-                "operator": "=",
-                "terminal": {
-                  "$type": "RuleCall",
-                  "rule": {
-                    "$ref": "#/rules@97"
+                "$type": "Alternatives",
+                "elements": [
+                  {
+                    "$type": "Assignment",
+                    "feature": "assign",
+                    "operator": "=",
+                    "terminal": {
+                      "$type": "RuleCall",
+                      "rule": {
+                        "$ref": "#/rules@83"
+                      },
+                      "arguments": []
+                    }
                   },
-                  "arguments": []
-                }
+                  {
+                    "$type": "Assignment",
+                    "feature": "params",
+                    "operator": "+=",
+                    "terminal": {
+                      "$type": "RuleCall",
+                      "rule": {
+                        "$ref": "#/rules@84"
+                      },
+                      "arguments": []
+                    }
+                  }
+                ],
+                "cardinality": "+"
               }
             ]
+          }
+        ]
+      },
+      "definesHiddenTokens": false,
+      "entry": false,
+      "fragment": false,
+      "hiddenTokens": [],
+      "parameters": [],
+      "wildcard": false
+    },
+    {
+      "$type": "ParserRule",
+      "name": "StatementReceiver",
+      "inferredType": {
+        "$type": "InferredType",
+        "name": "MemberCall"
+      },
+      "definition": {
+        "$type": "Group",
+        "elements": [
+          {
+            "$type": "Assignment",
+            "feature": "prior",
+            "operator": "=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@73"
+              },
+              "arguments": []
+            }
           },
           {
-            "$type": "Alternatives",
+            "$type": "Group",
             "elements": [
               {
-                "$type": "Assignment",
-                "feature": "assign",
-                "operator": "=",
-                "terminal": {
-                  "$type": "RuleCall",
-                  "rule": {
-                    "$ref": "#/rules@82"
-                  },
-                  "arguments": []
-                }
+                "$type": "Action",
+                "inferredType": {
+                  "$type": "InferredType",
+                  "name": "MemberCall"
+                },
+                "feature": "previous",
+                "operator": "="
+              },
+              {
+                "$type": "Keyword",
+                "value": "."
               },
               {
                 "$type": "Assignment",
-                "feature": "params",
-                "operator": "+=",
+                "feature": "element",
+                "operator": "=",
                 "terminal": {
-                  "$type": "RuleCall",
-                  "rule": {
-                    "$ref": "#/rules@83"
+                  "$type": "CrossReference",
+                  "type": {
+                    "$ref": "#/types@1"
                   },
-                  "arguments": []
+                  "terminal": {
+                    "$type": "RuleCall",
+                    "rule": {
+                      "$ref": "#/rules@115"
+                    },
+                    "arguments": []
+                  },
+                  "deprecatedSyntax": false
                 }
               }
             ],
@@ -38580,7 +39217,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@84"
+                    "$ref": "#/rules@85"
                   },
                   "arguments": []
                 }
@@ -38599,7 +39236,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                     "terminal": {
                       "$type": "RuleCall",
                       "rule": {
-                        "$ref": "#/rules@84"
+                        "$ref": "#/rules@85"
                       },
                       "arguments": []
                     }
@@ -38700,7 +39337,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@86"
+                "$ref": "#/rules@87"
               },
               "arguments": []
             }
@@ -38712,7 +39349,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@87"
+                "$ref": "#/rules@88"
               },
               "arguments": []
             }
@@ -38870,7 +39507,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@88"
+                "$ref": "#/rules@89"
               },
               "arguments": []
             }
@@ -38882,7 +39519,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@88"
+                "$ref": "#/rules@89"
               },
               "arguments": []
             },
@@ -38936,7 +39573,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@89"
+                "$ref": "#/rules@90"
               },
               "arguments": []
             }
@@ -38952,7 +39589,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@75"
+                "$ref": "#/rules@74"
               },
               "arguments": []
             }
@@ -38979,7 +39616,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@90"
+                "$ref": "#/rules@91"
               },
               "arguments": []
             }
@@ -38998,7 +39635,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@90"
+                    "$ref": "#/rules@91"
                   },
                   "arguments": []
                 }
@@ -39079,7 +39716,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@136"
+                "$ref": "#/rules@137"
               },
               "arguments": []
             }
@@ -39106,14 +39743,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@92"
-              },
-              "arguments": []
-            },
-            {
-              "$type": "RuleCall",
-              "rule": {
-                "$ref": "#/rules@94"
+                "$ref": "#/rules@93"
               },
               "arguments": []
             },
@@ -39121,6 +39751,13 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               "$type": "RuleCall",
               "rule": {
                 "$ref": "#/rules@95"
+              },
+              "arguments": []
+            },
+            {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@96"
               },
               "arguments": []
             },
@@ -39161,7 +39798,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               "terminal": {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@114"
+                  "$ref": "#/rules@115"
                 },
                 "arguments": []
               },
@@ -39179,7 +39816,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@93"
+                "$ref": "#/rules@94"
               },
               "arguments": []
             }
@@ -39390,14 +40027,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@134"
+              "$ref": "#/rules@135"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@135"
+              "$ref": "#/rules@136"
             },
             "arguments": []
           },
@@ -39411,7 +40048,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@135"
+                  "$ref": "#/rules@136"
                 },
                 "arguments": []
               }
@@ -39483,7 +40120,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                           "terminal": {
                             "$type": "RuleCall",
                             "rule": {
-                              "$ref": "#/rules@114"
+                              "$ref": "#/rules@115"
                             },
                             "arguments": []
                           },
@@ -39652,7 +40289,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               "terminal": {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@114"
+                  "$ref": "#/rules@115"
                 },
                 "arguments": []
               },
@@ -39734,7 +40371,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@114"
+          "$ref": "#/rules@115"
         },
         "arguments": []
       },
@@ -39758,7 +40395,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@101"
+              "$ref": "#/rules@102"
             },
             "arguments": []
           },
@@ -39772,7 +40409,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@101"
+                  "$ref": "#/rules@102"
                 },
                 "arguments": []
               }
@@ -39962,7 +40599,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@115"
+              "$ref": "#/rules@116"
             }
           },
           {
@@ -39988,7 +40625,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@135"
+              "$ref": "#/rules@136"
             }
           }
         ]
@@ -40055,14 +40692,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@127"
+              "$ref": "#/rules@128"
             },
             "cardinality": "?"
           },
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@129"
+              "$ref": "#/rules@130"
             }
           },
           {
@@ -40083,14 +40720,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@127"
+              "$ref": "#/rules@128"
             },
             "cardinality": "?"
           },
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@129"
+              "$ref": "#/rules@130"
             }
           },
           {
@@ -40111,14 +40748,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@127"
+              "$ref": "#/rules@128"
             },
             "cardinality": "?"
           },
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@129"
+              "$ref": "#/rules@130"
             }
           },
           {
@@ -40139,14 +40776,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@127"
+              "$ref": "#/rules@128"
             },
             "cardinality": "?"
           },
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@129"
+              "$ref": "#/rules@130"
             }
           },
           {
@@ -40167,7 +40804,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@129"
+              "$ref": "#/rules@130"
             }
           },
           {
@@ -40209,7 +40846,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@135"
+              "$ref": "#/rules@136"
             }
           },
           {
@@ -40225,7 +40862,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@135"
+                  "$ref": "#/rules@136"
                 }
               }
             ],
@@ -40436,7 +41073,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@133"
+              "$ref": "#/rules@134"
             }
           },
           {
@@ -40452,7 +41089,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@133"
+                  "$ref": "#/rules@134"
                 }
               }
             ],
@@ -40489,13 +41126,13 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@130"
+              "$ref": "#/rules@131"
             }
           },
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@131"
+              "$ref": "#/rules@132"
             }
           },
           {
@@ -40504,7 +41141,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@135"
+                  "$ref": "#/rules@136"
                 }
               },
               {
@@ -40520,7 +41157,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                   {
                     "$type": "TerminalRuleCall",
                     "rule": {
-                      "$ref": "#/rules@135"
+                      "$ref": "#/rules@136"
                     }
                   }
                 ],
@@ -40543,7 +41180,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@133"
+              "$ref": "#/rules@134"
             }
           },
           {
@@ -40552,14 +41189,14 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@127"
+                  "$ref": "#/rules@128"
                 },
                 "cardinality": "?"
               },
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@133"
+                  "$ref": "#/rules@134"
                 }
               }
             ],
@@ -40585,7 +41222,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                   {
                     "$type": "TerminalRuleCall",
                     "rule": {
-                      "$ref": "#/rules@127"
+                      "$ref": "#/rules@128"
                     }
                   },
                   {
@@ -40594,13 +41231,13 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                       {
                         "$type": "TerminalRuleCall",
                         "rule": {
-                          "$ref": "#/rules@133"
+                          "$ref": "#/rules@134"
                         }
                       },
                       {
                         "$type": "TerminalRuleCall",
                         "rule": {
-                          "$ref": "#/rules@128"
+                          "$ref": "#/rules@129"
                         }
                       }
                     ]
@@ -40610,7 +41247,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@128"
+                  "$ref": "#/rules@129"
                 }
               }
             ]
@@ -40621,7 +41258,7 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@127"
+                  "$ref": "#/rules@128"
                 },
                 "cardinality": "?"
               },
@@ -40631,13 +41268,13 @@ var StGrammar = () => loadedStGrammar != null ? loadedStGrammar : loadedStGramma
                   {
                     "$type": "TerminalRuleCall",
                     "rule": {
-                      "$ref": "#/rules@133"
+                      "$ref": "#/rules@134"
                     }
                   },
                   {
                     "$type": "TerminalRuleCall",
                     "rule": {
-                      "$ref": "#/rules@128"
+                      "$ref": "#/rules@129"
                     }
                   }
                 ]
@@ -40815,59 +41452,59 @@ var ClientLogger = class {
 // src/st-compute.ts
 var StScopeComputation = class extends DefaultScopeComputation {
   async computeLocalScopes(document, cancelToken) {
-    const st2 = document.parseResult.value;
+    const st3 = document.parseResult.value;
     const scopes = new MultiMap();
-    for (const programSingle of st2.program) {
+    for (const programSingle of st3.program) {
       let inputArr = programSingle.inputs;
       inputArr.forEach((input) => {
         let itemArr = input.items;
         itemArr.forEach((item) => {
           const description = this.descriptions.createDescription(item, item.variables, document);
-          scopes.add(st2, description);
+          scopes.add(st3, description);
           let nextVariables = item.nextVariables;
-          this.addNextVariables(nextVariables, item, document, scopes, st2);
+          this.addNextVariables(nextVariables, item, document, scopes, st3);
         });
       });
     }
-    let functionBlockArr = st2.function_block;
+    let functionBlockArr = st3.function_block;
     functionBlockArr.forEach((functionBlock) => {
       let inputs = functionBlock.varInputs;
       let outputs = functionBlock.varOutputs;
       let locals = functionBlock.varLocals;
-      this.handleAllVariable(inputs, scopes, st2, document);
-      this.handleAllVariable(outputs, scopes, st2, document);
-      this.handleAllVariable(locals, scopes, st2, document);
+      this.handleAllVariable(inputs, scopes, st3, document);
+      this.handleAllVariable(outputs, scopes, st3, document);
+      this.handleAllVariable(locals, scopes, st3, document);
     });
-    let functionArr = st2.st_function;
+    let functionArr = st3.st_function;
     functionArr.forEach((singleFunction) => {
       let inputs = singleFunction.varInputs;
       let outputs = singleFunction.varOutputs;
       let locals = singleFunction.varLocals;
-      this.handleAllVariable(inputs, scopes, st2, document);
-      this.handleAllVariable(outputs, scopes, st2, document);
-      this.handleAllVariable(locals, scopes, st2, document);
+      this.handleAllVariable(inputs, scopes, st3, document);
+      this.handleAllVariable(outputs, scopes, st3, document);
+      this.handleAllVariable(locals, scopes, st3, document);
     });
     return scopes;
   }
-  addNextVariables(nextVariables, item, document, scopes, st2) {
+  addNextVariables(nextVariables, item, document, scopes, st3) {
     if (!nextVariables) {
       return;
     }
     if (nextVariables.length > 0) {
       nextVariables.forEach((nextVariable) => {
         const nextDescription = this.descriptions.createDescription(item, nextVariable, document);
-        scopes.add(st2, nextDescription);
+        scopes.add(st3, nextDescription);
       });
     }
     return scopes;
   }
-  handleAllVariable(declVarArr, scopes, st2, document) {
+  handleAllVariable(declVarArr, scopes, st3, document) {
     declVarArr.forEach((decl) => {
       let itemArr = decl.items;
       itemArr.forEach((item) => {
         const description = this.descriptions.createDescription(item, item.variables, document);
-        scopes.add(st2, description);
-        this.addNextVariables(item.nextVariables, item, document, scopes, st2);
+        scopes.add(st3, description);
+        this.addNextVariables(item.nextVariables, item, document, scopes, st3);
       });
     });
   }
@@ -40959,7 +41596,6 @@ var StLinker = class extends DefaultLinker {
     return reference;
   }
   doLink(refInfo, document) {
-    var _a;
     const ref = refInfo.reference;
     if (ref._ref === void 0) {
       try {
@@ -40971,7 +41607,11 @@ var StLinker = class extends DefaultLinker {
           if (this.langiumDocuments().hasDocument(description.documentUri)) {
             const linkedNode = this.loadAstNode(description);
             const outerElement = this.getOuterCacheElement(ref.$refText);
-            ref._ref = (_a = linkedNode != null ? linkedNode : outerElement) != null ? _a : this.createLinkingError(refInfo, description);
+            if (linkedNode || outerElement) {
+              ref._ref = linkedNode != null ? linkedNode : outerElement;
+            } else if (description.documentUri.toString() !== document.uri.toString()) {
+              ref._ref = this.createLinkingError(refInfo, description);
+            }
           }
         }
       } catch (err) {
@@ -40996,6 +41636,9 @@ var StLinker = class extends DefaultLinker {
       const element = this.getOuterCacheElement(refInfo.reference.$refText);
       if (element) {
         return { node: element, descr: description };
+      }
+      if (description.documentUri.toString() === ast_utils_exports.getDocument(refInfo.container).uri.toString()) {
+        return { descr: description };
       }
       return {
         descr: description,
@@ -41083,8 +41726,19 @@ function inferType(node, cache) {
     if (currentNode) {
       if (isStruct_Var_Decl_Init(currentNode)) {
         type = inferStructDeclaration(currentNode, cache);
+      } else if (isVarDeclarationInit(currentNode)) {
+        type = inferVarDeclaration(currentNode, cache);
       }
     }
+    if (!type) {
+      if (node.previous) {
+        type = inferType(node.previous, cache);
+      } else if (node.prior) {
+        type = inferType(node.prior, cache);
+      }
+    }
+  } else if (isVariableExpression(node)) {
+    type = inferVariableExpressionCall(node, cache);
   } else if (isExpression(node)) {
     type = inferExpressionRef(node, cache);
   } else if (isVarDeclarationInit(node)) {
@@ -41111,6 +41765,9 @@ function inferStructDeclaration(node, cache) {
   let typeName = node.typeName;
   return inferNativeTypeName(typeName, cache);
 }
+function inferVarDeclaration(node, cache) {
+  return inferNativeTypeName(node.typeName, cache);
+}
 function inferAliasDeclaration(node, cache) {
   return inferNativeTypeName(node.refName, cache);
 }
@@ -41130,9 +41787,14 @@ function inferNativeTypeName(typeName, cache) {
   }
 }
 function inferExpressionRef(node, cache) {
-  let p = node.prior;
-  let type = inferVariableExpressionCall(p, cache);
-  return type;
+  let prior = node.prior;
+  if (prior) {
+    if (isVariableExpression(prior)) {
+      return inferVariableExpressionCall(prior, cache);
+    }
+    return inferType(prior, cache);
+  }
+  return createErrorType("Could not infer type for this expression", node);
 }
 function inferVariableExpressionCall(node, cache) {
   const refVarNameNode = node.variable.ref;
@@ -41148,9 +41810,10 @@ var StScopeProvider = class extends DefaultScopeProvider {
     super(services);
   }
   getScope(context) {
+    var _a;
     if (context.property === "element") {
       const memberCall = context.container;
-      const previous = memberCall.previous;
+      const previous = (_a = memberCall.previous) != null ? _a : memberCall.prior;
       if (!previous) {
         return super.getScope(context);
       }
@@ -41168,9 +41831,73 @@ var StScopeProvider = class extends DefaultScopeProvider {
         }
       }
     } else if (context.property === "variable") {
+      const enumScope = this.scopeEnumMembersForExpectedParam(context);
+      if (enumScope) {
+        return enumScope;
+      }
       return super.getScope(context);
     }
     return super.getScope(context);
+  }
+  scopeEnumMembersForExpectedParam(context) {
+    var _a;
+    const container = context.container;
+    if (!isVariableExpression(container)) {
+      return void 0;
+    }
+    const enumType = this.getExpectedEnumTypeForVariable(container);
+    if (!enumType) {
+      return void 0;
+    }
+    const result = getRelatedEnumElementAndLangiumDoc(enumType);
+    if (!result) {
+      return void 0;
+    }
+    const [enumElement] = result;
+    const members = (_a = enumElement == null ? void 0 : enumElement.enumChild.map((item) => item.enumVarName)) != null ? _a : [];
+    if (members.length === 0) {
+      return void 0;
+    }
+    const enumDescriptions = stream(members).map((member) => this.descriptions.createDescription(container, member)).nonNullable();
+    return this.createScope(enumDescriptions, super.getScope(context));
+  }
+  getExpectedEnumTypeForVariable(container) {
+    const expression = container.$container;
+    const paramAssignment = expression == null ? void 0 : expression.$container;
+    const invoke = paramAssignment == null ? void 0 : paramAssignment.$container;
+    const call = invoke == null ? void 0 : invoke.$container;
+    if (!isParam_assignment(paramAssignment) || !isInvoke_subrule(invoke)) {
+      return void 0;
+    }
+    const paramName = paramAssignment.ParamName;
+    if (!paramName) {
+      return void 0;
+    }
+    const callType = this.getInvokedTypeName(call);
+    if (!callType) {
+      return void 0;
+    }
+    const result = getRelatedElementAndLangiumDoc(callType);
+    const [elementNode] = result != null ? result : [];
+    const expectedDecl = elementNode == null ? void 0 : elementNode.varDecls.find((varDecl) => varDecl.varName === paramName);
+    return expectedDecl == null ? void 0 : expectedDecl.varType;
+  }
+  getInvokedTypeName(call) {
+    if (isFunction_invoke_or_assign(call) && call.assignPrefix) {
+      const refNode = call.assignPrefix.varEnchanceDecl.ref;
+      if (isVarDeclarationInit(refNode)) {
+        return handleNoAcceptNativeTypeName(refNode.typeName, "");
+      }
+      return call.assignPrefix.varEnchanceDecl.$refText;
+    }
+    if (isFunctionExpression(call) && call.refFunctionName.refFunctionName) {
+      const refNode = call.refFunctionName.refFunctionName.ref;
+      if (isVarDeclarationInit(refNode)) {
+        return handleNoAcceptNativeTypeName(refNode.typeName, "");
+      }
+      return call.refFunctionName.refFunctionName.$refText;
+    }
+    return void 0;
   }
   scopeCache(cacheName) {
     let result = getRelatedElementAndLangiumDoc(cacheName);
@@ -41330,26 +42057,26 @@ function registerValidationChecks(services) {
   registry.register(checks, validator);
 }
 var StValidator = class {
-  checkElement(st2, accept) {
-    let programArr = st2.program;
-    let functionArr = st2.st_function;
-    let functionBlockArr = st2.function_block;
-    let types_struct = st2.types_struct;
-    let types_alias = st2.types_alias;
-    let types_enum = st2.types_enum;
-    let types_union = st2.types_union;
+  checkElement(st3, accept) {
+    let programArr = st3.program;
+    let functionArr = st3.st_function;
+    let functionBlockArr = st3.function_block;
+    let types_struct = st3.types_struct;
+    let types_alias = st3.types_alias;
+    let types_enum = st3.types_enum;
+    let types_union = st3.types_union;
     programArr.forEach((programItem) => {
       this.saveProgramVarInfo(programItem.inputs, accept);
     });
-    this.checkPrograms(st2, accept);
+    this.checkPrograms(st3, accept);
     this.checkFunctions(functionArr, accept);
     this.checkFunctionBlocks(functionBlockArr, accept);
     this.checkDateTypes(types_struct, types_alias, types_enum, types_union, accept);
   }
-  checkPrograms(st2, accept) {
-    this.judgeWhetherHasDuplicateName("program", st2.program, accept);
-    this.judgeCapital("program", st2.program, accept);
-    this.checkProgramVarRef(st2, accept);
+  checkPrograms(st3, accept) {
+    this.judgeWhetherHasDuplicateName("program", st3.program, accept);
+    this.judgeCapital("program", st3.program, accept);
+    this.checkProgramVarRef(st3, accept);
   }
   checkFunctions(functionArr, accept) {
     this.judgeWhetherHasDuplicateName("function", functionArr, accept);
@@ -41415,8 +42142,8 @@ var StValidator = class {
       });
     }
   }
-  checkProgramVarRef(st2, accept) {
-    let programArr = st2.program;
+  checkProgramVarRef(st3, accept) {
+    let programArr = st3.program;
     programArr.forEach((programItem) => {
       let stStatements = programItem.stStatements;
       if (stStatements) {
@@ -41491,10 +42218,7 @@ var StValidator = class {
             let caseListElements = caseList.caseListElement;
             let case_statements_list = element.statements;
             if (case_statements_list) {
-              let statements = case_statements_list.statements;
-              let statementsArr2 = [];
-              statementsArr2.push(statements);
-              this.handleStatements(statementsArr2, accept);
+              this.handleStatements(this.normalizeStatements(case_statements_list), accept);
             }
             if (caseListElements.length > 0) {
               caseListElements.forEach((caseListElement) => {
@@ -41571,6 +42295,12 @@ var StValidator = class {
       }
     });
   }
+  normalizeStatements(statementsNode) {
+    if (!statementsNode || statementsNode.statements === void 0) {
+      return [];
+    }
+    return Array.isArray(statementsNode.statements) ? statementsNode.statements : [statementsNode.statements];
+  }
   handleCondition(expressionType, condition, accept) {
     if (expressionType === "Expression") {
       let left = condition.left;
@@ -41601,7 +42331,9 @@ var StValidator = class {
     let astNode;
     let universe;
     if (variableParent) {
-      if (isMemberCall(variableParent)) {
+      if (isFunctionExpression(variableParent)) {
+        this.handleFunctionExpression(variableParent, accept, variableParent, expectType);
+      } else if (isMemberCall(variableParent)) {
         let memberCall = variableParent;
         astNode = memberCall;
         let currentElement = memberCall.element;
@@ -41963,7 +42695,6 @@ var StValidator = class {
     if (selectRefFunctionName.refFunctionName) {
       let refNode = selectRefFunctionName.refFunctionName.ref;
       let params2 = functionExpression.params;
-      this.validatePrefixSuffixElement(functionExpression, accept);
       let paramTypeArr = [];
       if (refNode) {
         if (isStFunction(refNode)) {
@@ -41982,7 +42713,6 @@ var StValidator = class {
         }
       }
     } else if (selectRefFunctionName.Cache_type_name) {
-      this.validatePrefixSuffixElement(functionExpression, accept);
       let cacheName = selectRefFunctionName.Cache_type_name;
       let returnType = this.getCacheFunctionReturnType(cacheName);
       this.validateReturnTypeCompatibility(returnType, expectType, accept, functionExpression, "refFunctionName");
@@ -42097,22 +42827,6 @@ var StValidator = class {
         }
       }
     });
-  }
-  validatePrefixSuffixElement(functionExpression, accept) {
-    let prefixValidateElement = functionExpression.prefixValidateElement;
-    let suffixValidateElement = functionExpression.suffixValidateElement;
-    if (prefixValidateElement) {
-      accept("error", `invalid Identifier near '${prefixValidateElement}'`, {
-        node: functionExpression,
-        property: "prefixValidateElement"
-      });
-    }
-    if (suffixValidateElement) {
-      accept("error", `invalid Identifier near '${suffixValidateElement}'`, {
-        node: functionExpression,
-        property: "suffixValidateElement"
-      });
-    }
   }
   normalizeTypeAlias(typeName, visitedAlias = /* @__PURE__ */ new Set()) {
     var _a;
@@ -42931,8 +43645,8 @@ var StSerializer = class extends DefaultJsonSerializer {
     let jsonArrObj = JSON.parse(content);
     let outerComposeNodeArr = jsonArrObj;
     let composeNodeArr = convertOuterNode2ComposeNode(outerComposeNodeArr);
-    let st2 = transform2AstNode(composeNodeArr);
-    return st2;
+    let st3 = transform2AstNode(composeNodeArr);
+    return st3;
   }
 };
 
@@ -42981,10 +43695,10 @@ function createStatemachineModule(context) {
 }
 function createStatemachineServices(context) {
   const shared3 = inject(createDefaultSharedModule(context), StGeneratedSharedModule, StatemachineSharedModule);
-  const st2 = inject(createDefaultModule({ shared: shared3 }), StGeneratedModule, createStatemachineModule({ shared: shared3 }));
-  shared3.ServiceRegistry.register(st2);
-  registerValidationChecks(st2);
-  return { shared: shared3, st: st2 };
+  const st3 = inject(createDefaultModule({ shared: shared3 }), StGeneratedModule, createStatemachineModule({ shared: shared3 }));
+  shared3.ServiceRegistry.register(st3);
+  registerValidationChecks(st3);
+  return { shared: shared3, st: st3 };
 }
 
 // main.ts
@@ -44392,19 +45106,19 @@ function extractPathAfterPercent3A(url) {
   }
   return url.slice(index + 3);
 }
-function removeBeforeColon(path2) {
-  const index = path2.indexOf(":");
+function removeBeforeColon(path3) {
+  const index = path3.indexOf(":");
   if (index === -1) {
-    return path2;
+    return path3;
   }
-  return path2.slice(index + 1);
+  return path3.slice(index + 1);
 }
 
 // ../extension/src/handleExportInfo.ts
 var globalVscode = __toESM(require_vscode_mock(), 1);
 var allElements = [];
-var rootPath = path.resolve(__dirname);
-var variablePath = path.join(rootPath, "variable.json");
+var rootPath = path2.resolve(__dirname);
+var variablePath = path2.join(rootPath, "variable.json");
 var currentType = "basic";
 function registerShowStFilesCommand(context) {
   const langiumDocumentFactory = import_main2.shared.workspace.LangiumDocumentFactory;
@@ -44415,11 +45129,11 @@ function registerShowStFilesCommand(context) {
       let files = await loadInitializeAvaiableFile(fileSuffix);
       allElements = await handleBusiness(allElements, files, currentType, langiumDocumentFactory);
       allElements = (_a = uniqueObjects(allElements, "filePath", "basic")) != null ? _a : [];
-      fs3.writeFileSync(variablePath, JSON.stringify(allElements));
+      fs4.writeFileSync(variablePath, JSON.stringify(allElements));
       return allElements;
     } else {
       allElements = (_b = uniqueObjects(allElements, "filePath", currentType)) != null ? _b : [];
-      fs3.writeFileSync(variablePath, JSON.stringify(allElements));
+      fs4.writeFileSync(variablePath, JSON.stringify(allElements));
       return allElements;
     }
   });
@@ -44429,7 +45143,7 @@ function registerShowStFilesCommand(context) {
     let incrementFiles = [uri];
     allElements = await handleBusiness(allElements, incrementFiles, currentType, langiumDocumentFactory);
     if (allElements !== void 0) {
-      fs3.writeFileSync(variablePath, JSON.stringify(allElements));
+      fs4.writeFileSync(variablePath, JSON.stringify(allElements));
       vscode.commands.executeCommand("devUni.prjView.syncStVarsToLd");
     }
   });
@@ -44439,7 +45153,7 @@ function registerShowStFilesCommand(context) {
     let doc = await vscode.workspace.openTextDocument(uri);
     allElements = await handleBusiness(allElements != null ? allElements : [], files, currentType, langiumDocumentFactory, convertToLSTextDocument(doc));
     if (allElements !== void 0) {
-      fs3.writeFileSync(variablePath, JSON.stringify(allElements));
+      fs4.writeFileSync(variablePath, JSON.stringify(allElements));
       vscode.commands.executeCommand("devUni.prjView.syncStVarsToLd");
     }
   });
@@ -44448,7 +45162,7 @@ function registerShowStFilesCommand(context) {
     const deleteFileUri = uri.toString();
     allElements = allElements.filter((item) => item.filePath !== deleteFileUri);
     if (allElements !== void 0) {
-      fs3.writeFileSync(variablePath, JSON.stringify(allElements));
+      fs4.writeFileSync(variablePath, JSON.stringify(allElements));
       vscode.commands.executeCommand("devUni.prjView.syncStVarsToLd");
     }
   });
@@ -44456,17 +45170,17 @@ function registerShowStFilesCommand(context) {
 }
 async function loadInitializeAvaiableFile(fileSuffix) {
   let allFiles = await vscode.workspace.findFiles(`**/*${fileSuffix}`);
+  let langiumDocs = import_main2.shared.workspace.LangiumDocuments;
   let files = [];
   for (const file of allFiles) {
     const document = await vscode.workspace.openTextDocument(file);
-    const diagnostics = vscode.languages.getDiagnostics(document.uri);
-    const errorDiagnostics = diagnostics.filter((diagnostic) => diagnostic.severity === vscode.DiagnosticSeverity.Error);
-    if (errorDiagnostics) {
-      if (errorDiagnostics.length === 0) {
-        files.push(file);
-      } else {
-        errorFiles.add(file.fsPath);
-      }
+    const langiumDocument = await langiumDocs.getOrCreateDocument(file);
+    const root2 = langiumDocument.parseResult.value;
+    const diagnostics = await getEffectiveDiagnostics(document.uri, langiumDocument);
+    if (!hasDeclarationErrorDiagnostics(root2, diagnostics)) {
+      files.push(file);
+    } else {
+      errorFiles.add(file.fsPath);
     }
   }
   return files;
@@ -44503,7 +45217,15 @@ async function handleBusiness(allElements2, files, eventType, langiumDocumentFac
       let document = langiumDocumentFactory.fromTextDocument(change);
       const root2 = document.parseResult.value;
       let historyComposeNode = allElements2.filter((item) => item.filePath !== change.uri);
-      allElements2 = await handleRoot(root2, eventType, historyComposeNode);
+      const diagnostics = await getEffectiveDiagnostics(change.uri, document);
+      if (hasDeclarationErrorDiagnostics(root2, diagnostics)) {
+        return uniqueObjects(historyComposeNode, "filePath", eventType);
+      }
+      try {
+        allElements2 = await handleRoot(root2, eventType, historyComposeNode);
+      } catch {
+        return uniqueObjects(historyComposeNode, "filePath", eventType);
+      }
       if (allElements2) {
         const data = uniqueObjects(allElements2, "filePath", eventType);
         return data;
@@ -44524,10 +45246,18 @@ async function saveAsJson(files, langiumDocs, allElements2, eventType) {
     let file = files[i];
     const document = await langiumDocs.getOrCreateDocument(file);
     const root2 = document.parseResult.value;
-    if (eventType === "basic" || eventType === "onCreate") {
-      allElements2 = await handleRoot(root2, eventType);
-    } else if (eventType === "onRename" || eventType === "onDelete") {
-      allElements2 = await handleRoot(root2, eventType, void 0, i);
+    const diagnostics = await getEffectiveDiagnostics(file, document);
+    if (hasDeclarationErrorDiagnostics(root2, diagnostics)) {
+      continue;
+    }
+    try {
+      if (eventType === "basic" || eventType === "onCreate") {
+        allElements2 = await handleRoot(root2, eventType);
+      } else if (eventType === "onRename" || eventType === "onDelete") {
+        allElements2 = await handleRoot(root2, eventType, void 0, i);
+      }
+    } catch {
+      continue;
     }
     if (i === files.length - 1) {
       const jsonStr = JSON.stringify(allElements2);
@@ -44535,7 +45265,7 @@ async function saveAsJson(files, langiumDocs, allElements2, eventType) {
       return allElements2;
     }
   }
-  return [];
+  return allElements2;
 }
 async function preSaveRefInfo(files, eventType) {
   let langiumDocs = import_main2.shared.workspace.LangiumDocuments;
@@ -44561,15 +45291,15 @@ async function preSaveRenameRefInfo(historyFiles, eventType) {
 }
 async function saveData(langiumDocs, file) {
   const document = await langiumDocs.getOrCreateDocument(file);
-  const st2 = document.parseResult.value;
-  let filePath = getCurrentStFilePath(st2);
-  let programArr = st2.program;
-  let functionArr = st2.st_function;
-  let functionBlockArr = st2.function_block;
-  let types_struct = st2.types_struct;
-  let types_alias = st2.types_alias;
-  let types_enum = st2.types_enum;
-  let types_union = st2.types_union;
+  const st3 = document.parseResult.value;
+  let filePath = getCurrentStFilePath(st3);
+  let programArr = st3.program;
+  let functionArr = st3.st_function;
+  let functionBlockArr = st3.function_block;
+  let types_struct = st3.types_struct;
+  let types_alias = st3.types_alias;
+  let types_enum = st3.types_enum;
+  let types_union = st3.types_union;
   programArr.forEach((program) => {
     globalMap.set(program.name, filePath.concat("@program"));
   });
@@ -44592,24 +45322,21 @@ async function saveData(langiumDocs, file) {
     globalMap.set(union.name, filePath.concat("@union"));
   });
 }
-async function handleRoot(st2, eventType, historyComposeNode, calledNum) {
-  let document = st2.$document;
+async function handleRoot(st3, eventType, historyComposeNode, calledNum) {
+  let document = st3.$document;
   if (document) {
     let parseResult = document.parseResult;
     let lexerErrors = parseResult.lexerErrors;
     let parserErrors = parseResult.parserErrors;
-    if (lexerErrors.length > 0 || parserErrors.length > 0) {
-      return allElements;
-    }
   }
-  let programArr = st2.program;
-  let functionArr = st2.st_function;
-  let functionBlockArr = st2.function_block;
-  let types_struct = st2.types_struct;
-  let types_alias = st2.types_alias;
-  let types_enum = st2.types_enum;
-  let types_union = st2.types_union;
-  let filePath = getCurrentStFilePath(st2);
+  let programArr = st3.program;
+  let functionArr = st3.st_function;
+  let functionBlockArr = st3.function_block;
+  let types_struct = st3.types_struct;
+  let types_alias = st3.types_alias;
+  let types_enum = st3.types_enum;
+  let types_union = st3.types_union;
+  let filePath = getCurrentStFilePath(st3);
   let composeNode = {
     $type: "ComposeNode",
     filePath,
@@ -44793,9 +45520,9 @@ function handleVarDeclarationInit(varDeclElements, declArr, varGlobalType) {
     }
   });
 }
-function getCurrentStFilePath(st2) {
+function getCurrentStFilePath(st3) {
   var _a;
-  let uri = (_a = st2.$document) == null ? void 0 : _a.uri;
+  let uri = (_a = st3.$document) == null ? void 0 : _a.uri;
   let filePath = "";
   if (uri) {
     filePath = uri.toString();
@@ -44943,6 +45670,100 @@ function convertToLSTextDocument(vsCodeTextDocument) {
     vsCodeTextDocument.version,
     vsCodeTextDocument.getText()
   );
+}
+async function getEffectiveDiagnostics(uri, document) {
+  const vscodeDiagnostics = vscode.languages.getDiagnostics(uri);
+  await import_main2.shared.workspace.DocumentBuilder.build([document], { validation: true });
+  const langiumDiagnostics = (await import_main2.st.validation.DocumentValidator.validateDocument(document)).map(
+    (diagnostic) => ({
+      ...diagnostic,
+      severity: normalizeDiagnosticSeverity(diagnostic.severity)
+    })
+  );
+  return mergeDiagnostics(vscodeDiagnostics, langiumDiagnostics);
+}
+function mergeDiagnostics(left, right) {
+  const merged = [...left];
+  const seen = new Set(
+    left.map((diagnostic) => JSON.stringify({ severity: diagnostic.severity, message: diagnostic.message, range: diagnostic.range }))
+  );
+  right.forEach((diagnostic) => {
+    const key = JSON.stringify({ severity: diagnostic.severity, message: diagnostic.message, range: diagnostic.range });
+    if (!seen.has(key)) {
+      seen.add(key);
+      merged.push(diagnostic);
+    }
+  });
+  return merged;
+}
+function hasDeclarationErrorDiagnostics(st3, diagnostics) {
+  const errorDiagnostics = diagnostics.filter((diagnostic) => diagnostic.severity === vscode.DiagnosticSeverity.Error);
+  if (errorDiagnostics.length === 0) {
+    return false;
+  }
+  const declarationRanges = collectDeclarationRanges(st3);
+  if (declarationRanges.length === 0) {
+    return errorDiagnostics.some((diagnostic) => !diagnostic.range);
+  }
+  return errorDiagnostics.some((diagnostic) => {
+    const diagnosticRange = diagnostic.range;
+    if (!diagnosticRange) {
+      return true;
+    }
+    return declarationRanges.some((range) => rangesOverlap(range, diagnosticRange));
+  });
+}
+function collectDeclarationRanges(st3) {
+  const declarationRanges = [];
+  const pushRange = (value) => {
+    var _a;
+    const range = (_a = value == null ? void 0 : value.$cstNode) == null ? void 0 : _a.range;
+    if (range) {
+      declarationRanges.push(range);
+    }
+  };
+  st3.program.forEach((program) => {
+    program.inputs.forEach(pushRange);
+  });
+  st3.function_block.forEach((functionBlock) => {
+    functionBlock.varInputs.forEach(pushRange);
+    functionBlock.varOutputs.forEach(pushRange);
+    functionBlock.varLocals.forEach(pushRange);
+  });
+  st3.st_function.forEach((stFunction) => {
+    pushRange(stFunction.variable_type);
+    stFunction.varInputs.forEach(pushRange);
+    stFunction.varOutputs.forEach(pushRange);
+    stFunction.varLocals.forEach(pushRange);
+  });
+  st3.types_struct.forEach(pushRange);
+  st3.types_alias.forEach(pushRange);
+  st3.types_enum.forEach(pushRange);
+  st3.types_union.forEach(pushRange);
+  return declarationRanges;
+}
+function rangesOverlap(left, right) {
+  return comparePositions(left.start, right.end) <= 0 && comparePositions(right.start, left.end) <= 0;
+}
+function comparePositions(left, right) {
+  if (left.line !== right.line) {
+    return left.line - right.line;
+  }
+  return left.character - right.character;
+}
+function normalizeDiagnosticSeverity(severity) {
+  switch (severity) {
+    case 1:
+      return vscode.DiagnosticSeverity.Error;
+    case 2:
+      return vscode.DiagnosticSeverity.Warning;
+    case 3:
+      return vscode.DiagnosticSeverity.Information;
+    case 4:
+      return vscode.DiagnosticSeverity.Hint;
+    default:
+      return severity;
+  }
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

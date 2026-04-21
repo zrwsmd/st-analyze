@@ -175,17 +175,17 @@ export function registerShowStFilesCommand(context: vscode.ExtensionContext) {
 //加载所以没有错误的st文件
 export async function loadInitializeAvaiableFile(fileSuffix: string) {
     let allFiles = await vscode.workspace.findFiles(`**/*${fileSuffix}`);
+    let langiumDocs = shared.workspace.LangiumDocuments;
     let files: vscode.Uri[] = [];
     for (const file of allFiles) {
         const document = await vscode.workspace.openTextDocument(file);
+        const langiumDocument = await langiumDocs.getOrCreateDocument(file);
+        const root = langiumDocument.parseResult.value as St;
         const diagnostics = vscode.languages.getDiagnostics(document.uri);
-        const errorDiagnostics = diagnostics.filter(diagnostic => diagnostic.severity === vscode.DiagnosticSeverity.Error);
-        if (errorDiagnostics) {
-            if (errorDiagnostics.length === 0) {
-                files.push(file);
-            } else {
-                errorFiles.add(file.fsPath);
-            }
+        if (!hasDeclarationErrorDiagnostics(root, diagnostics)) {
+            files.push(file);
+        } else {
+            errorFiles.add(file.fsPath);
         }
     }
 
@@ -234,9 +234,16 @@ export async function handleBusiness(
             await preSaveRefInfo(filterFiles, eventType);
             let document = langiumDocumentFactory.fromTextDocument(change);
             const root = document.parseResult.value as St;
-            // if (file.toString().includes('enum')) {
             let historyComposeNode = allElements.filter(item => item.filePath !== change.uri);
-            allElements = await handleRoot(root, eventType, historyComposeNode);
+            const diagnostics = vscode.languages.getDiagnostics(change.uri as unknown as vscode.Uri);
+            if (hasDeclarationErrorDiagnostics(root, diagnostics)) {
+                return uniqueObjects(historyComposeNode, 'filePath', eventType);
+            }
+            try {
+                allElements = await handleRoot(root, eventType, historyComposeNode);
+            } catch {
+                return uniqueObjects(historyComposeNode, 'filePath', eventType);
+            }
             // const jsonStr = JSON.stringify(allElements);
             // let jsonObj = JSON.parse(jsonStr);
             if (allElements) {
@@ -262,10 +269,18 @@ async function saveAsJson(files: vscode.Uri[], langiumDocs: LangiumDocuments, al
         let file = files[i];
         const document = await langiumDocs.getOrCreateDocument(file);
         const root = document.parseResult.value as St;
-        if (eventType === 'basic' || eventType === 'onCreate') {
-            allElements = await handleRoot(root, eventType);
-        } else if (eventType === 'onRename' || eventType === 'onDelete') {
-            allElements = await handleRoot(root, eventType, undefined, i);
+        const diagnostics = vscode.languages.getDiagnostics(file);
+        if (hasDeclarationErrorDiagnostics(root, diagnostics)) {
+            continue;
+        }
+        try {
+            if (eventType === 'basic' || eventType === 'onCreate') {
+                allElements = await handleRoot(root, eventType);
+            } else if (eventType === 'onRename' || eventType === 'onDelete') {
+                allElements = await handleRoot(root, eventType, undefined, i);
+            }
+        } catch {
+            continue;
         }
         if (i === files.length - 1) {
             const jsonStr = JSON.stringify(allElements);
@@ -273,7 +288,7 @@ async function saveAsJson(files: vscode.Uri[], langiumDocs: LangiumDocuments, al
             return allElements;
         }
     }
-    return [];
+    return allElements;
 }
 
 async function preSaveRefInfo(files: vscode.Uri[], eventType: EventType) {
@@ -746,6 +761,75 @@ function isEmptyElement(allElements: ComposeNode[]) {
     if (allElements.length > 1) {
         return false;
     }
+}
+
+function hasDeclarationErrorDiagnostics(st: St, diagnostics: readonly vscode.Diagnostic[]) {
+    const errorDiagnostics = diagnostics.filter(diagnostic => diagnostic.severity === vscode.DiagnosticSeverity.Error);
+    if (errorDiagnostics.length === 0) {
+        return false;
+    }
+    const declarationRanges = collectDeclarationRanges(st);
+    if (declarationRanges.length === 0) {
+        return errorDiagnostics.some(diagnostic => !diagnostic.range);
+    }
+    return errorDiagnostics.some(diagnostic => {
+        if (!diagnostic.range) {
+            return true;
+        }
+        return declarationRanges.some(range => rangesOverlap(range, diagnostic.range));
+    });
+}
+
+type PositionLike = {
+    line: number;
+    character: number;
+};
+
+type RangeLike = {
+    start: PositionLike;
+    end: PositionLike;
+};
+
+function collectDeclarationRanges(st: St) {
+    const declarationRanges: RangeLike[] = [];
+    const pushRange = (value: any) => {
+        const range = value?.$cstNode?.range as RangeLike | undefined;
+        if (range) {
+            declarationRanges.push(range);
+        }
+    };
+
+    st.program.forEach(program => {
+        program.inputs.forEach(pushRange);
+    });
+    st.function_block.forEach(functionBlock => {
+        functionBlock.varInputs.forEach(pushRange);
+        functionBlock.varOutputs.forEach(pushRange);
+        functionBlock.varLocals.forEach(pushRange);
+    });
+    st.st_function.forEach(stFunction => {
+        pushRange(stFunction.variable_type);
+        stFunction.varInputs.forEach(pushRange);
+        stFunction.varOutputs.forEach(pushRange);
+        stFunction.varLocals.forEach(pushRange);
+    });
+    st.types_struct.forEach(pushRange);
+    st.types_alias.forEach(pushRange);
+    st.types_enum.forEach(pushRange);
+    st.types_union.forEach(pushRange);
+
+    return declarationRanges;
+}
+
+function rangesOverlap(left: RangeLike, right: RangeLike) {
+    return comparePositions(left.start, right.end) <= 0 && comparePositions(right.start, left.end) <= 0;
+}
+
+function comparePositions(left: PositionLike, right: PositionLike) {
+    if (left.line !== right.line) {
+        return left.line - right.line;
+    }
+    return left.character - right.character;
 }
 
 export * as globalVscode from 'vscode';
