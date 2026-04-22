@@ -8,3 +8,4 @@ tsconfig.tsbuildinfo
 eslint.xml
 *.vsix
 *.st
+src/plc/langium-server/out/
