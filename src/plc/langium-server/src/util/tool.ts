@@ -936,7 +936,7 @@ function isSpecifiedType(value: string): value is SpecifiedType {
         value as SpecifiedType
     );
 }
-export function judgeNeedToHint(fromType: string | undefined, toType: string | undefined, varValue?: number): boolean {
+export function judgeNeedToHint(fromType: string | undefined, toType: string | undefined, varValue?: number | string): boolean {
     if (!fromType || !toType) {
         return true;
     }
@@ -957,7 +957,6 @@ export function judgeNeedToHint(fromType: string | undefined, toType: string | u
      */
     if (fromType) {
         if (fromType.toLowerCase() === 'bool') {
-            //return false;
             if (varValue) {
                 if (varValue !== 1 && varValue !== 0) {
                     return true;

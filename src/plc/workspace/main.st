@@ -22,6 +22,8 @@ VAR
 	e: Province;
 	f: MC_Direction;
 	g: China;
+	h:INT;
+	aa:sint;
 END_VAR
 VAR_IN_OUT
 	Variable: BOOL; (* Comment *)
@@ -36,7 +38,9 @@ e.city.region.regionName := 'Beijing';
 f := MC_Direction#fastest;
 
 e.city.cityId33:=123;
+h:=true;
 
+aa:=0;
 
 
 

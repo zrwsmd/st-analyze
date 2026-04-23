@@ -132,3 +132,22 @@ END_PROGRAM
 
     assert.deepEqual(getErrorMessages(diagnostics), []);
 });
+
+test('st-validator rejects assigning BOOL literals to INT variables', async () => {
+    const diagnostics = await getDiagnostics({
+        label: 'st-validator-bool-to-int-assignment',
+        text: `
+PROGRAM Main
+VAR
+    value: INT;
+END_VAR
+
+value := TRUE;
+END_PROGRAM
+`
+    });
+
+    const errorMessages = getErrorMessages(diagnostics);
+    assert.ok(errorMessages.some(message => message.includes('BOOL')));
+    assert.ok(errorMessages.some(message => message.includes('INT')));
+});
