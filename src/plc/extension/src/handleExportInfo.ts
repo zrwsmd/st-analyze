@@ -235,7 +235,7 @@ export async function handleBusiness(
             let document = langiumDocumentFactory.fromTextDocument(change);
             const root = document.parseResult.value as St;
             let historyComposeNode = allElements.filter(item => item.filePath !== change.uri);
-            const diagnostics = vscode.languages.getDiagnostics(change.uri as unknown as vscode.Uri);
+            const diagnostics = vscode.languages.getDiagnostics(vscode.Uri.parse(change.uri));
             if (hasDeclarationErrorDiagnostics(root, diagnostics)) {
                 return uniqueObjects(historyComposeNode, 'filePath', eventType);
             }
@@ -774,7 +774,7 @@ function hasDeclarationErrorDiagnostics(st: St, diagnostics: readonly vscode.Dia
     }
     return errorDiagnostics.some(diagnostic => {
         if (!diagnostic.range) {
-            return true;
+            return false;
         }
         return declarationRanges.some(range => rangesOverlap(range, diagnostic.range));
     });

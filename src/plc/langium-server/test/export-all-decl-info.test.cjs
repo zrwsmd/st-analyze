@@ -47,7 +47,9 @@ END_PROGRAM
         configureVscodeMock({
             workspaceRoot: workspace.workspaceRoot,
             diagnosticsByPath: {
-                [workspace.filePathByRelativePath['bad.st']]: [diagnosticError('parser failed')]
+                [workspace.filePathByRelativePath['bad.st']]: [
+                    diagnosticError('declaration failed', diagnosticRange(3, 4, 3, 14))
+                ]
             }
         });
 
@@ -340,6 +342,105 @@ END_PROGRAM
         const mainComposeNode = getComposeNode(savedResult, workspace.uriByRelativePath['main.st']);
         const program = getElement(mainComposeNode, 'PLC_PRG', 'program');
         assert.equal(getVarDecl(program, 'value').varType, 'INT');
+    } finally {
+        await cleanupWorkspace(workspace);
+    }
+});
+
+test('handleBusiness keeps valid files when the last file has declaration errors', async () => {
+    const handleExportInfo = await loadHandleExportInfoModule();
+    const workspace = await createWorkspace({
+        'good.st': `
+PROGRAM Good
+VAR
+    value: INT;
+END_VAR
+END_PROGRAM
+`,
+        'bad.st': `
+PROGRAM Bad
+VAR
+    value: MissingType;
+END_VAR
+END_PROGRAM
+`
+    });
+
+    try {
+        configureVscodeMock({
+            workspaceRoot: workspace.workspaceRoot,
+            diagnosticsByPath: {
+                [workspace.filePathByRelativePath['bad.st']]: [
+                    diagnosticError('unknown type', diagnosticRange(3, 11, 3, 22))
+                ]
+            }
+        });
+
+        const result = await handleExportInfo.handleBusiness(
+            [],
+            [workspace.uriByRelativePath['good.st'], workspace.uriByRelativePath['bad.st']],
+            'basic',
+            shared.workspace.LangiumDocumentFactory
+        );
+
+        assert.equal(result.length, 1);
+        assert.equal(result[0].filePath, workspace.uriByRelativePath['good.st'].toString());
+    } finally {
+        await cleanupWorkspace(workspace);
+    }
+});
+
+test('handleBusiness skips changed files on onSave when declaration errors exist', async () => {
+    const handleExportInfo = await loadHandleExportInfoModule();
+    const workspace = await createWorkspace({
+        'main.st': `
+PROGRAM PLC_PRG
+VAR
+    value: INT;
+END_VAR
+
+value := 1;
+END_PROGRAM
+`
+    });
+
+    try {
+        configureVscodeMock({
+            workspaceRoot: workspace.workspaceRoot,
+            diagnosticsByPath: {}
+        });
+
+        const allFiles = [workspace.uriByRelativePath['main.st']];
+        const initialResult = await handleExportInfo.handleBusiness([], allFiles, 'basic', shared.workspace.LangiumDocumentFactory);
+
+        const changedMainText = `
+PROGRAM PLC_PRG
+VAR
+    value: MissingType;
+END_VAR
+
+value := 1;
+END_PROGRAM
+`;
+
+        configureVscodeMock({
+            workspaceRoot: workspace.workspaceRoot,
+            diagnosticsByPath: {
+                [workspace.filePathByRelativePath['main.st']]: [
+                    diagnosticError('unknown type', diagnosticRange(3, 11, 3, 22))
+                ]
+            }
+        });
+
+        const savedResult = await handleExportInfo.handleBusiness(
+            initialResult,
+            allFiles,
+            'onSave',
+            shared.workspace.LangiumDocumentFactory,
+            createChangeDocument(workspace.uriByRelativePath['main.st'], changedMainText, 2)
+        );
+
+        assert.equal(savedResult.length, 0);
     } finally {
         await cleanupWorkspace(workspace);
     }
