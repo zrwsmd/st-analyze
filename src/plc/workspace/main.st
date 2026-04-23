@@ -38,7 +38,7 @@ e.city.region.regionName := 'Beijing';
 f := MC_Direction#fastest;
 
 e.city.cityId33:=123;
-h:=true;
+h:=-90;
 
 aa:=0;
 
