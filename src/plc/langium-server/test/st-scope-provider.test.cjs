@@ -75,3 +75,37 @@ END_PROGRAM
     assert.ok(names.includes('provinceId'));
     assert.ok(names.includes('provinceName'));
 });
+
+test('st-scope exposes GVL members for qualified access', async () => {
+    const names = await getScopeElementNames({
+        label: 'st-scope-gvl-members',
+        extra: [
+            {
+                label: 'GVL_1',
+                uriPath: 'GVL_1.st',
+                text: `
+VAR_GLOBAL
+    gStart: BOOL := TRUE;
+    gCount: INT := 0;
+    gLamp: BOOL := FALSE;
+END_VAR
+`
+            }
+        ],
+        text: `
+PROGRAM Main
+VAR
+END_VAR
+
+GVL_1.gStart := TRUE;
+END_PROGRAM
+`,
+        property: 'element',
+        findNode: (root, findAstNodes) => findAstNodes(root, node => node && node.$type === 'MemberCall')[0],
+        getReference: node => node.element
+    });
+
+    assert.ok(names.includes('gStart'));
+    assert.ok(names.includes('gCount'));
+    assert.ok(names.includes('gLamp'));
+});

@@ -17,6 +17,7 @@ import {
     FunctionBlock,
     FunctionExpression,
     Function_invoke_or_assign_statement,
+    GlobalVarList,
     If_statement,
     InputsListSingle,
     Invoke_subrule,
@@ -38,6 +39,8 @@ import {
     StructsList,
     UnionsList,
     Universe,
+    VariableReferenceTarget,
+    VarExternal,
     VarDeclarationInit,
     VariableExpression,
     isArr_string,
@@ -88,10 +91,13 @@ export function registerValidationChecks(services: StatemachineServices) {
 }
 
 export class StValidator {
+    constructor(protected readonly services: StatemachineServices) {}
+
     checkElement(st: St, accept: ValidationAcceptor): void {
         let programArr = st.program;
         let functionArr = st.st_function;
         let functionBlockArr = st.function_block;
+        let globalVarLists = st.globalVarLists;
         let types_struct = st.types_struct;
         let types_alias = st.types_alias;
         let types_enum = st.types_enum;
@@ -105,6 +111,9 @@ export class StValidator {
         this.checkPrograms(st, accept);
         this.checkFunctions(functionArr, accept);
         this.checkFunctionBlocks(functionBlockArr, accept);
+        this.checkGlobalVarLists(globalVarLists, accept);
+        this.checkProgramExternalDeclarations(st, accept);
+        this.checkFunctionBlockExternalDeclarations(st, accept);
         this.checkDateTypes(types_struct, types_alias, types_enum, types_union, accept);
     }
     checkPrograms(st: St, accept: ValidationAcceptor): void {
@@ -405,7 +414,7 @@ export class StValidator {
     ) {
         let expectType: string | undefined = '';
         let astNode: MemberCall | VariableExpression | Expression | AssignPrefix | undefined;
-        let universe: Universe | undefined;
+        let universe: Universe | GlobalVarList | undefined;
         if (variableParent) {
             if (isFunctionExpression(variableParent)) {
                 this.handleFunctionExpression(variableParent, accept, variableParent, expectType);
@@ -641,7 +650,7 @@ export class StValidator {
     }
 
     private handleRef(
-        currentElementRef: Universe,
+        currentElementRef: Universe | GlobalVarList,
         currentElementRefText: string,
         expectType: string | undefined,
         previous?: Expression | undefined
@@ -694,7 +703,7 @@ export class StValidator {
         return expectType;
     }
 
-    private judgeRefNodeType(refNode: NamedElement | undefined, expectType: string | undefined) {
+    private judgeRefNodeType(refNode: NamedElement | VariableReferenceTarget | undefined, expectType: string | undefined) {
         if (isVarDeclarationInit(refNode)) {
             let typeName = refNode.typeName;
             expectType = handleNoAcceptNativeTypeName(typeName, expectType);
@@ -715,6 +724,151 @@ export class StValidator {
             return node as St;
         }
         return AstUtils.getContainerOfType(node, (item): item is St => item.$type === 'St');
+    }
+
+    private checkGlobalVarLists(globalVarLists: GlobalVarList[], accept: ValidationAcceptor): void {
+        globalVarLists.forEach(globalVarList => {
+            this.judgeWhetherHasDuplicateName('global variable', globalVarList.items, accept);
+            globalVarList.items.forEach(item => {
+                this.validateDeclarationVar(item, accept);
+            });
+        });
+    }
+
+    private checkProgramExternalDeclarations(st: St, accept: ValidationAcceptor): void {
+        st.program.forEach(program => {
+            const externals = this.getProgramExternalDeclarations(program);
+            externals.forEach(item => this.validateExternalDeclaration(item, st, accept));
+        });
+    }
+
+    private checkFunctionBlockExternalDeclarations(st: St, accept: ValidationAcceptor): void {
+        st.function_block.forEach(functionBlock => {
+            functionBlock.varExternals.forEach(externalBlock => {
+                externalBlock.items.forEach(item => this.validateExternalDeclaration(item, st, accept));
+            });
+        });
+    }
+
+    private getProgramExternalDeclarations(program: Program): VarDeclarationInit[] {
+        const items: VarDeclarationInit[] = [];
+        const seen = new Set<VarDeclarationInit>();
+        program.inputs
+            .filter(input => input.definition === 'VAR_EXTERNAL')
+            .forEach(input => {
+                input.items.forEach(item => {
+                    if (!seen.has(item)) {
+                        seen.add(item);
+                        items.push(item);
+                    }
+                });
+            });
+        program.varExternals.forEach(externalBlock => {
+            externalBlock.items.forEach(item => {
+                if (!seen.has(item)) {
+                    seen.add(item);
+                    items.push(item);
+                }
+            });
+        });
+        return items;
+    }
+
+    private validateExternalDeclaration(item: VarDeclarationInit, st: St, accept: ValidationAcceptor): void {
+        const names = [item.variables, ...item.nextVariables];
+        names.forEach((name, index) => {
+            const matches = this.findGlobalVariableMatches(name, st);
+            const property = index === 0 ? 'variables' : 'nextVariables';
+            const propertyIndex = index === 0 ? undefined : index - 1;
+
+            if (matches.length === 0) {
+                accept('error', `VAR_EXTERNAL 声明的全局变量 '${name}' 不存在`, {
+                    node: item,
+                    property,
+                    index: propertyIndex
+                });
+                return;
+            }
+
+            const accessibleMatches = matches.filter(match => !this.hasQualifiedOnly(match.list));
+            if (accessibleMatches.length === 0) {
+                accept('error', `全局变量 '${name}' 所在全局变量列表启用了 qualified_only，不能通过 VAR_EXTERNAL 引用`, {
+                    node: item,
+                    property,
+                    index: propertyIndex
+                });
+                return;
+            }
+
+            if (accessibleMatches.length > 1) {
+                const listNames = accessibleMatches.map(match => this.getGlobalVarListDisplayName(match.list)).join(', ');
+                accept('error', `全局变量 '${name}' 在多个全局变量列表中存在(${listNames})，请使用限定名访问`, {
+                    node: item,
+                    property,
+                    index: propertyIndex
+                });
+                return;
+            }
+
+            const actualDecl = accessibleMatches[0].declaration;
+            let expectType = '';
+            let actualType = '';
+            expectType = handleNoAcceptNativeTypeName(item.typeName, expectType);
+            actualType = handleNoAcceptNativeTypeName(actualDecl.typeName, actualType);
+            const [normalizedActualType, normalizedExpectType] = this.getComparableTypes(actualType, expectType);
+            if (normalizedActualType && normalizedExpectType && normalizedActualType.toLowerCase() !== normalizedExpectType.toLowerCase()) {
+                accept('error', `VAR_EXTERNAL '${name}' 的类型'${expectType}'与全局变量类型'${actualType}'不一致`, {
+                    node: item,
+                    property: 'typeName'
+                });
+            }
+        });
+    }
+
+    private findGlobalVariableMatches(name: string, st: St): Array<{ list: GlobalVarList; declaration: VarDeclarationInit }> {
+        const lowerName = name.toLowerCase();
+        const matches: Array<{ list: GlobalVarList; declaration: VarDeclarationInit }> = [];
+        this.getAllGlobalVarLists(st).forEach(list => {
+            list.items.forEach(item => {
+                const declarationNames = [item.variables, ...item.nextVariables];
+                if (declarationNames.some(eachName => eachName.toLowerCase() === lowerName)) {
+                    matches.push({ list, declaration: item });
+                }
+            });
+        });
+        return matches;
+    }
+
+    private getAllGlobalVarLists(st: St): GlobalVarList[] {
+        const unique = new Map<string, GlobalVarList>();
+        st.globalVarLists.forEach(list => {
+            unique.set(this.getGlobalVarListKey(list), list);
+        });
+        for (const description of this.services.shared.workspace.IndexManager.allElements('GlobalVarList')) {
+            const node = description.node;
+            if (node && node.$type === 'GlobalVarList') {
+                unique.set(this.getGlobalVarListKey(node as GlobalVarList), node as GlobalVarList);
+            }
+        }
+        return Array.from(unique.values());
+    }
+
+    private getGlobalVarListKey(globalVarList: GlobalVarList): string {
+        const document = AstUtils.getDocument(globalVarList);
+        const path = this.services.workspace.AstNodeLocator.getAstNodePath(globalVarList);
+        return `${document.uri.toString()}#${path}`;
+    }
+
+    private hasQualifiedOnly(globalVarList: GlobalVarList): boolean {
+        return globalVarList.attributes.some(attribute => this.normalizeAttributeName(attribute.attributeName) === 'qualified_only');
+    }
+
+    private normalizeAttributeName(attributeName: string): string {
+        return attributeName.trim().replace(/^['"]|['"]$/g, '').toLowerCase();
+    }
+
+    private getGlobalVarListDisplayName(globalVarList: GlobalVarList): string {
+        return this.services.references.NameProvider.getName(globalVarList) ?? 'GVL';
     }
 
     private getLocalEnumByName(enumName: string | undefined, node: AstNode | undefined): StEnum | undefined {

@@ -3276,7 +3276,7 @@ var require_main = __commonJS({
     exports2.createMessageConnection = exports2.createServerSocketTransport = exports2.createClientSocketTransport = exports2.createServerPipeTransport = exports2.createClientPipeTransport = exports2.generateRandomPipeName = exports2.StreamMessageWriter = exports2.StreamMessageReader = exports2.SocketMessageWriter = exports2.SocketMessageReader = exports2.PortMessageWriter = exports2.PortMessageReader = exports2.IPCMessageWriter = exports2.IPCMessageReader = void 0;
     var ril_1 = require_ril();
     ril_1.default.install();
-    var path2 = require("path");
+    var path3 = require("path");
     var os = require("os");
     var crypto_1 = require("crypto");
     var net_1 = require("net");
@@ -3428,9 +3428,9 @@ var require_main = __commonJS({
       }
       let result;
       if (XDG_RUNTIME_DIR) {
-        result = path2.join(XDG_RUNTIME_DIR, `vscode-ipc-${randomSuffix}.sock`);
+        result = path3.join(XDG_RUNTIME_DIR, `vscode-ipc-${randomSuffix}.sock`);
       } else {
-        result = path2.join(os.tmpdir(), `vscode-${randomSuffix}.sock`);
+        result = path3.join(os.tmpdir(), `vscode-${randomSuffix}.sock`);
       }
       const limit = safeIpcPathLengths.get(process.platform);
       if (limit !== void 0 && result.length > limit) {
@@ -8776,7 +8776,7 @@ var require_files = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.resolveModulePath = exports2.FileSystem = exports2.resolveGlobalYarnPath = exports2.resolveGlobalNodePath = exports2.resolve = exports2.uriToFilePath = void 0;
     var url = require("url");
-    var path2 = require("path");
+    var path3 = require("path");
     var fs4 = require("fs");
     var child_process_1 = require("child_process");
     function uriToFilePath(uri) {
@@ -8795,7 +8795,7 @@ var require_files = __commonJS({
           segments.shift();
         }
       }
-      return path2.normalize(segments.join("/"));
+      return path3.normalize(segments.join("/"));
     }
     __name(uriToFilePath, "uriToFilePath");
     exports2.uriToFilePath = uriToFilePath;
@@ -8828,7 +8828,7 @@ var require_files = __commonJS({
         Object.keys(env).forEach((key) => newEnv[key] = env[key]);
         if (nodePath && fs4.existsSync(nodePath)) {
           if (newEnv[nodePathKey]) {
-            newEnv[nodePathKey] = nodePath + path2.delimiter + newEnv[nodePathKey];
+            newEnv[nodePathKey] = nodePath + path3.delimiter + newEnv[nodePathKey];
           } else {
             newEnv[nodePathKey] = nodePath;
           }
@@ -8902,9 +8902,9 @@ var require_files = __commonJS({
         }
         if (prefix.length > 0) {
           if (isWindows()) {
-            return path2.join(prefix, "node_modules");
+            return path3.join(prefix, "node_modules");
           } else {
-            return path2.join(prefix, "lib", "node_modules");
+            return path3.join(prefix, "lib", "node_modules");
           }
         }
         return void 0;
@@ -8945,7 +8945,7 @@ var require_files = __commonJS({
           try {
             let yarn = JSON.parse(line);
             if (yarn.type === "log") {
-              return path2.join(yarn.data, "node_modules");
+              return path3.join(yarn.data, "node_modules");
             }
           } catch (e) {
           }
@@ -8977,9 +8977,9 @@ var require_files = __commonJS({
       FileSystem2.isCaseSensitive = isCaseSensitive;
       function isParent(parent, child) {
         if (isCaseSensitive()) {
-          return path2.normalize(child).indexOf(path2.normalize(parent)) === 0;
+          return path3.normalize(child).indexOf(path3.normalize(parent)) === 0;
         } else {
-          return path2.normalize(child).toLowerCase().indexOf(path2.normalize(parent).toLowerCase()) === 0;
+          return path3.normalize(child).toLowerCase().indexOf(path3.normalize(parent).toLowerCase()) === 0;
         }
       }
       __name(isParent, "isParent");
@@ -8987,8 +8987,8 @@ var require_files = __commonJS({
     })(FileSystem || (exports2.FileSystem = FileSystem = {}));
     function resolveModulePath(workspaceRoot, moduleName, nodePath, tracer) {
       if (nodePath) {
-        if (!path2.isAbsolute(nodePath)) {
-          nodePath = path2.join(workspaceRoot, nodePath);
+        if (!path3.isAbsolute(nodePath)) {
+          nodePath = path3.join(workspaceRoot, nodePath);
         }
         return resolve(moduleName, nodePath, nodePath, tracer).then((value) => {
           if (FileSystem.isParent(nodePath, value)) {
@@ -16321,11 +16321,11 @@ __name(toKey, "toKey");
 var toKey_default = toKey;
 
 // ../../../node_modules/lodash-es/_baseGet.js
-function baseGet(object, path2) {
-  path2 = castPath_default(path2, object);
-  var index = 0, length = path2.length;
+function baseGet(object, path3) {
+  path3 = castPath_default(path3, object);
+  var index = 0, length = path3.length;
   while (object != null && index < length) {
-    object = object[toKey_default(path2[index++])];
+    object = object[toKey_default(path3[index++])];
   }
   return index && index == length ? object : void 0;
 }
@@ -16333,8 +16333,8 @@ __name(baseGet, "baseGet");
 var baseGet_default = baseGet;
 
 // ../../../node_modules/lodash-es/get.js
-function get(object, path2, defaultValue) {
-  var result = object == null ? void 0 : baseGet_default(object, path2);
+function get(object, path3, defaultValue) {
+  var result = object == null ? void 0 : baseGet_default(object, path3);
   return result === void 0 ? defaultValue : result;
 }
 __name(get, "get");
@@ -17300,11 +17300,11 @@ __name(baseHasIn, "baseHasIn");
 var baseHasIn_default = baseHasIn;
 
 // ../../../node_modules/lodash-es/_hasPath.js
-function hasPath(object, path2, hasFunc) {
-  path2 = castPath_default(path2, object);
-  var index = -1, length = path2.length, result = false;
+function hasPath(object, path3, hasFunc) {
+  path3 = castPath_default(path3, object);
+  var index = -1, length = path3.length, result = false;
   while (++index < length) {
-    var key = toKey_default(path2[index]);
+    var key = toKey_default(path3[index]);
     if (!(result = object != null && hasFunc(object, key))) {
       break;
     }
@@ -17320,8 +17320,8 @@ __name(hasPath, "hasPath");
 var hasPath_default = hasPath;
 
 // ../../../node_modules/lodash-es/hasIn.js
-function hasIn(object, path2) {
-  return object != null && hasPath_default(object, path2, baseHasIn_default);
+function hasIn(object, path3) {
+  return object != null && hasPath_default(object, path3, baseHasIn_default);
 }
 __name(hasIn, "hasIn");
 var hasIn_default = hasIn;
@@ -17329,13 +17329,13 @@ var hasIn_default = hasIn;
 // ../../../node_modules/lodash-es/_baseMatchesProperty.js
 var COMPARE_PARTIAL_FLAG6 = 1;
 var COMPARE_UNORDERED_FLAG4 = 2;
-function baseMatchesProperty(path2, srcValue) {
-  if (isKey_default(path2) && isStrictComparable_default(srcValue)) {
-    return matchesStrictComparable_default(toKey_default(path2), srcValue);
+function baseMatchesProperty(path3, srcValue) {
+  if (isKey_default(path3) && isStrictComparable_default(srcValue)) {
+    return matchesStrictComparable_default(toKey_default(path3), srcValue);
   }
   return function(object) {
-    var objValue = get_default(object, path2);
-    return objValue === void 0 && objValue === srcValue ? hasIn_default(object, path2) : baseIsEqual_default(srcValue, objValue, COMPARE_PARTIAL_FLAG6 | COMPARE_UNORDERED_FLAG4);
+    var objValue = get_default(object, path3);
+    return objValue === void 0 && objValue === srcValue ? hasIn_default(object, path3) : baseIsEqual_default(srcValue, objValue, COMPARE_PARTIAL_FLAG6 | COMPARE_UNORDERED_FLAG4);
   };
 }
 __name(baseMatchesProperty, "baseMatchesProperty");
@@ -17351,17 +17351,17 @@ __name(baseProperty, "baseProperty");
 var baseProperty_default = baseProperty;
 
 // ../../../node_modules/lodash-es/_basePropertyDeep.js
-function basePropertyDeep(path2) {
+function basePropertyDeep(path3) {
   return function(object) {
-    return baseGet_default(object, path2);
+    return baseGet_default(object, path3);
   };
 }
 __name(basePropertyDeep, "basePropertyDeep");
 var basePropertyDeep_default = basePropertyDeep;
 
 // ../../../node_modules/lodash-es/property.js
-function property(path2) {
-  return isKey_default(path2) ? baseProperty_default(toKey_default(path2)) : basePropertyDeep_default(path2);
+function property(path3) {
+  return isKey_default(path3) ? baseProperty_default(toKey_default(path3)) : basePropertyDeep_default(path3);
 }
 __name(property, "property");
 var property_default = property;
@@ -17757,8 +17757,8 @@ __name(baseHas, "baseHas");
 var baseHas_default = baseHas;
 
 // ../../../node_modules/lodash-es/has.js
-function has(object, path2) {
-  return object != null && hasPath_default(object, path2, baseHas_default);
+function has(object, path3) {
+  return object != null && hasPath_default(object, path3, baseHas_default);
 }
 __name(has, "has");
 var has_default = has;
@@ -17919,14 +17919,14 @@ __name(negate, "negate");
 var negate_default = negate;
 
 // ../../../node_modules/lodash-es/_baseSet.js
-function baseSet(object, path2, value, customizer) {
+function baseSet(object, path3, value, customizer) {
   if (!isObject_default(object)) {
     return object;
   }
-  path2 = castPath_default(path2, object);
-  var index = -1, length = path2.length, lastIndex = length - 1, nested = object;
+  path3 = castPath_default(path3, object);
+  var index = -1, length = path3.length, lastIndex = length - 1, nested = object;
   while (nested != null && ++index < length) {
-    var key = toKey_default(path2[index]), newValue = value;
+    var key = toKey_default(path3[index]), newValue = value;
     if (key === "__proto__" || key === "constructor" || key === "prototype") {
       return object;
     }
@@ -17934,7 +17934,7 @@ function baseSet(object, path2, value, customizer) {
       var objValue = nested[key];
       newValue = customizer ? customizer(objValue, key, nested) : void 0;
       if (newValue === void 0) {
-        newValue = isObject_default(objValue) ? objValue : isIndex_default(path2[index + 1]) ? [] : {};
+        newValue = isObject_default(objValue) ? objValue : isIndex_default(path3[index + 1]) ? [] : {};
       }
     }
     assignValue_default(nested, key, newValue);
@@ -17949,9 +17949,9 @@ var baseSet_default = baseSet;
 function basePickBy(object, paths, predicate) {
   var index = -1, length = paths.length, result = {};
   while (++index < length) {
-    var path2 = paths[index], value = baseGet_default(object, path2);
-    if (predicate(value, path2)) {
-      baseSet_default(result, castPath_default(path2, object), value);
+    var path3 = paths[index], value = baseGet_default(object, path3);
+    if (predicate(value, path3)) {
+      baseSet_default(result, castPath_default(path3, object), value);
     }
   }
   return result;
@@ -17968,8 +17968,8 @@ function pickBy(object, predicate) {
     return [prop];
   });
   predicate = baseIteratee_default(predicate);
-  return basePickBy_default(object, props, function(value, path2) {
-    return predicate(value, path2[0]);
+  return basePickBy_default(object, props, function(value, path3) {
+    return predicate(value, path3[0]);
   });
 }
 __name(pickBy, "pickBy");
@@ -19675,12 +19675,12 @@ function assignCategoriesMapProp(tokenTypes) {
   });
 }
 __name(assignCategoriesMapProp, "assignCategoriesMapProp");
-function singleAssignCategoriesToksMap(path2, nextNode) {
-  forEach_default(path2, (pathNode) => {
+function singleAssignCategoriesToksMap(path3, nextNode) {
+  forEach_default(path3, (pathNode) => {
     nextNode.categoryMatchesMap[pathNode.tokenTypeIdx] = true;
   });
   forEach_default(nextNode.CATEGORIES, (nextCategory) => {
-    const newPath = path2.concat(nextNode);
+    const newPath = path3.concat(nextNode);
     if (!includes_default(newPath, nextCategory)) {
       singleAssignCategoriesToksMap(newPath, nextCategory);
     }
@@ -20545,10 +20545,10 @@ var GastRefResolverVisitor = _GastRefResolverVisitor;
 
 // ../../../node_modules/chevrotain/lib/src/parse/grammar/interpreter.js
 var _AbstractNextPossibleTokensWalker = class _AbstractNextPossibleTokensWalker extends RestWalker {
-  constructor(topProd, path2) {
+  constructor(topProd, path3) {
     super();
     this.topProd = topProd;
-    this.path = path2;
+    this.path = path3;
     this.possibleTokTypes = [];
     this.nextProductionName = "";
     this.nextProductionOccurrence = 0;
@@ -20594,9 +20594,9 @@ var _AbstractNextPossibleTokensWalker = class _AbstractNextPossibleTokensWalker 
 __name(_AbstractNextPossibleTokensWalker, "AbstractNextPossibleTokensWalker");
 var AbstractNextPossibleTokensWalker = _AbstractNextPossibleTokensWalker;
 var _NextAfterTokenWalker = class _NextAfterTokenWalker extends AbstractNextPossibleTokensWalker {
-  constructor(topProd, path2) {
-    super(topProd, path2);
-    this.path = path2;
+  constructor(topProd, path3) {
+    super(topProd, path3);
+    this.path = path3;
     this.nextTerminalName = "";
     this.nextTerminalOccurrence = 0;
     this.nextTerminalName = this.path.lastTok.name;
@@ -21232,10 +21232,10 @@ function initializeArrayOfArrays(size) {
   return result;
 }
 __name(initializeArrayOfArrays, "initializeArrayOfArrays");
-function pathToHashKeys(path2) {
+function pathToHashKeys(path3) {
   let keys2 = [""];
-  for (let i = 0; i < path2.length; i++) {
-    const tokType = path2[i];
+  for (let i = 0; i < path3.length; i++) {
+    const tokType = path3[i];
     const longerKeys = [];
     for (let j = 0; j < keys2.length; j++) {
       const currShorterKey = keys2[j];
@@ -21492,7 +21492,7 @@ function validateRuleIsOverridden(ruleName, definedRulesNames, className) {
   return errors;
 }
 __name(validateRuleIsOverridden, "validateRuleIsOverridden");
-function validateNoLeftRecursion(topRule, currRule, errMsgProvider, path2 = []) {
+function validateNoLeftRecursion(topRule, currRule, errMsgProvider, path3 = []) {
   const errors = [];
   const nextNonTerminals = getFirstNoneTerminal(currRule.definition);
   if (isEmpty_default(nextNonTerminals)) {
@@ -21504,15 +21504,15 @@ function validateNoLeftRecursion(topRule, currRule, errMsgProvider, path2 = []) 
       errors.push({
         message: errMsgProvider.buildLeftRecursionError({
           topLevelRule: topRule,
-          leftRecursionPath: path2
+          leftRecursionPath: path3
         }),
         type: ParserDefinitionErrorType.LEFT_RECURSION,
         ruleName
       });
     }
-    const validNextSteps = difference_default(nextNonTerminals, path2.concat([topRule]));
+    const validNextSteps = difference_default(nextNonTerminals, path3.concat([topRule]));
     const errorsFromNextSteps = flatMap_default(validNextSteps, (currRefRule) => {
-      const newPath = clone_default(path2);
+      const newPath = clone_default(path3);
       newPath.push(currRefRule);
       return validateNoLeftRecursion(topRule, currRefRule, errMsgProvider, newPath);
     });
@@ -24486,7 +24486,7 @@ var _LLStarLookaheadStrategy = class _LLStarLookaheadStrategy extends LLkLookahe
       occurrence: prodOccurrence,
       prodType: "Alternation",
       rule
-    }), (currAlt) => map_default(currAlt, (path2) => path2[0]));
+    }), (currAlt) => map_default(currAlt, (path3) => path3[0]));
     if (isLL1Sequence(partialAlts, false) && !dynamicTokensEnabled) {
       const choiceToAlt = reduce_default(partialAlts, (result, currAlt, idx) => {
         forEach_default(currAlt, (currTokType) => {
@@ -24636,7 +24636,7 @@ __name(adaptivePredict, "adaptivePredict");
 function performLookahead(dfa, s0, predicateSet, logging) {
   let previousD = s0;
   let i = 1;
-  const path2 = [];
+  const path3 = [];
   let t = this.LA(i++);
   while (true) {
     let d = getExistingTargetState(previousD, t);
@@ -24644,13 +24644,13 @@ function performLookahead(dfa, s0, predicateSet, logging) {
       d = computeLookaheadTarget.apply(this, [dfa, previousD, t, i, predicateSet, logging]);
     }
     if (d === DFA_ERROR) {
-      return buildAdaptivePredictError(path2, previousD, t);
+      return buildAdaptivePredictError(path3, previousD, t);
     }
     if (d.isAcceptState === true) {
       return d.prediction;
     }
     previousD = d;
-    path2.push(t);
+    path3.push(t);
     t = this.LA(i++);
   }
 }
@@ -24728,13 +24728,13 @@ function getProductionDslName2(prod) {
   }
 }
 __name(getProductionDslName2, "getProductionDslName");
-function buildAdaptivePredictError(path2, previous, current) {
+function buildAdaptivePredictError(path3, previous, current) {
   const nextTransitions = flatMap_default(previous.configs.elements, (e) => e.state.transitions);
   const nextTokenTypes = uniqBy_default(nextTransitions.filter((e) => e instanceof AtomTransition).map((e) => e.tokenType), (e) => e.tokenTypeIdx);
   return {
     actualToken: current,
     possibleTokenTypes: nextTokenTypes,
-    tokenPath: path2
+    tokenPath: path3
   };
 }
 __name(buildAdaptivePredictError, "buildAdaptivePredictError");
@@ -28139,12 +28139,12 @@ var _DefaultReferences = class _DefaultReferences {
     const nameNode = this.nameProvider.getNameNode(targetNode);
     if (nameNode) {
       const doc = getDocument(targetNode);
-      const path2 = this.nodeLocator.getAstNodePath(targetNode);
+      const path3 = this.nodeLocator.getAstNodePath(targetNode);
       return {
         sourceUri: doc.uri,
-        sourcePath: path2,
+        sourcePath: path3,
         targetUri: doc.uri,
-        targetPath: path2,
+        targetPath: path3,
         segment: toDocumentSegment(nameNode),
         local: true
       };
@@ -29189,9 +29189,9 @@ var _DefaultAstNodeDescriptionProvider = class _DefaultAstNodeDescriptionProvide
   }
   createDescription(node, name, document = getDocument(node)) {
     name !== null && name !== void 0 ? name : name = this.nameProvider.getName(node);
-    const path2 = this.astNodeLocator.getAstNodePath(node);
+    const path3 = this.astNodeLocator.getAstNodePath(node);
     if (!name) {
-      throw new Error(`Node at path ${path2} has no name.`);
+      throw new Error(`Node at path ${path3} has no name.`);
     }
     let nameNodeSegment;
     const nameSegmentGetter = /* @__PURE__ */ __name(() => {
@@ -29207,7 +29207,7 @@ var _DefaultAstNodeDescriptionProvider = class _DefaultAstNodeDescriptionProvide
       selectionSegment: toDocumentSegment(node.$cstNode),
       type: node.$type,
       documentUri: document.uri,
-      path: path2
+      path: path3
     };
   }
 };
@@ -29275,8 +29275,8 @@ var _DefaultAstNodeLocator = class _DefaultAstNodeLocator {
     }
     return $containerProperty;
   }
-  getAstNode(node, path2) {
-    const segments = path2.split(this.segmentSeparator);
+  getAstNode(node, path3) {
+    const segments = path3.split(this.segmentSeparator);
     return segments.reduce((previousValue, currentValue) => {
       if (!previousValue || currentValue.length === 0) {
         return previousValue;
@@ -33118,6 +33118,7 @@ __name(isNamedElement, "isNamedElement");
 var Statement = "Statement";
 var Subscript_list = "Subscript_list";
 var Universe = "Universe";
+var VariableReferenceTarget = "VariableReferenceTarget";
 var Alias = "Alias";
 function isAlias(item) {
   return reflection2.isInstance(item, Alias);
@@ -33159,6 +33160,11 @@ function isFunctionBlock(item) {
   return reflection2.isInstance(item, FunctionBlock);
 }
 __name(isFunctionBlock, "isFunctionBlock");
+var GlobalVarList = "GlobalVarList";
+function isGlobalVarList(item) {
+  return reflection2.isInstance(item, GlobalVarList);
+}
+__name(isGlobalVarList, "isGlobalVarList");
 var Interface2 = "Interface";
 var Invoke_subrule = "Invoke_subrule";
 function isInvoke_subrule(item) {
@@ -33259,6 +33265,7 @@ var _StAstReflection = class _StAstReflection extends AbstractAstReflection {
       "Array_liters",
       "AssignPrefix",
       "Assignment_subrule",
+      "AttributePragma",
       "Case_element",
       "Case_list",
       "Case_list_element",
@@ -33274,6 +33281,7 @@ var _StAstReflection = class _StAstReflection extends AbstractAstReflection {
       "FunctionExpression",
       "Function_invoke_or_assign",
       "Function_invoke_or_assign_statement",
+      "GlobalVarList",
       "If_statement",
       "InputsList",
       "InputsListSingle",
@@ -33304,10 +33312,12 @@ var _StAstReflection = class _StAstReflection extends AbstractAstReflection {
       "UnionsList",
       "Universe",
       "VarDeclarationInit",
+      "VarExternal",
       "VarInput",
       "VarLocal",
       "VarOutput",
       "VariableExpression",
+      "VariableReferenceTarget",
       "While_statement"
     ];
   }
@@ -33337,11 +33347,14 @@ var _StAstReflection = class _StAstReflection extends AbstractAstReflection {
       case Selection_statement: {
         return this.isSubtype(Statement, supertype);
       }
+      case GlobalVarList: {
+        return this.isSubtype(VariableReferenceTarget, supertype);
+      }
       case NamedElement: {
-        return this.isSubtype(Universe, supertype);
+        return this.isSubtype(Universe, supertype) || this.isSubtype(VariableReferenceTarget, supertype);
       }
       case StFunction: {
-        return this.isSubtype(ComposeElement, supertype) || this.isSubtype(Universe, supertype);
+        return this.isSubtype(ComposeElement, supertype) || this.isSubtype(Universe, supertype) || this.isSubtype(VariableReferenceTarget, supertype);
       }
       case Struct_Var_Decl_Init:
       case VarDeclarationInit: {
@@ -33356,7 +33369,6 @@ var _StAstReflection = class _StAstReflection extends AbstractAstReflection {
     const referenceId = `${refInfo.container.$type}:${refInfo.property}`;
     switch (referenceId) {
       case "Action_call_statement:actionName":
-      case "AssignPrefix:varEnchanceDecl":
       case "RefFunctionOrBlockName:refFunctionName": {
         return Universe;
       }
@@ -33365,9 +33377,12 @@ var _StAstReflection = class _StAstReflection extends AbstractAstReflection {
       case "Native_Type_Name:Identifier": {
         return ComposeElement;
       }
-      case "For_statement:controlVariable":
-      case "MemberCall:element":
+      case "AssignPrefix:varEnchanceDecl":
       case "VariableExpression:variable": {
+        return VariableReferenceTarget;
+      }
+      case "For_statement:controlVariable":
+      case "MemberCall:element": {
         return NamedElement;
       }
       case "Interface:extender": {
@@ -33414,6 +33429,12 @@ var _StAstReflection = class _StAstReflection extends AbstractAstReflection {
         return {
           name: "AssignPrefix",
           properties: [{ name: "varEnchanceDecl" }]
+        };
+      }
+      case "AttributePragma": {
+        return {
+          name: "AttributePragma",
+          properties: [{ name: "attributeName" }]
         };
       }
       case "Case_element": {
@@ -33483,9 +33504,20 @@ var _StAstReflection = class _StAstReflection extends AbstractAstReflection {
             { name: "methods", defaultValue: [] },
             { name: "name" },
             { name: "statementList", defaultValue: [] },
+            { name: "varExternals", defaultValue: [] },
             { name: "varInputs", defaultValue: [] },
             { name: "varLocals", defaultValue: [] },
             { name: "varOutputs", defaultValue: [] }
+          ]
+        };
+      }
+      case "GlobalVarList": {
+        return {
+          name: "GlobalVarList",
+          properties: [
+            { name: "attributes", defaultValue: [] },
+            { name: "items", defaultValue: [] },
+            { name: "modifiers", defaultValue: [] }
           ]
         };
       }
@@ -33578,7 +33610,12 @@ var _StAstReflection = class _StAstReflection extends AbstractAstReflection {
       case "Program": {
         return {
           name: "Program",
-          properties: [{ name: "inputs", defaultValue: [] }, { name: "name" }, { name: "stStatements" }]
+          properties: [
+            { name: "inputs", defaultValue: [] },
+            { name: "name" },
+            { name: "stStatements" },
+            { name: "varExternals", defaultValue: [] }
+          ]
         };
       }
       case "RefFunctionOrBlockName": {
@@ -33616,6 +33653,7 @@ var _StAstReflection = class _StAstReflection extends AbstractAstReflection {
           name: "St",
           properties: [
             { name: "function_block", defaultValue: [] },
+            { name: "globalVarLists", defaultValue: [] },
             { name: "itface", defaultValue: [] },
             { name: "program", defaultValue: [] },
             { name: "st_function", defaultValue: [] },
@@ -33689,6 +33727,12 @@ var _StAstReflection = class _StAstReflection extends AbstractAstReflection {
             { name: "typeName" },
             { name: "variables" }
           ]
+        };
+      }
+      case "VarExternal": {
+        return {
+          name: "VarExternal",
+          properties: [{ name: "items", defaultValue: [] }]
         };
       }
       case "VarInput": {
@@ -34953,6 +34997,7 @@ function transform2AstNode(composeNodeArr) {
   let root2 = {
     $type: "St",
     function_block: [],
+    globalVarLists: [],
     itface: [],
     program: [],
     st_function: [],
@@ -35035,6 +35080,7 @@ function transform2AstNode(composeNodeArr) {
           name: "",
           statementList: [],
           methods: [],
+          varExternals: [],
           varInputs: [],
           varLocals: [],
           varOutputs: []
@@ -35691,6 +35737,23 @@ var _CacheCompletionProvider = class _CacheCompletionProvider extends DefaultCom
     })[0];
   }
   async getMembersForChain(chain, document) {
+    const globalVarList = await this.getWorkspaceGlobalVarListByName(chain[0]);
+    if (globalVarList) {
+      if (chain.length === 1) {
+        return this.getGlobalVarListEntries(globalVarList);
+      }
+      let typeName2 = this.getGlobalVarListMemberType(globalVarList, chain[1]);
+      if (!typeName2) {
+        return [];
+      }
+      for (let i = 2; i < chain.length; i++) {
+        typeName2 = await this.getMemberTypeByName(typeName2, chain[i], document);
+        if (!typeName2) {
+          return [];
+        }
+      }
+      return await this.getMemberEntriesForType(typeName2, document);
+    }
     let typeName = this.getVariableTypeByName(chain[0], document);
     if (!typeName) {
       return [];
@@ -35702,6 +35765,63 @@ var _CacheCompletionProvider = class _CacheCompletionProvider extends DefaultCom
       }
     }
     return await this.getMemberEntriesForType(typeName, document);
+  }
+  async getWorkspaceGlobalVarListByName(globalVarListName) {
+    if (!globalVarListName) {
+      return void 0;
+    }
+    const indexManager = this.services.shared.workspace.IndexManager;
+    const langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+    const astNodeLocator = this.services.workspace.AstNodeLocator;
+    for (const description of indexManager.allElements("GlobalVarList")) {
+      if (description.name.toLowerCase() !== globalVarListName.toLowerCase()) {
+        continue;
+      }
+      let targetDocument = langiumDocuments.getDocument(description.documentUri);
+      try {
+        if (!targetDocument) {
+          if (description.documentUri.fsPath && !import_node_fs.default.existsSync(description.documentUri.fsPath)) {
+            continue;
+          }
+          targetDocument = await langiumDocuments.getOrCreateDocument(description.documentUri);
+        }
+        if (targetDocument) {
+          const node = astNodeLocator.getAstNode(targetDocument.parseResult.value, description.path);
+          if (node && node.$type === "GlobalVarList") {
+            return node;
+          }
+        }
+      } catch {
+        continue;
+      }
+    }
+    return void 0;
+  }
+  getGlobalVarListMemberType(globalVarList, memberName) {
+    var _a;
+    for (const item of (_a = globalVarList.items) != null ? _a : []) {
+      if (item.variables === memberName || item.nextVariables.includes(memberName)) {
+        let expectedType = "";
+        let basicType = basicDataType(expectedType, item.typeName);
+        return basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
+      }
+    }
+    return void 0;
+  }
+  getGlobalVarListEntries(globalVarList) {
+    var _a;
+    const entries = [];
+    let sequence = 0;
+    for (const item of (_a = globalVarList.items) != null ? _a : []) {
+      let expectedType = "";
+      let basicType = basicDataType(expectedType, item.typeName);
+      let detail = basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
+      entries.push({ label: item.variables, detail, sortText: this.buildMemberSortText(1, sequence++) });
+      item.nextVariables.forEach(
+        (nextVariable) => entries.push({ label: nextVariable, detail, sortText: this.buildMemberSortText(1, sequence++) })
+      );
+    }
+    return entries;
   }
   getVariableTypeByName(variableName, document) {
     let root2 = document.parseResult.value;
@@ -37032,7 +37152,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
         "elements": [
           {
             "$type": "Assignment",
-            "feature": "program",
+            "feature": "globalVarLists",
             "operator": "+=",
             "terminal": {
               "$type": "RuleCall",
@@ -37044,12 +37164,24 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           },
           {
             "$type": "Assignment",
+            "feature": "program",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@3"
+              },
+              "arguments": []
+            }
+          },
+          {
+            "$type": "Assignment",
             "feature": "types_alias",
             "operator": "+=",
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@19"
+                "$ref": "#/rules@22"
               },
               "arguments": []
             }
@@ -37061,7 +37193,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@18"
+                "$ref": "#/rules@21"
               },
               "arguments": []
             }
@@ -37073,7 +37205,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@15"
+                "$ref": "#/rules@18"
               },
               "arguments": []
             }
@@ -37085,7 +37217,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@20"
+                "$ref": "#/rules@23"
               },
               "arguments": []
             }
@@ -37097,7 +37229,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@9"
+                "$ref": "#/rules@11"
               },
               "arguments": []
             }
@@ -37109,7 +37241,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@2"
+                "$ref": "#/rules@4"
               },
               "arguments": []
             }
@@ -37121,7 +37253,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@4"
+                "$ref": "#/rules@6"
               },
               "arguments": []
             }
@@ -37130,6 +37262,107 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
         "cardinality": "*"
       },
       "definesHiddenTokens": false,
+      "fragment": false,
+      "hiddenTokens": [],
+      "parameters": [],
+      "wildcard": false
+    },
+    {
+      "$type": "ParserRule",
+      "name": "GlobalVarList",
+      "definition": {
+        "$type": "Group",
+        "elements": [
+          {
+            "$type": "Assignment",
+            "feature": "attributes",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@2"
+              },
+              "arguments": []
+            },
+            "cardinality": "*"
+          },
+          {
+            "$type": "Keyword",
+            "value": "VAR_GLOBAL"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "modifiers",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@26"
+              },
+              "arguments": []
+            },
+            "cardinality": "*"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "items",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@20"
+              },
+              "arguments": []
+            },
+            "cardinality": "*"
+          },
+          {
+            "$type": "Keyword",
+            "value": "END_VAR"
+          }
+        ]
+      },
+      "definesHiddenTokens": false,
+      "entry": false,
+      "fragment": false,
+      "hiddenTokens": [],
+      "parameters": [],
+      "wildcard": false
+    },
+    {
+      "$type": "ParserRule",
+      "name": "AttributePragma",
+      "definition": {
+        "$type": "Group",
+        "elements": [
+          {
+            "$type": "Keyword",
+            "value": "{"
+          },
+          {
+            "$type": "Keyword",
+            "value": "attribute"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "attributeName",
+            "operator": "=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@39"
+              },
+              "arguments": []
+            }
+          },
+          {
+            "$type": "Keyword",
+            "value": "}"
+          }
+        ]
+      },
+      "definesHiddenTokens": false,
+      "entry": false,
       "fragment": false,
       "hiddenTokens": [],
       "parameters": [],
@@ -37152,22 +37385,39 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@7"
+                "$ref": "#/rules@9"
               },
               "arguments": []
             }
           },
           {
-            "$type": "Assignment",
-            "feature": "inputs",
-            "operator": "+=",
-            "terminal": {
-              "$type": "RuleCall",
-              "rule": {
-                "$ref": "#/rules@11"
+            "$type": "Alternatives",
+            "elements": [
+              {
+                "$type": "Assignment",
+                "feature": "inputs",
+                "operator": "+=",
+                "terminal": {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$ref": "#/rules@13"
+                  },
+                  "arguments": []
+                }
               },
-              "arguments": []
-            },
+              {
+                "$type": "Assignment",
+                "feature": "varExternals",
+                "operator": "+=",
+                "terminal": {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$ref": "#/rules@17"
+                  },
+                  "arguments": []
+                }
+              }
+            ],
             "cardinality": "*"
           },
           {
@@ -37177,7 +37427,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@74"
+                "$ref": "#/rules@77"
               },
               "arguments": []
             },
@@ -37213,7 +37463,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@115"
+                "$ref": "#/rules@118"
               },
               "arguments": []
             }
@@ -37229,7 +37479,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@26"
+                "$ref": "#/rules@29"
               },
               "arguments": []
             }
@@ -37244,7 +37494,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@12"
+                    "$ref": "#/rules@14"
                   },
                   "arguments": []
                 }
@@ -37256,7 +37506,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@13"
+                    "$ref": "#/rules@15"
                   },
                   "arguments": []
                 }
@@ -37268,7 +37518,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@14"
+                    "$ref": "#/rules@16"
                   },
                   "arguments": []
                 }
@@ -37283,7 +37533,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@75"
+                "$ref": "#/rules@78"
               },
               "arguments": []
             },
@@ -37315,7 +37565,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@115"
+                "$ref": "#/rules@118"
               },
               "arguments": []
             }
@@ -37331,7 +37581,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@26"
+                "$ref": "#/rules@29"
               },
               "arguments": []
             }
@@ -37362,7 +37612,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@7"
+                "$ref": "#/rules@9"
               },
               "arguments": []
             }
@@ -37381,12 +37631,12 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "CrossReference",
                   "type": {
-                    "$ref": "#/rules@4"
+                    "$ref": "#/rules@6"
                   },
                   "terminal": {
                     "$type": "RuleCall",
                     "rule": {
-                      "$ref": "#/rules@7"
+                      "$ref": "#/rules@9"
                     },
                     "arguments": []
                   },
@@ -37403,7 +37653,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@5"
+                "$ref": "#/rules@7"
               },
               "arguments": []
             },
@@ -37439,7 +37689,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@6"
+                "$ref": "#/rules@8"
               },
               "arguments": []
             },
@@ -37452,7 +37702,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@7"
+                "$ref": "#/rules@9"
               },
               "arguments": []
             }
@@ -37474,7 +37724,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                     "terminal": {
                       "$type": "RuleCall",
                       "rule": {
-                        "$ref": "#/rules@3"
+                        "$ref": "#/rules@5"
                       },
                       "arguments": []
                     }
@@ -37505,7 +37755,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@26"
+                "$ref": "#/rules@29"
               },
               "arguments": []
             }
@@ -37517,7 +37767,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@10"
+                "$ref": "#/rules@12"
               },
               "arguments": []
             }
@@ -37529,7 +37779,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@74"
+                "$ref": "#/rules@77"
               },
               "arguments": []
             }
@@ -37589,14 +37839,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@115"
+              "$ref": "#/rules@118"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@8"
+              "$ref": "#/rules@10"
             },
             "arguments": []
           }
@@ -37622,28 +37872,28 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@104"
+                  "$ref": "#/rules@107"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@113"
+                  "$ref": "#/rules@116"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@114"
+                  "$ref": "#/rules@117"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@108"
+                  "$ref": "#/rules@111"
                 },
                 "arguments": []
               }
@@ -37655,14 +37905,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@136"
+                  "$ref": "#/rules@139"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@115"
+                  "$ref": "#/rules@118"
                 },
                 "arguments": []
               }
@@ -37714,7 +37964,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@115"
+                "$ref": "#/rules@118"
               },
               "arguments": []
             }
@@ -37729,7 +37979,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@12"
+                    "$ref": "#/rules@14"
                   },
                   "arguments": []
                 }
@@ -37741,7 +37991,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@13"
+                    "$ref": "#/rules@15"
                   },
                   "arguments": []
                 }
@@ -37753,7 +38003,19 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@14"
+                    "$ref": "#/rules@16"
+                  },
+                  "arguments": []
+                }
+              },
+              {
+                "$type": "Assignment",
+                "feature": "varExternals",
+                "operator": "+=",
+                "terminal": {
+                  "$type": "RuleCall",
+                  "rule": {
+                    "$ref": "#/rules@17"
                   },
                   "arguments": []
                 }
@@ -37768,7 +38030,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@5"
+                "$ref": "#/rules@7"
               },
               "arguments": []
             },
@@ -37781,7 +38043,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@75"
+                "$ref": "#/rules@78"
               },
               "arguments": []
             },
@@ -37817,7 +38079,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@22"
+                "$ref": "#/rules@25"
               },
               "arguments": []
             }
@@ -37829,7 +38091,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@23"
+                "$ref": "#/rules@26"
               },
               "arguments": []
             },
@@ -37842,7 +38104,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@17"
+                "$ref": "#/rules@20"
               },
               "arguments": []
             },
@@ -37879,7 +38141,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@22"
+                "$ref": "#/rules@25"
               },
               "arguments": []
             }
@@ -37891,7 +38153,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@23"
+                "$ref": "#/rules@26"
               },
               "arguments": []
             },
@@ -37904,7 +38166,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@17"
+                "$ref": "#/rules@20"
               },
               "arguments": []
             },
@@ -37940,7 +38202,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@17"
+                "$ref": "#/rules@20"
               },
               "arguments": []
             },
@@ -37976,7 +38238,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@17"
+                "$ref": "#/rules@20"
               },
               "arguments": []
             },
@@ -38012,7 +38274,43 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@17"
+                "$ref": "#/rules@20"
+              },
+              "arguments": []
+            },
+            "cardinality": "*"
+          },
+          {
+            "$type": "Keyword",
+            "value": "END_VAR"
+          }
+        ]
+      },
+      "definesHiddenTokens": false,
+      "entry": false,
+      "fragment": false,
+      "hiddenTokens": [],
+      "parameters": [],
+      "wildcard": false
+    },
+    {
+      "$type": "ParserRule",
+      "name": "VarExternal",
+      "definition": {
+        "$type": "Group",
+        "elements": [
+          {
+            "$type": "Keyword",
+            "value": "VAR_EXTERNAL"
+          },
+          {
+            "$type": "Assignment",
+            "feature": "items",
+            "operator": "+=",
+            "terminal": {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@20"
               },
               "arguments": []
             },
@@ -38052,7 +38350,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@115"
+                "$ref": "#/rules@118"
               },
               "arguments": []
             }
@@ -38072,7 +38370,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@16"
+                "$ref": "#/rules@19"
               },
               "arguments": []
             },
@@ -38099,7 +38397,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
       "$type": "ParserRule",
       "name": "Struct_Var_Decl_Init",
       "returnType": {
-        "$ref": "#/types@1"
+        "$ref": "#/types@2"
       },
       "definition": {
         "$type": "Group",
@@ -38118,7 +38416,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@7"
+                "$ref": "#/rules@9"
               },
               "arguments": []
             }
@@ -38137,7 +38435,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@7"
+                    "$ref": "#/rules@9"
                   },
                   "arguments": []
                 }
@@ -38155,7 +38453,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@135"
+                  "$ref": "#/rules@138"
                 },
                 "arguments": []
               }
@@ -38173,7 +38471,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@26"
+                "$ref": "#/rules@29"
               },
               "arguments": []
             }
@@ -38192,7 +38490,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@27"
+                    "$ref": "#/rules@30"
                   },
                   "arguments": []
                 }
@@ -38230,7 +38528,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@7"
+                "$ref": "#/rules@9"
               },
               "arguments": []
             }
@@ -38249,7 +38547,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@7"
+                    "$ref": "#/rules@9"
                   },
                   "arguments": []
                 }
@@ -38267,7 +38565,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@135"
+                  "$ref": "#/rules@138"
                 },
                 "arguments": []
               }
@@ -38285,7 +38583,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@26"
+                "$ref": "#/rules@29"
               },
               "arguments": []
             }
@@ -38304,7 +38602,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@27"
+                    "$ref": "#/rules@30"
                   },
                   "arguments": []
                 }
@@ -38346,7 +38644,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@7"
+                "$ref": "#/rules@9"
               },
               "arguments": []
             }
@@ -38366,7 +38664,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@17"
+                "$ref": "#/rules@20"
               },
               "arguments": []
             },
@@ -38406,7 +38704,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@115"
+                "$ref": "#/rules@118"
               },
               "arguments": []
             }
@@ -38422,7 +38720,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@26"
+                "$ref": "#/rules@29"
               },
               "arguments": []
             }
@@ -38441,7 +38739,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@27"
+                    "$ref": "#/rules@30"
                   },
                   "arguments": []
                 }
@@ -38483,7 +38781,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@7"
+                "$ref": "#/rules@9"
               },
               "arguments": []
             }
@@ -38503,7 +38801,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@21"
+                "$ref": "#/rules@24"
               },
               "arguments": []
             }
@@ -38522,7 +38820,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@21"
+                    "$ref": "#/rules@24"
                   },
                   "arguments": []
                 }
@@ -38560,7 +38858,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@7"
+                "$ref": "#/rules@9"
               },
               "arguments": []
             }
@@ -38579,7 +38877,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@136"
+                    "$ref": "#/rules@139"
                   },
                   "arguments": []
                 }
@@ -38677,35 +38975,35 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@15"
+              "$ref": "#/rules@18"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@9"
+              "$ref": "#/rules@11"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@2"
+              "$ref": "#/rules@4"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@19"
+              "$ref": "#/rules@22"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@20"
+              "$ref": "#/rules@23"
             },
             "arguments": []
           }
@@ -38732,7 +39030,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
         "terminal": {
           "$type": "RuleCall",
           "rule": {
-            "$ref": "#/rules@115"
+            "$ref": "#/rules@118"
           },
           "arguments": []
         }
@@ -38757,7 +39055,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@103"
+                "$ref": "#/rules@106"
               },
               "arguments": []
             }
@@ -38769,7 +39067,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@106"
+                "$ref": "#/rules@109"
               },
               "arguments": []
             }
@@ -38781,7 +39079,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@109"
+                "$ref": "#/rules@112"
               },
               "arguments": []
             }
@@ -38793,7 +39091,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@110"
+                "$ref": "#/rules@113"
               },
               "arguments": []
             }
@@ -38805,7 +39103,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@107"
+                "$ref": "#/rules@110"
               },
               "arguments": []
             }
@@ -38817,7 +39115,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@105"
+                "$ref": "#/rules@108"
               },
               "arguments": []
             }
@@ -38829,7 +39127,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@113"
+                "$ref": "#/rules@116"
               },
               "arguments": []
             }
@@ -38841,7 +39139,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@114"
+                "$ref": "#/rules@117"
               },
               "arguments": []
             }
@@ -38856,7 +39154,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@111"
+                    "$ref": "#/rules@114"
                   },
                   "arguments": []
                 },
@@ -38877,7 +39175,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@112"
+                    "$ref": "#/rules@115"
                   },
                   "arguments": []
                 },
@@ -38891,7 +39189,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@39"
+              "$ref": "#/rules@42"
             },
             "arguments": []
           },
@@ -38902,12 +39200,12 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "CrossReference",
               "type": {
-                "$ref": "#/rules@24"
+                "$ref": "#/rules@27"
               },
               "terminal": {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@115"
+                  "$ref": "#/rules@118"
                 },
                 "arguments": []
               },
@@ -38921,7 +39219,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@104"
+                "$ref": "#/rules@107"
               },
               "arguments": []
             }
@@ -38948,28 +39246,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@31"
-              },
-              "arguments": []
-            },
-            {
-              "$type": "RuleCall",
-              "rule": {
-                "$ref": "#/rules@32"
-              },
-              "arguments": []
-            },
-            {
-              "$type": "RuleCall",
-              "rule": {
                 "$ref": "#/rules@34"
-              },
-              "arguments": []
-            },
-            {
-              "$type": "RuleCall",
-              "rule": {
-                "$ref": "#/rules@30"
               },
               "arguments": []
             },
@@ -38983,7 +39260,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@36"
+                "$ref": "#/rules@37"
+              },
+              "arguments": []
+            },
+            {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@33"
               },
               "arguments": []
             },
@@ -38997,7 +39281,21 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@37"
+                "$ref": "#/rules@39"
+              },
+              "arguments": []
+            },
+            {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@41"
+              },
+              "arguments": []
+            },
+            {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@40"
               },
               "arguments": []
             }
@@ -39035,7 +39333,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@136"
+              "$ref": "#/rules@139"
             },
             "arguments": []
           }
@@ -39056,7 +39354,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@136"
+          "$ref": "#/rules@139"
         },
         "arguments": []
       },
@@ -39077,21 +39375,21 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@118"
+              "$ref": "#/rules@121"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@120"
+              "$ref": "#/rules@123"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@119"
+              "$ref": "#/rules@122"
             },
             "arguments": []
           }
@@ -39117,7 +39415,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@33"
+                  "$ref": "#/rules@36"
                 },
                 "arguments": []
               },
@@ -39133,28 +39431,28 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@28"
+                  "$ref": "#/rules@31"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@118"
+                  "$ref": "#/rules@121"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@120"
+                  "$ref": "#/rules@123"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@119"
+                  "$ref": "#/rules@122"
                 },
                 "arguments": []
               }
@@ -39182,7 +39480,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@107"
+                  "$ref": "#/rules@110"
                 },
                 "arguments": []
               },
@@ -39198,28 +39496,28 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@29"
+                  "$ref": "#/rules@32"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@118"
+                  "$ref": "#/rules@121"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@120"
+                  "$ref": "#/rules@123"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@119"
+                  "$ref": "#/rules@122"
                 },
                 "arguments": []
               }
@@ -39244,14 +39542,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@106"
+              "$ref": "#/rules@109"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@103"
+              "$ref": "#/rules@106"
             },
             "arguments": []
           }
@@ -39277,7 +39575,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@105"
+                  "$ref": "#/rules@108"
                 },
                 "arguments": []
               },
@@ -39291,7 +39589,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@28"
+              "$ref": "#/rules@31"
             },
             "arguments": []
           },
@@ -39305,14 +39603,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@136"
+                  "$ref": "#/rules@139"
                 },
                 "arguments": []
               },
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@117"
+                  "$ref": "#/rules@120"
                 },
                 "arguments": [],
                 "cardinality": "?"
@@ -39336,7 +39634,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@108"
+          "$ref": "#/rules@111"
         },
         "arguments": []
       },
@@ -39358,14 +39656,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@121"
+              "$ref": "#/rules@124"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@122"
+              "$ref": "#/rules@125"
             },
             "arguments": []
           }
@@ -39399,7 +39697,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@27"
+                    "$ref": "#/rules@30"
                   },
                   "arguments": []
                 }
@@ -39435,28 +39733,28 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@41"
+              "$ref": "#/rules@44"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@48"
+              "$ref": "#/rules@51"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@58"
+              "$ref": "#/rules@61"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@53"
+              "$ref": "#/rules@56"
             },
             "arguments": []
           }
@@ -39494,7 +39792,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@40"
+                    "$ref": "#/rules@43"
                   },
                   "arguments": []
                 }
@@ -39522,7 +39820,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@26"
+                "$ref": "#/rules@29"
               },
               "arguments": []
             }
@@ -39549,7 +39847,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@136"
+                "$ref": "#/rules@139"
               },
               "arguments": []
             }
@@ -39565,7 +39863,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@136"
+                "$ref": "#/rules@139"
               },
               "arguments": []
             }
@@ -39592,7 +39890,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@113"
+                  "$ref": "#/rules@116"
                 },
                 "arguments": []
               },
@@ -39614,7 +39912,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@42"
+              "$ref": "#/rules@45"
             },
             "arguments": []
           }
@@ -39638,6 +39936,27 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
+              "$ref": "#/rules@50"
+            },
+            "arguments": []
+          },
+          {
+            "$type": "RuleCall",
+            "rule": {
+              "$ref": "#/rules@49"
+            },
+            "arguments": []
+          },
+          {
+            "$type": "RuleCall",
+            "rule": {
+              "$ref": "#/rules@48"
+            },
+            "arguments": []
+          },
+          {
+            "$type": "RuleCall",
+            "rule": {
               "$ref": "#/rules@47"
             },
             "arguments": []
@@ -39646,27 +39965,6 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "$type": "RuleCall",
             "rule": {
               "$ref": "#/rules@46"
-            },
-            "arguments": []
-          },
-          {
-            "$type": "RuleCall",
-            "rule": {
-              "$ref": "#/rules@45"
-            },
-            "arguments": []
-          },
-          {
-            "$type": "RuleCall",
-            "rule": {
-              "$ref": "#/rules@44"
-            },
-            "arguments": []
-          },
-          {
-            "$type": "RuleCall",
-            "rule": {
-              "$ref": "#/rules@43"
             },
             "arguments": []
           }
@@ -39686,7 +39984,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@123"
+          "$ref": "#/rules@126"
         },
         "arguments": []
       },
@@ -39707,14 +40005,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@125"
+              "$ref": "#/rules@128"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@43"
+              "$ref": "#/rules@46"
             },
             "arguments": [],
             "cardinality": "?"
@@ -39738,14 +40036,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@124"
+              "$ref": "#/rules@127"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@44"
+              "$ref": "#/rules@47"
             },
             "arguments": [],
             "cardinality": "?"
@@ -39769,14 +40067,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@127"
+              "$ref": "#/rules@130"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@45"
+              "$ref": "#/rules@48"
             },
             "arguments": [],
             "cardinality": "?"
@@ -39800,14 +40098,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@126"
+              "$ref": "#/rules@129"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@46"
+              "$ref": "#/rules@49"
             },
             "arguments": [],
             "cardinality": "?"
@@ -39834,7 +40132,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@112"
+                  "$ref": "#/rules@115"
                 },
                 "arguments": []
               },
@@ -39851,7 +40149,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@49"
+              "$ref": "#/rules@52"
             },
             "arguments": []
           }
@@ -39875,7 +40173,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@50"
+              "$ref": "#/rules@53"
             },
             "arguments": []
           },
@@ -39886,7 +40184,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@51"
+              "$ref": "#/rules@54"
             },
             "arguments": []
           },
@@ -39897,7 +40195,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@52"
+              "$ref": "#/rules@55"
             },
             "arguments": []
           }
@@ -39917,7 +40215,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@136"
+          "$ref": "#/rules@139"
         },
         "arguments": []
       },
@@ -39935,7 +40233,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@136"
+          "$ref": "#/rules@139"
         },
         "arguments": []
       },
@@ -39956,7 +40254,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@136"
+              "$ref": "#/rules@139"
             },
             "arguments": []
           },
@@ -39970,7 +40268,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@136"
+                  "$ref": "#/rules@139"
                 },
                 "arguments": []
               }
@@ -39996,7 +40294,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@114"
+              "$ref": "#/rules@117"
             },
             "arguments": []
           },
@@ -40007,7 +40305,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@54"
+              "$ref": "#/rules@57"
             },
             "arguments": []
           }
@@ -40030,7 +40328,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@55"
+              "$ref": "#/rules@58"
             },
             "arguments": []
           },
@@ -40041,7 +40339,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@56"
+              "$ref": "#/rules@59"
             },
             "arguments": []
           },
@@ -40052,7 +40350,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@57"
+              "$ref": "#/rules@60"
             },
             "arguments": []
           }
@@ -40072,7 +40370,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@136"
+          "$ref": "#/rules@139"
         },
         "arguments": []
       },
@@ -40090,7 +40388,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@136"
+          "$ref": "#/rules@139"
         },
         "arguments": []
       },
@@ -40108,7 +40406,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@136"
+          "$ref": "#/rules@139"
         },
         "arguments": []
       },
@@ -40132,7 +40430,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@111"
+                  "$ref": "#/rules@114"
                 },
                 "arguments": []
               },
@@ -40149,7 +40447,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@54"
+              "$ref": "#/rules@57"
             },
             "arguments": []
           },
@@ -40163,7 +40461,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@49"
+                  "$ref": "#/rules@52"
                 },
                 "arguments": []
               }
@@ -40185,7 +40483,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@60"
+          "$ref": "#/rules@63"
         },
         "arguments": []
       },
@@ -40210,7 +40508,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@61"
+              "$ref": "#/rules@64"
             },
             "arguments": []
           },
@@ -40242,7 +40540,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@61"
+                    "$ref": "#/rules@64"
                   },
                   "arguments": []
                 }
@@ -40272,7 +40570,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@62"
+              "$ref": "#/rules@65"
             },
             "arguments": []
           },
@@ -40304,7 +40602,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@62"
+                    "$ref": "#/rules@65"
                   },
                   "arguments": []
                 }
@@ -40334,7 +40632,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@63"
+              "$ref": "#/rules@66"
             },
             "arguments": []
           },
@@ -40375,7 +40673,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@63"
+                    "$ref": "#/rules@66"
                   },
                   "arguments": []
                 }
@@ -40405,7 +40703,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@64"
+              "$ref": "#/rules@67"
             },
             "arguments": []
           },
@@ -40446,7 +40744,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@64"
+                    "$ref": "#/rules@67"
                   },
                   "arguments": []
                 }
@@ -40476,7 +40774,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@65"
+              "$ref": "#/rules@68"
             },
             "arguments": []
           },
@@ -40525,7 +40823,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@65"
+                    "$ref": "#/rules@68"
                   },
                   "arguments": []
                 }
@@ -40555,7 +40853,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@66"
+              "$ref": "#/rules@69"
             },
             "arguments": []
           },
@@ -40596,7 +40894,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@66"
+                    "$ref": "#/rules@69"
                   },
                   "arguments": []
                 }
@@ -40626,7 +40924,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@67"
+              "$ref": "#/rules@70"
             },
             "arguments": []
           },
@@ -40671,7 +40969,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@67"
+                    "$ref": "#/rules@70"
                   },
                   "arguments": []
                 }
@@ -40701,7 +40999,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@98"
+              "$ref": "#/rules@101"
             },
             "arguments": []
           },
@@ -40733,7 +41031,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@98"
+                    "$ref": "#/rules@101"
                   },
                   "arguments": []
                 }
@@ -40785,7 +41083,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@59"
+                "$ref": "#/rules@62"
               },
               "arguments": []
             }
@@ -40812,7 +41110,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@27"
+              "$ref": "#/rules@30"
             },
             "arguments": []
           },
@@ -40826,7 +41124,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@59"
+                  "$ref": "#/rules@62"
                 },
                 "arguments": []
               },
@@ -40839,14 +41137,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@71"
-            },
-            "arguments": []
-          },
-          {
-            "$type": "RuleCall",
-            "rule": {
-              "$ref": "#/rules@70"
+              "$ref": "#/rules@74"
             },
             "arguments": []
           },
@@ -40860,14 +41151,21 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@68"
+              "$ref": "#/rules@76"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@99"
+              "$ref": "#/rules@71"
+            },
+            "arguments": []
+          },
+          {
+            "$type": "RuleCall",
+            "rule": {
+              "$ref": "#/rules@102"
             },
             "arguments": []
           }
@@ -40907,12 +41205,12 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "CrossReference",
                   "type": {
-                    "$ref": "#/rules@24"
+                    "$ref": "#/rules@27"
                   },
                   "terminal": {
                     "$type": "RuleCall",
                     "rule": {
-                      "$ref": "#/rules@115"
+                      "$ref": "#/rules@118"
                     },
                     "arguments": []
                   },
@@ -40926,7 +41224,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@104"
+                    "$ref": "#/rules@107"
                   },
                   "arguments": []
                 }
@@ -40944,7 +41242,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@115"
+                "$ref": "#/rules@118"
               },
               "arguments": []
             }
@@ -40982,7 +41280,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@72"
+                "$ref": "#/rules@75"
               },
               "arguments": []
             }
@@ -40994,7 +41292,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@84"
+                "$ref": "#/rules@87"
               },
               "arguments": []
             }
@@ -41026,7 +41324,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               "terminal": {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@115"
+                  "$ref": "#/rules@118"
                 },
                 "arguments": []
               },
@@ -41040,7 +41338,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@104"
+                "$ref": "#/rules@107"
               },
               "arguments": []
             }
@@ -41083,7 +41381,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               "terminal": {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@7"
+                  "$ref": "#/rules@9"
                 },
                 "arguments": []
               },
@@ -41109,7 +41407,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
         "terminal": {
           "$type": "RuleCall",
           "rule": {
-            "$ref": "#/rules@76"
+            "$ref": "#/rules@79"
           },
           "arguments": []
         },
@@ -41133,7 +41431,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
         "terminal": {
           "$type": "RuleCall",
           "rule": {
-            "$ref": "#/rules@76"
+            "$ref": "#/rules@79"
           },
           "arguments": []
         }
@@ -41157,7 +41455,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@86"
+                  "$ref": "#/rules@89"
                 },
                 "arguments": []
               },
@@ -41174,7 +41472,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@78"
+                  "$ref": "#/rules@81"
                 },
                 "arguments": []
               },
@@ -41190,7 +41488,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@92"
+                  "$ref": "#/rules@95"
                 },
                 "arguments": []
               },
@@ -41225,7 +41523,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           "terminal": {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@7"
+              "$ref": "#/rules@9"
             },
             "arguments": []
           },
@@ -41252,14 +41550,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@79"
+                "$ref": "#/rules@82"
               },
               "arguments": []
             },
             {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@82"
+                "$ref": "#/rules@85"
               },
               "arguments": []
             }
@@ -41289,7 +41587,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@81"
+                    "$ref": "#/rules@84"
                   },
                   "arguments": []
                 }
@@ -41301,7 +41599,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@83"
+                    "$ref": "#/rules@86"
                   },
                   "arguments": []
                 }
@@ -41315,7 +41613,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@71"
+                "$ref": "#/rules@74"
               },
               "arguments": []
             }
@@ -41330,7 +41628,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@80"
+                    "$ref": "#/rules@83"
                   },
                   "arguments": []
                 }
@@ -41345,7 +41643,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                     "terminal": {
                       "$type": "RuleCall",
                       "rule": {
-                        "$ref": "#/rules@83"
+                        "$ref": "#/rules@86"
                       },
                       "arguments": []
                     }
@@ -41357,7 +41655,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                     "terminal": {
                       "$type": "RuleCall",
                       "rule": {
-                        "$ref": "#/rules@84"
+                        "$ref": "#/rules@87"
                       },
                       "arguments": []
                     }
@@ -41393,7 +41691,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@73"
+                "$ref": "#/rules@76"
               },
               "arguments": []
             }
@@ -41421,12 +41719,12 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "CrossReference",
                   "type": {
-                    "$ref": "#/types@1"
+                    "$ref": "#/types@2"
                   },
                   "terminal": {
                     "$type": "RuleCall",
                     "rule": {
-                      "$ref": "#/rules@115"
+                      "$ref": "#/rules@118"
                     },
                     "arguments": []
                   },
@@ -41455,12 +41753,12 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
         "terminal": {
           "$type": "CrossReference",
           "type": {
-            "$ref": "#/types@0"
+            "$ref": "#/types@1"
           },
           "terminal": {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@7"
+              "$ref": "#/rules@9"
             },
             "arguments": []
           },
@@ -41496,7 +41794,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@59"
+                "$ref": "#/rules@62"
               },
               "arguments": []
             },
@@ -41528,7 +41826,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@59"
+                "$ref": "#/rules@62"
               },
               "arguments": []
             },
@@ -41563,7 +41861,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@85"
+                    "$ref": "#/rules@88"
                   },
                   "arguments": []
                 }
@@ -41582,7 +41880,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                     "terminal": {
                       "$type": "RuleCall",
                       "rule": {
-                        "$ref": "#/rules@85"
+                        "$ref": "#/rules@88"
                       },
                       "arguments": []
                     }
@@ -41622,7 +41920,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@7"
+                    "$ref": "#/rules@9"
                   },
                   "arguments": []
                 }
@@ -41655,7 +41953,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@59"
+                "$ref": "#/rules@62"
               },
               "arguments": []
             },
@@ -41683,7 +41981,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@87"
+                "$ref": "#/rules@90"
               },
               "arguments": []
             }
@@ -41695,7 +41993,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@88"
+                "$ref": "#/rules@91"
               },
               "arguments": []
             }
@@ -41726,7 +42024,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@59"
+                "$ref": "#/rules@62"
               },
               "arguments": []
             }
@@ -41742,7 +42040,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@74"
+                "$ref": "#/rules@77"
               },
               "arguments": []
             }
@@ -41761,7 +42059,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@59"
+                    "$ref": "#/rules@62"
                   },
                   "arguments": []
                 }
@@ -41777,7 +42075,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@74"
+                    "$ref": "#/rules@77"
                   },
                   "arguments": []
                 }
@@ -41799,7 +42097,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@74"
+                    "$ref": "#/rules@77"
                   },
                   "arguments": []
                 }
@@ -41837,7 +42135,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@59"
+                "$ref": "#/rules@62"
               },
               "arguments": []
             }
@@ -41853,7 +42151,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@89"
+                "$ref": "#/rules@92"
               },
               "arguments": []
             }
@@ -41865,7 +42163,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@89"
+                "$ref": "#/rules@92"
               },
               "arguments": []
             },
@@ -41885,7 +42183,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@74"
+                    "$ref": "#/rules@77"
                   },
                   "arguments": []
                 }
@@ -41919,7 +42217,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@90"
+                "$ref": "#/rules@93"
               },
               "arguments": []
             }
@@ -41935,7 +42233,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@74"
+                "$ref": "#/rules@77"
               },
               "arguments": []
             }
@@ -41962,7 +42260,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@91"
+                "$ref": "#/rules@94"
               },
               "arguments": []
             }
@@ -41981,7 +42279,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@91"
+                    "$ref": "#/rules@94"
                   },
                   "arguments": []
                 }
@@ -42014,7 +42312,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@28"
+                    "$ref": "#/rules@31"
                   },
                   "arguments": []
                 }
@@ -42033,7 +42331,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                     "terminal": {
                       "$type": "RuleCall",
                       "rule": {
-                        "$ref": "#/rules@28"
+                        "$ref": "#/rules@31"
                       },
                       "arguments": []
                     }
@@ -42050,7 +42348,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@70"
+                "$ref": "#/rules@73"
               },
               "arguments": []
             }
@@ -42062,7 +42360,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@137"
+                "$ref": "#/rules@140"
               },
               "arguments": []
             }
@@ -42089,21 +42387,21 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@93"
-              },
-              "arguments": []
-            },
-            {
-              "$type": "RuleCall",
-              "rule": {
-                "$ref": "#/rules@95"
-              },
-              "arguments": []
-            },
-            {
-              "$type": "RuleCall",
-              "rule": {
                 "$ref": "#/rules@96"
+              },
+              "arguments": []
+            },
+            {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@98"
+              },
+              "arguments": []
+            },
+            {
+              "$type": "RuleCall",
+              "rule": {
+                "$ref": "#/rules@99"
               },
               "arguments": []
             },
@@ -42139,12 +42437,12 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "CrossReference",
               "type": {
-                "$ref": "#/types@1"
+                "$ref": "#/types@2"
               },
               "terminal": {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@115"
+                  "$ref": "#/rules@118"
                 },
                 "arguments": []
               },
@@ -42162,7 +42460,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@94"
+                "$ref": "#/rules@97"
               },
               "arguments": []
             }
@@ -42178,7 +42476,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@74"
+                "$ref": "#/rules@77"
               },
               "arguments": []
             }
@@ -42209,7 +42507,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@59"
+                "$ref": "#/rules@62"
               },
               "arguments": []
             }
@@ -42225,7 +42523,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@59"
+                "$ref": "#/rules@62"
               },
               "arguments": []
             }
@@ -42244,7 +42542,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                 "terminal": {
                   "$type": "RuleCall",
                   "rule": {
-                    "$ref": "#/rules@59"
+                    "$ref": "#/rules@62"
                   },
                   "arguments": []
                 }
@@ -42278,7 +42576,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@59"
+                "$ref": "#/rules@62"
               },
               "arguments": []
             }
@@ -42294,7 +42592,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@74"
+                "$ref": "#/rules@77"
               },
               "arguments": []
             }
@@ -42329,7 +42627,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@74"
+                "$ref": "#/rules@77"
               },
               "arguments": []
             }
@@ -42345,7 +42643,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@59"
+                "$ref": "#/rules@62"
               },
               "arguments": []
             }
@@ -42373,14 +42671,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@135"
+              "$ref": "#/rules@138"
             },
             "arguments": []
           },
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@136"
+              "$ref": "#/rules@139"
             },
             "arguments": []
           },
@@ -42394,7 +42692,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@136"
+                  "$ref": "#/rules@139"
                 },
                 "arguments": []
               }
@@ -42427,7 +42725,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "RuleCall",
               "rule": {
-                "$ref": "#/rules@69"
+                "$ref": "#/rules@72"
               },
               "arguments": []
             }
@@ -42461,12 +42759,12 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                         "terminal": {
                           "$type": "CrossReference",
                           "type": {
-                            "$ref": "#/types@1"
+                            "$ref": "#/types@2"
                           },
                           "terminal": {
                             "$type": "RuleCall",
                             "rule": {
-                              "$ref": "#/rules@115"
+                              "$ref": "#/rules@118"
                             },
                             "arguments": []
                           },
@@ -42495,7 +42793,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                                 "terminal": {
                                   "$type": "RuleCall",
                                   "rule": {
-                                    "$ref": "#/rules@59"
+                                    "$ref": "#/rules@62"
                                   },
                                   "arguments": []
                                 }
@@ -42514,7 +42812,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                                     "terminal": {
                                       "$type": "RuleCall",
                                       "rule": {
-                                        "$ref": "#/rules@59"
+                                        "$ref": "#/rules@62"
                                       },
                                       "arguments": []
                                     }
@@ -42556,7 +42854,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                             "terminal": {
                               "$type": "RuleCall",
                               "rule": {
-                                "$ref": "#/rules@59"
+                                "$ref": "#/rules@62"
                               },
                               "arguments": []
                             }
@@ -42575,7 +42873,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                                 "terminal": {
                                   "$type": "RuleCall",
                                   "rule": {
-                                    "$ref": "#/rules@59"
+                                    "$ref": "#/rules@62"
                                   },
                                   "arguments": []
                                 }
@@ -42630,12 +42928,12 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
             "terminal": {
               "$type": "CrossReference",
               "type": {
-                "$ref": "#/types@1"
+                "$ref": "#/types@2"
               },
               "terminal": {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@115"
+                  "$ref": "#/rules@118"
                 },
                 "arguments": []
               },
@@ -42664,7 +42962,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                     "terminal": {
                       "$type": "RuleCall",
                       "rule": {
-                        "$ref": "#/rules@59"
+                        "$ref": "#/rules@62"
                       },
                       "arguments": []
                     }
@@ -42683,7 +42981,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                         "terminal": {
                           "$type": "RuleCall",
                           "rule": {
-                            "$ref": "#/rules@59"
+                            "$ref": "#/rules@62"
                           },
                           "arguments": []
                         }
@@ -42717,7 +43015,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@115"
+          "$ref": "#/rules@118"
         },
         "arguments": []
       },
@@ -42741,7 +43039,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "RuleCall",
             "rule": {
-              "$ref": "#/rules@102"
+              "$ref": "#/rules@105"
             },
             "arguments": []
           },
@@ -42755,7 +43053,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "RuleCall",
                 "rule": {
-                  "$ref": "#/rules@102"
+                  "$ref": "#/rules@105"
                 },
                 "arguments": []
               }
@@ -42785,7 +43083,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
       "definition": {
         "$type": "RuleCall",
         "rule": {
-          "$ref": "#/rules@59"
+          "$ref": "#/rules@62"
         },
         "arguments": []
       },
@@ -42945,7 +43243,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@116"
+              "$ref": "#/rules@119"
             }
           },
           {
@@ -42971,7 +43269,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@136"
+              "$ref": "#/rules@139"
             }
           }
         ]
@@ -43038,14 +43336,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@128"
+              "$ref": "#/rules@131"
             },
             "cardinality": "?"
           },
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@130"
+              "$ref": "#/rules@133"
             }
           },
           {
@@ -43066,14 +43364,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@128"
+              "$ref": "#/rules@131"
             },
             "cardinality": "?"
           },
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@130"
+              "$ref": "#/rules@133"
             }
           },
           {
@@ -43094,14 +43392,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@128"
+              "$ref": "#/rules@131"
             },
             "cardinality": "?"
           },
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@130"
+              "$ref": "#/rules@133"
             }
           },
           {
@@ -43122,14 +43420,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@128"
+              "$ref": "#/rules@131"
             },
             "cardinality": "?"
           },
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@130"
+              "$ref": "#/rules@133"
             }
           },
           {
@@ -43150,7 +43448,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@130"
+              "$ref": "#/rules@133"
             }
           },
           {
@@ -43192,7 +43490,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@136"
+              "$ref": "#/rules@139"
             }
           },
           {
@@ -43208,7 +43506,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@136"
+                  "$ref": "#/rules@139"
                 }
               }
             ],
@@ -43419,7 +43717,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@134"
+              "$ref": "#/rules@137"
             }
           },
           {
@@ -43435,7 +43733,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@134"
+                  "$ref": "#/rules@137"
                 }
               }
             ],
@@ -43472,13 +43770,13 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@131"
+              "$ref": "#/rules@134"
             }
           },
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@132"
+              "$ref": "#/rules@135"
             }
           },
           {
@@ -43487,7 +43785,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@136"
+                  "$ref": "#/rules@139"
                 }
               },
               {
@@ -43503,7 +43801,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                   {
                     "$type": "TerminalRuleCall",
                     "rule": {
-                      "$ref": "#/rules@136"
+                      "$ref": "#/rules@139"
                     }
                   }
                 ],
@@ -43526,7 +43824,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "TerminalRuleCall",
             "rule": {
-              "$ref": "#/rules@134"
+              "$ref": "#/rules@137"
             }
           },
           {
@@ -43535,14 +43833,14 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@128"
+                  "$ref": "#/rules@131"
                 },
                 "cardinality": "?"
               },
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@134"
+                  "$ref": "#/rules@137"
                 }
               }
             ],
@@ -43568,7 +43866,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                   {
                     "$type": "TerminalRuleCall",
                     "rule": {
-                      "$ref": "#/rules@128"
+                      "$ref": "#/rules@131"
                     }
                   },
                   {
@@ -43577,13 +43875,13 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                       {
                         "$type": "TerminalRuleCall",
                         "rule": {
-                          "$ref": "#/rules@134"
+                          "$ref": "#/rules@137"
                         }
                       },
                       {
                         "$type": "TerminalRuleCall",
                         "rule": {
-                          "$ref": "#/rules@129"
+                          "$ref": "#/rules@132"
                         }
                       }
                     ]
@@ -43593,7 +43891,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@129"
+                  "$ref": "#/rules@132"
                 }
               }
             ]
@@ -43604,7 +43902,7 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
               {
                 "$type": "TerminalRuleCall",
                 "rule": {
-                  "$ref": "#/rules@128"
+                  "$ref": "#/rules@131"
                 },
                 "cardinality": "?"
               },
@@ -43614,13 +43912,13 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
                   {
                     "$type": "TerminalRuleCall",
                     "rule": {
-                      "$ref": "#/rules@134"
+                      "$ref": "#/rules@137"
                     }
                   },
                   {
                     "$type": "TerminalRuleCall",
                     "rule": {
-                      "$ref": "#/rules@129"
+                      "$ref": "#/rules@132"
                     }
                   }
                 ]
@@ -43688,13 +43986,40 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "SimpleType",
             "typeRef": {
-              "$ref": "#/types@1"
+              "$ref": "#/types@2"
             }
           },
           {
             "$type": "SimpleType",
             "typeRef": {
-              "$ref": "#/rules@2"
+              "$ref": "#/rules@4"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "$type": "Type",
+      "name": "VariableReferenceTarget",
+      "type": {
+        "$type": "UnionType",
+        "types": [
+          {
+            "$type": "SimpleType",
+            "typeRef": {
+              "$ref": "#/types@2"
+            }
+          },
+          {
+            "$type": "SimpleType",
+            "typeRef": {
+              "$ref": "#/rules@1"
+            }
+          },
+          {
+            "$type": "SimpleType",
+            "typeRef": {
+              "$ref": "#/rules@4"
             }
           }
         ]
@@ -43709,13 +44034,13 @@ var StGrammar = /* @__PURE__ */ __name(() => loadedStGrammar != null ? loadedStG
           {
             "$type": "SimpleType",
             "typeRef": {
-              "$ref": "#/rules@16/definition/elements@0/inferredType"
+              "$ref": "#/rules@19/definition/elements@0/inferredType"
             }
           },
           {
             "$type": "SimpleType",
             "typeRef": {
-              "$ref": "#/rules@17/inferredType"
+              "$ref": "#/rules@20/inferredType"
             }
           }
         ]
@@ -43797,6 +44122,31 @@ var _ClientLogger = class _ClientLogger {
 __name(_ClientLogger, "ClientLogger");
 var ClientLogger = _ClientLogger;
 
+// src/st-name-provider.ts
+var import_node_path2 = __toESM(require("path"), 1);
+var _StNameProvider = class _StNameProvider extends DefaultNameProvider {
+  getName(node) {
+    if (isGlobalVarList(node)) {
+      return getGlobalVarListName(node);
+    }
+    return super.getName(node);
+  }
+  getNameNode(node) {
+    if (isGlobalVarList(node)) {
+      return node.$cstNode;
+    }
+    return super.getNameNode(node);
+  }
+};
+__name(_StNameProvider, "StNameProvider");
+var StNameProvider = _StNameProvider;
+function getGlobalVarListName(node) {
+  const document = ast_utils_exports.getDocument(node);
+  const fileName = import_node_path2.default.posix.basename(document.uri.path);
+  return fileName.replace(/\.st$/i, "");
+}
+__name(getGlobalVarListName, "getGlobalVarListName");
+
 // src/st-compute.ts
 var _StScopeComputation = class _StScopeComputation extends DefaultScopeComputation {
   async computeLocalScopes(document, cancelToken) {
@@ -43813,15 +44163,22 @@ var _StScopeComputation = class _StScopeComputation extends DefaultScopeComputat
           this.addNextVariables(nextVariables, item, document, scopes, st2);
         });
       });
+      this.handleExternalVariables(programSingle.varExternals, scopes, st2, document);
+    }
+    for (const globalVarList of st2.globalVarLists) {
+      const description = this.descriptions.createDescription(globalVarList, getGlobalVarListName(globalVarList), document);
+      scopes.add(st2, description);
     }
     let functionBlockArr = st2.function_block;
     functionBlockArr.forEach((functionBlock) => {
       let inputs = functionBlock.varInputs;
       let outputs = functionBlock.varOutputs;
       let locals = functionBlock.varLocals;
+      let externals = functionBlock.varExternals;
       this.handleAllVariable(inputs, scopes, st2, document);
       this.handleAllVariable(outputs, scopes, st2, document);
       this.handleAllVariable(locals, scopes, st2, document);
+      this.handleExternalVariables(externals, scopes, st2, document);
     });
     let functionArr = st2.st_function;
     functionArr.forEach((singleFunction) => {
@@ -43847,6 +44204,16 @@ var _StScopeComputation = class _StScopeComputation extends DefaultScopeComputat
     return scopes;
   }
   handleAllVariable(declVarArr, scopes, st2, document) {
+    declVarArr.forEach((decl) => {
+      let itemArr = decl.items;
+      itemArr.forEach((item) => {
+        const description = this.descriptions.createDescription(item, item.variables, document);
+        scopes.add(st2, description);
+        this.addNextVariables(item.nextVariables, item, document, scopes, st2);
+      });
+    });
+  }
+  handleExternalVariables(declVarArr, scopes, st2, document) {
     declVarArr.forEach((decl) => {
       let itemArr = decl.items;
       itemArr.forEach((item) => {
@@ -44042,6 +44409,17 @@ function isStructType(item) {
   return item.$type === "struct";
 }
 __name(isStructType, "isStructType");
+function createGlobalVarListType(literal) {
+  return {
+    $type: "globalVarList",
+    literal
+  };
+}
+__name(createGlobalVarListType, "createGlobalVarListType");
+function isGlobalVarListType(item) {
+  return item.$type === "globalVarList";
+}
+__name(isGlobalVarListType, "isGlobalVarListType");
 function createFunctionBlockType(literal) {
   return {
     $type: "functionBlock",
@@ -44111,6 +44489,8 @@ function inferType(node, cache) {
     type = inferStructDeclaration(node, cache);
   } else if (isStructsList(node)) {
     type = createStructType(node);
+  } else if (isGlobalVarList(node)) {
+    type = createGlobalVarListType(node);
   } else if (isFunctionBlock(node)) {
     type = createFunctionBlockType(node);
   } else if (isAlias(node)) {
@@ -44188,6 +44568,9 @@ var _StScopeProvider = class _StScopeProvider extends DefaultScopeProvider {
       const previousType = inferType(previous, /* @__PURE__ */ new Map());
       if (isStructType(previousType)) {
         return this.scopeStructMembers(previousType.literal);
+      }
+      if (isGlobalVarListType(previousType)) {
+        return this.scopeGlobalVarListMembers(previousType.literal);
       }
       if (isFunctionBlockType(previousType)) {
         return this.scopeFunctionBlockMembers(previousType.literal);
@@ -44309,6 +44692,14 @@ var _StScopeProvider = class _StScopeProvider extends DefaultScopeProvider {
     let s2 = new StreamScope(ss);
     return s1;
   }
+  scopeGlobalVarListMembers(globalVarList) {
+    const members = globalVarList.items;
+    const firstScope = stream(members).map((item) => this.descriptions.createDescription(item, item.variables)).nonNullable();
+    const nextScope = stream(members).flatMap(
+      (item) => stream(item.nextVariables).map((nextVariable) => this.descriptions.createDescription(item, nextVariable))
+    ).nonNullable();
+    return new StreamScope(firstScope.concat(nextScope));
+  }
   //每个变量的第一个
   scopeFirstFunctionBlockMembers(functionBlock) {
     const allDecl = this.getFunctionBlockDecl(functionBlock);
@@ -44428,10 +44819,14 @@ function registerValidationChecks(services) {
 }
 __name(registerValidationChecks, "registerValidationChecks");
 var _StValidator = class _StValidator {
+  constructor(services) {
+    this.services = services;
+  }
   checkElement(st2, accept) {
     let programArr = st2.program;
     let functionArr = st2.st_function;
     let functionBlockArr = st2.function_block;
+    let globalVarLists = st2.globalVarLists;
     let types_struct = st2.types_struct;
     let types_alias = st2.types_alias;
     let types_enum = st2.types_enum;
@@ -44442,6 +44837,9 @@ var _StValidator = class _StValidator {
     this.checkPrograms(st2, accept);
     this.checkFunctions(functionArr, accept);
     this.checkFunctionBlocks(functionBlockArr, accept);
+    this.checkGlobalVarLists(globalVarLists, accept);
+    this.checkProgramExternalDeclarations(st2, accept);
+    this.checkFunctionBlockExternalDeclarations(st2, accept);
     this.checkDateTypes(types_struct, types_alias, types_enum, types_union, accept);
   }
   checkPrograms(st2, accept) {
@@ -44963,6 +45361,135 @@ var _StValidator = class _StValidator {
       return node;
     }
     return ast_utils_exports.getContainerOfType(node, (item) => item.$type === "St");
+  }
+  checkGlobalVarLists(globalVarLists, accept) {
+    globalVarLists.forEach((globalVarList) => {
+      this.judgeWhetherHasDuplicateName("global variable", globalVarList.items, accept);
+      globalVarList.items.forEach((item) => {
+        this.validateDeclarationVar(item, accept);
+      });
+    });
+  }
+  checkProgramExternalDeclarations(st2, accept) {
+    st2.program.forEach((program) => {
+      const externals = this.getProgramExternalDeclarations(program);
+      externals.forEach((item) => this.validateExternalDeclaration(item, st2, accept));
+    });
+  }
+  checkFunctionBlockExternalDeclarations(st2, accept) {
+    st2.function_block.forEach((functionBlock) => {
+      functionBlock.varExternals.forEach((externalBlock) => {
+        externalBlock.items.forEach((item) => this.validateExternalDeclaration(item, st2, accept));
+      });
+    });
+  }
+  getProgramExternalDeclarations(program) {
+    const items = [];
+    const seen = /* @__PURE__ */ new Set();
+    program.inputs.filter((input) => input.definition === "VAR_EXTERNAL").forEach((input) => {
+      input.items.forEach((item) => {
+        if (!seen.has(item)) {
+          seen.add(item);
+          items.push(item);
+        }
+      });
+    });
+    program.varExternals.forEach((externalBlock) => {
+      externalBlock.items.forEach((item) => {
+        if (!seen.has(item)) {
+          seen.add(item);
+          items.push(item);
+        }
+      });
+    });
+    return items;
+  }
+  validateExternalDeclaration(item, st2, accept) {
+    const names = [item.variables, ...item.nextVariables];
+    names.forEach((name, index) => {
+      const matches = this.findGlobalVariableMatches(name, st2);
+      const property2 = index === 0 ? "variables" : "nextVariables";
+      const propertyIndex = index === 0 ? void 0 : index - 1;
+      if (matches.length === 0) {
+        accept("error", `VAR_EXTERNAL \u58F0\u660E\u7684\u5168\u5C40\u53D8\u91CF '${name}' \u4E0D\u5B58\u5728`, {
+          node: item,
+          property: property2,
+          index: propertyIndex
+        });
+        return;
+      }
+      const accessibleMatches = matches.filter((match) => !this.hasQualifiedOnly(match.list));
+      if (accessibleMatches.length === 0) {
+        accept("error", `\u5168\u5C40\u53D8\u91CF '${name}' \u6240\u5728\u5168\u5C40\u53D8\u91CF\u5217\u8868\u542F\u7528\u4E86 qualified_only\uFF0C\u4E0D\u80FD\u901A\u8FC7 VAR_EXTERNAL \u5F15\u7528`, {
+          node: item,
+          property: property2,
+          index: propertyIndex
+        });
+        return;
+      }
+      if (accessibleMatches.length > 1) {
+        const listNames = accessibleMatches.map((match) => this.getGlobalVarListDisplayName(match.list)).join(", ");
+        accept("error", `\u5168\u5C40\u53D8\u91CF '${name}' \u5728\u591A\u4E2A\u5168\u5C40\u53D8\u91CF\u5217\u8868\u4E2D\u5B58\u5728(${listNames})\uFF0C\u8BF7\u4F7F\u7528\u9650\u5B9A\u540D\u8BBF\u95EE`, {
+          node: item,
+          property: property2,
+          index: propertyIndex
+        });
+        return;
+      }
+      const actualDecl = accessibleMatches[0].declaration;
+      let expectType = "";
+      let actualType = "";
+      expectType = handleNoAcceptNativeTypeName(item.typeName, expectType);
+      actualType = handleNoAcceptNativeTypeName(actualDecl.typeName, actualType);
+      const [normalizedActualType, normalizedExpectType] = this.getComparableTypes(actualType, expectType);
+      if (normalizedActualType && normalizedExpectType && normalizedActualType.toLowerCase() !== normalizedExpectType.toLowerCase()) {
+        accept("error", `VAR_EXTERNAL '${name}' \u7684\u7C7B\u578B'${expectType}'\u4E0E\u5168\u5C40\u53D8\u91CF\u7C7B\u578B'${actualType}'\u4E0D\u4E00\u81F4`, {
+          node: item,
+          property: "typeName"
+        });
+      }
+    });
+  }
+  findGlobalVariableMatches(name, st2) {
+    const lowerName = name.toLowerCase();
+    const matches = [];
+    this.getAllGlobalVarLists(st2).forEach((list) => {
+      list.items.forEach((item) => {
+        const declarationNames = [item.variables, ...item.nextVariables];
+        if (declarationNames.some((eachName) => eachName.toLowerCase() === lowerName)) {
+          matches.push({ list, declaration: item });
+        }
+      });
+    });
+    return matches;
+  }
+  getAllGlobalVarLists(st2) {
+    const unique = /* @__PURE__ */ new Map();
+    st2.globalVarLists.forEach((list) => {
+      unique.set(this.getGlobalVarListKey(list), list);
+    });
+    for (const description of this.services.shared.workspace.IndexManager.allElements("GlobalVarList")) {
+      const node = description.node;
+      if (node && node.$type === "GlobalVarList") {
+        unique.set(this.getGlobalVarListKey(node), node);
+      }
+    }
+    return Array.from(unique.values());
+  }
+  getGlobalVarListKey(globalVarList) {
+    const document = ast_utils_exports.getDocument(globalVarList);
+    const path3 = this.services.workspace.AstNodeLocator.getAstNodePath(globalVarList);
+    return `${document.uri.toString()}#${path3}`;
+  }
+  hasQualifiedOnly(globalVarList) {
+    return globalVarList.attributes.some((attribute) => this.normalizeAttributeName(attribute.attributeName) === "qualified_only");
+  }
+  normalizeAttributeName(attributeName) {
+    return attributeName.trim().replace(/^['"]|['"]$/g, "").toLowerCase();
+  }
+  getGlobalVarListDisplayName(globalVarList) {
+    var _a;
+    return (_a = this.services.references.NameProvider.getName(globalVarList)) != null ? _a : "GVL";
   }
   getLocalEnumByName(enumName, node) {
     if (!enumName) {
@@ -46064,7 +46591,7 @@ function createStatemachineModule(context) {
       //ParserErrorMessageProvider: new StParserErrorMessageProvider()
     },
     validation: {
-      StValidator: () => new StValidator()
+      StValidator: (services) => new StValidator(services)
     },
     lsp: {
       Formatter: () => new StFormatter(),
@@ -46076,6 +46603,7 @@ function createStatemachineModule(context) {
       ScopeProvider: (services) => new StScopeProvider(services),
       ScopeComputation: (services) => new StScopeComputation(services),
       Linker: (services) => new StLinker(services),
+      NameProvider: () => new StNameProvider(),
       References: (services) => new CacheReference(services)
     },
     serializer: {

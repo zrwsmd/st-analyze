@@ -30,6 +30,7 @@ import { CacheReference } from './cache-reference.js';
 import { CacheSignatureHelpProvider } from './cache-sign-help.js';
 import { StGeneratedModule, StGeneratedSharedModule } from './generated/module.js';
 import { ClientLogger } from './ld-client-logger.js';
+import { StNameProvider } from './st-name-provider.js';
 import { StScopeComputation } from './st-compute.js';
 import { StFormatter } from './st-formatter.js';
 import { StLinker } from './st-linker.js';
@@ -120,7 +121,7 @@ export function createStatemachineModule(
             //ParserErrorMessageProvider: new StParserErrorMessageProvider()
         },
         validation: {
-            StValidator: () => new StValidator()
+            StValidator: services => new StValidator(services)
         },
         lsp: {
             Formatter: () => new StFormatter(),
@@ -132,6 +133,7 @@ export function createStatemachineModule(
             ScopeProvider: services => new StScopeProvider(services),
             ScopeComputation: services => new StScopeComputation(services),
             Linker: services => new StLinker(services),
+            NameProvider: () => new StNameProvider(),
             References: services => new CacheReference(services)
         },
         serializer: {

@@ -546,6 +546,23 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         chain: string[],
         document: LangiumDocument<AstNode>
     ): Promise<MemberCompletionEntry[]> {
+        const globalVarList = await this.getWorkspaceGlobalVarListByName(chain[0]);
+        if (globalVarList) {
+            if (chain.length === 1) {
+                return this.getGlobalVarListEntries(globalVarList);
+            }
+            let typeName = this.getGlobalVarListMemberType(globalVarList, chain[1]);
+            if (!typeName) {
+                return [];
+            }
+            for (let i = 2; i < chain.length; i++) {
+                typeName = await this.getMemberTypeByName(typeName, chain[i], document);
+                if (!typeName) {
+                    return [];
+                }
+            }
+            return await this.getMemberEntriesForType(typeName, document);
+        }
         let typeName = this.getVariableTypeByName(chain[0], document);
         if (!typeName) {
             return [];
@@ -557,6 +574,64 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
             }
         }
         return await this.getMemberEntriesForType(typeName, document);
+    }
+
+    private async getWorkspaceGlobalVarListByName(globalVarListName: string | undefined) {
+        if (!globalVarListName) {
+            return undefined;
+        }
+        const indexManager = this.services.shared.workspace.IndexManager;
+        const langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+        const astNodeLocator = this.services.workspace.AstNodeLocator;
+        for (const description of indexManager.allElements('GlobalVarList')) {
+            if (description.name.toLowerCase() !== globalVarListName.toLowerCase()) {
+                continue;
+            }
+            let targetDocument = langiumDocuments.getDocument(description.documentUri);
+            try {
+                if (!targetDocument) {
+                    if (description.documentUri.fsPath && !fs.existsSync(description.documentUri.fsPath)) {
+                        continue;
+                    }
+                    targetDocument = await langiumDocuments.getOrCreateDocument(description.documentUri);
+                }
+                if (targetDocument) {
+                    const node = astNodeLocator.getAstNode(targetDocument.parseResult.value, description.path);
+                    if (node && node.$type === 'GlobalVarList') {
+                        return node;
+                    }
+                }
+            } catch {
+                continue;
+            }
+        }
+        return undefined;
+    }
+
+    private getGlobalVarListMemberType(globalVarList: any, memberName: string): string | undefined {
+        for (const item of globalVarList.items ?? []) {
+            if (item.variables === memberName || item.nextVariables.includes(memberName)) {
+                let expectedType = '';
+                let basicType = basicDataType(expectedType, item.typeName);
+                return basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
+            }
+        }
+        return undefined;
+    }
+
+    private getGlobalVarListEntries(globalVarList: any): MemberCompletionEntry[] {
+        const entries: MemberCompletionEntry[] = [];
+        let sequence = 0;
+        for (const item of globalVarList.items ?? []) {
+            let expectedType = '';
+            let basicType = basicDataType(expectedType, item.typeName);
+            let detail = basicType || handleNoAcceptNativeTypeName(item.typeName, expectedType);
+            entries.push({ label: item.variables, detail, sortText: this.buildMemberSortText(1, sequence++) });
+            item.nextVariables.forEach((nextVariable: string) =>
+                entries.push({ label: nextVariable, detail, sortText: this.buildMemberSortText(1, sequence++) })
+            );
+        }
+        return entries;
     }
 
     private getVariableTypeByName(variableName: string, document: LangiumDocument<AstNode>): string | undefined {

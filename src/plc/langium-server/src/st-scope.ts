@@ -1,9 +1,10 @@
 import { DefaultScopeProvider, LangiumCoreServices, ReferenceInfo, Scope, ScopeOptions, StreamScope, stream } from 'langium';
-import { isCacheType, isFunctionBlockType, isStructType } from './descriptions.js';
+import { isCacheType, isFunctionBlockType, isGlobalVarListType, isStructType } from './descriptions.js';
 import {
     Function_invoke_or_assign,
     FunctionBlock,
     FunctionExpression,
+    GlobalVarList,
     Invoke_subrule,
     MemberCall,
     Param_assignment,
@@ -41,6 +42,9 @@ export class StScopeProvider extends DefaultScopeProvider {
             const previousType = inferType(previous, new Map());
             if (isStructType(previousType)) {
                 return this.scopeStructMembers(previousType.literal);
+            }
+            if (isGlobalVarListType(previousType)) {
+                return this.scopeGlobalVarListMembers(previousType.literal);
             }
             if (isFunctionBlockType(previousType)) {
                 return this.scopeFunctionBlockMembers(previousType.literal);
@@ -206,6 +210,19 @@ export class StScopeProvider extends DefaultScopeProvider {
         let s1 = new StreamScope(s);
         let s2 = new StreamScope(ss);
         return s1;
+    }
+
+    private scopeGlobalVarListMembers(globalVarList: GlobalVarList): Scope {
+        const members = globalVarList.items;
+        const firstScope = stream(members)
+            .map(item => this.descriptions.createDescription(item, item.variables))
+            .nonNullable();
+        const nextScope = stream(members)
+            .flatMap(item =>
+                stream(item.nextVariables).map(nextVariable => this.descriptions.createDescription(item, nextVariable))
+            )
+            .nonNullable();
+        return new StreamScope(firstScope.concat(nextScope));
     }
 
     //每个变量的第一个

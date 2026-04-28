@@ -239,3 +239,34 @@ END_PROGRAM
     assert.ok(a?.detail?.includes('CTU'));
     assert.ok(bb?.detail?.includes('INT'));
 });
+
+test('cache-complete provides GVL member completion after dot', async () => {
+    const labels = await getCompletionLabels({
+        label: 'cache-complete-gvl-members',
+        extra: [
+            {
+                label: 'GVL_1',
+                uriPath: 'GVL_1.st',
+                text: `
+VAR_GLOBAL
+    gStart: BOOL := TRUE;
+    gCount: INT := 0;
+    gLamp: BOOL := FALSE;
+END_VAR
+`
+            }
+        ],
+        text: `
+PROGRAM Main
+VAR
+END_VAR
+
+GVL_1./*cursor*/
+END_PROGRAM
+`
+    });
+
+    assert.ok(labels.includes('gStart'));
+    assert.ok(labels.includes('gCount'));
+    assert.ok(labels.includes('gLamp'));
+});

@@ -1,8 +1,9 @@
 import { AstNode } from 'langium';
-import { FunctionBlock, StFunction, StructsList } from './generated/ast.js';
+import { FunctionBlock, GlobalVarList, StFunction, StructsList } from './generated/ast.js';
 
 export type TypeDescription =
     | StructTypeDescription
+    | GlobalVarListTypeDescription
     | ErrorType
     | FunctionBlockTypeDescription
     | FunctionTypeDescription
@@ -22,6 +23,22 @@ export function createStructType(literal: StructsList): StructTypeDescription {
 
 export function isStructType(item: TypeDescription): item is StructTypeDescription {
     return item.$type === 'struct';
+}
+
+export interface GlobalVarListTypeDescription {
+    readonly $type: 'globalVarList';
+    readonly literal: GlobalVarList;
+}
+
+export function createGlobalVarListType(literal: GlobalVarList): GlobalVarListTypeDescription {
+    return {
+        $type: 'globalVarList',
+        literal
+    };
+}
+
+export function isGlobalVarListType(item: TypeDescription): item is GlobalVarListTypeDescription {
+    return item.$type === 'globalVarList';
 }
 
 export interface FunctionBlockTypeDescription {

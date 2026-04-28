@@ -1211,6 +1211,7 @@ export function transform2AstNode(composeNodeArr: ComposeNode[]): St {
     let root: St = {
         $type: 'St',
         function_block: [],
+        globalVarLists: [],
         itface: [],
         program: [],
         st_function: [],
@@ -1293,6 +1294,7 @@ export function transform2AstNode(composeNodeArr: ComposeNode[]): St {
                     name: '',
                     statementList: [],
                     methods: [],
+                    varExternals: [],
                     varInputs: [],
                     varLocals: [],
                     varOutputs: []

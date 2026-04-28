@@ -1,12 +1,14 @@
 import { AstNode } from 'langium';
 
-import { createCacheType, createErrorType, createFunctionBlockType, createStructType, TypeDescription } from './descriptions.js';
+import { createCacheType, createErrorType, createFunctionBlockType, createGlobalVarListType, createStructType, TypeDescription } from './descriptions.js';
 import {
     Alias,
     Expression,
+    GlobalVarList,
     isAlias,
     isExpression,
     isFunctionBlock,
+    isGlobalVarList,
     isMemberCall,
     isNative_Type_Name,
     isStruct_Var_Decl_Init,
@@ -60,6 +62,8 @@ export function inferType(node: AstNode, cache: Map<AstNode, TypeDescription | u
         type = inferStructDeclaration(node, cache);
     } else if (isStructsList(node)) {
         type = createStructType(node);
+    } else if (isGlobalVarList(node)) {
+        type = createGlobalVarListType(node);
     } else if (isFunctionBlock(node)) {
         type = createFunctionBlockType(node);
     } else if (isAlias(node)) {

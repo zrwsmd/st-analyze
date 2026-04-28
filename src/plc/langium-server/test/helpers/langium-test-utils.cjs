@@ -7,7 +7,10 @@ const { shared, st } = require('../../out/main.cjs');
 const TEST_ROOT = path.join(process.cwd(), '.langium-test-workspace');
 let fileCounter = 0;
 
-function nextUri(label = 'test') {
+function nextUri(label = 'test', uriPath) {
+    if (uriPath) {
+        return URI.file(path.join(TEST_ROOT, uriPath));
+    }
     const safeLabel = label.replace(/[^a-zA-Z0-9_-]/g, '_');
     const fileName = `${String(++fileCounter).padStart(4, '0')}-${safeLabel}.st`;
     return URI.file(path.join(TEST_ROOT, fileName));
@@ -26,8 +29,8 @@ function getLangiumModule() {
     return langiumImportPromise;
 }
 
-async function createDocument(text, label) {
-    const uri = nextUri(label);
+async function createDocument(text, label, uriPath) {
+    const uri = nextUri(label, uriPath);
     const langiumDocuments = shared.workspace.LangiumDocuments;
     if (langiumDocuments.hasDocument(uri)) {
         langiumDocuments.deleteDocument(uri);
@@ -84,11 +87,11 @@ async function withDocuments(options, callback) {
     try {
         const extraRecords = [];
         for (const extraSource of options.extra ?? []) {
-            const extraRecord = await createDocument(extraSource.text, extraSource.label ?? 'extra');
+            const extraRecord = await createDocument(extraSource.text, extraSource.label ?? 'extra', extraSource.uriPath);
             extraRecords.push(extraRecord);
             created.push(extraRecord);
         }
-        const mainRecord = await createDocument(options.main.text, options.main.label ?? 'main');
+        const mainRecord = await createDocument(options.main.text, options.main.label ?? 'main', options.main.uriPath);
         created.push(mainRecord);
 
         await shared.workspace.DocumentBuilder.build(

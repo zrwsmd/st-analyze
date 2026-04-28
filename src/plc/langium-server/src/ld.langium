@@ -2,16 +2,28 @@ grammar St
 
 entry St:
 
-   (program+=Program | types_alias+=Alias | types_union+=Unions_List |
+   (globalVarLists+=GlobalVarList | program+=Program | types_alias+=Alias | types_union+=Unions_List |
    types_struct+=Structs_List |types_enum+=StEnum | function_block+=FunctionBlock |st_function+=StFunction|itface+=Interface
    )*
 
 
 ;
 
+GlobalVarList:
+    (attributes+=AttributePragma)*
+    'VAR_GLOBAL'
+        (modifiers+=Modifier)*
+        (items+=Var_Decl_Init)*
+    'END_VAR'
+;
+
+AttributePragma:
+    '{' 'attribute' attributeName=Character_string '}'
+;
+
 Program:
   'PROGRAM' name=VarEnchanceDecl
-    (inputs+=Inputs_List_single)*
+    ((inputs+=Inputs_List_single) | (varExternals+=VarExternal))*
     (stStatements=Statement_list)?
     'END_PROGRAM'
 ;
@@ -54,7 +66,7 @@ OuterName returns string:
 FunctionBlock:
     'FUNCTION_BLOCK' ('PUBLIC' | 'INTERNAL')? ('FINAL')? name=Identifier
  //('EXTENDS' extender=[FunctionBlock:Identifier])? ('IMPLEMENTS' implementer=[Interface:Identifier])?
-     ((varInputs+=VarInput)|(varOutputs+=VarOutput)|(varLocals+=VarLocal))*
+     ((varInputs+=VarInput)|(varOutputs+=VarOutput)|(varLocals+=VarLocal)|(varExternals+=VarExternal))*
      (methods+=Methods)*
       (statementList+=Statement_list_single)*
 
@@ -78,6 +90,7 @@ Inputs_List_single infers InputsListSingle:
 VarInput: 'VAR_INPUT' (items += Var_Decl_Init)* 'END_VAR';
 VarOutput: 'VAR_OUTPUT' (items += Var_Decl_Init)* 'END_VAR';
 VarLocal: 'VAR' (items += Var_Decl_Init)* 'END_VAR';
+VarExternal: 'VAR_EXTERNAL' (items += Var_Decl_Init)* 'END_VAR';
 
 
 Structs_List infers StructsList:
@@ -321,12 +334,13 @@ FunctionExpression infers Expression:
 
 
 type Universe=NamedElement|StFunction;
+type VariableReferenceTarget=NamedElement|GlobalVarList|StFunction;
 
 RefFunctionOrBlockName:
    refFunctionName=[Universe:Identifier]|Cache_type_name=Cache_type_name;
 
 VariableExpression infers Expression:
-    {infer VariableExpression} variable=[NamedElement:VarEnchanceDecl];
+    {infer VariableExpression} variable=[VariableReferenceTarget:VarEnchanceDecl];
 
 /* ST statements */
 Statement_list:
@@ -360,7 +374,7 @@ StatementReceiver infers MemberCall:
     )*;
 
 AssignPrefix:
-  varEnchanceDecl=[Universe:VarEnchanceDecl];
+  varEnchanceDecl=[VariableReferenceTarget:VarEnchanceDecl];
 
 ReturnParse:
   returnSign='RETURN' (returnValue=Expression)?

@@ -295,6 +295,14 @@ export function isVariable_name(item: unknown): item is Variable_name {
     return typeof item === 'string' && /[_a-zA-Z][\w_]*/.test(item);
 }
 
+export type VariableReferenceTarget = GlobalVarList | NamedElement | StFunction;
+
+export const VariableReferenceTarget = 'VariableReferenceTarget';
+
+export function isVariableReferenceTarget(item: unknown): item is VariableReferenceTarget {
+    return reflection.isInstance(item, VariableReferenceTarget);
+}
+
 export type Year = string;
 
 export function isYear(item: unknown): item is Year {
@@ -366,13 +374,25 @@ export function isAssignment_subrule(item: unknown): item is Assignment_subrule 
 export interface AssignPrefix extends AstNode {
     readonly $container: Function_invoke_or_assign;
     readonly $type: 'AssignPrefix';
-    varEnchanceDecl: Reference<Universe>;
+    varEnchanceDecl: Reference<VariableReferenceTarget>;
 }
 
 export const AssignPrefix = 'AssignPrefix';
 
 export function isAssignPrefix(item: unknown): item is AssignPrefix {
     return reflection.isInstance(item, AssignPrefix);
+}
+
+export interface AttributePragma extends AstNode {
+    readonly $container: GlobalVarList;
+    readonly $type: 'AttributePragma';
+    attributeName: Character_string;
+}
+
+export const AttributePragma = 'AttributePragma';
+
+export function isAttributePragma(item: unknown): item is AttributePragma {
+    return reflection.isInstance(item, AttributePragma);
 }
 
 export interface Case_element extends AstNode {
@@ -518,6 +538,7 @@ export interface FunctionBlock extends AstNode {
     methods: Array<Methods>;
     name: string;
     statementList: Array<Statement_list_single>;
+    varExternals: Array<VarExternal>;
     varInputs: Array<VarInput>;
     varLocals: Array<VarLocal>;
     varOutputs: Array<VarOutput>;
@@ -527,6 +548,20 @@ export const FunctionBlock = 'FunctionBlock';
 
 export function isFunctionBlock(item: unknown): item is FunctionBlock {
     return reflection.isInstance(item, FunctionBlock);
+}
+
+export interface GlobalVarList extends AstNode {
+    readonly $container: St;
+    readonly $type: 'GlobalVarList';
+    attributes: Array<AttributePragma>;
+    items: Array<VarDeclarationInit>;
+    modifiers: Array<Modifier>;
+}
+
+export const GlobalVarList = 'GlobalVarList';
+
+export function isGlobalVarList(item: unknown): item is GlobalVarList {
+    return reflection.isInstance(item, GlobalVarList);
 }
 
 export interface If_statement extends AstNode {
@@ -681,6 +716,7 @@ export interface Program extends AstNode {
     inputs: Array<InputsListSingle>;
     name: VarEnchanceDecl;
     stStatements?: Statement_list;
+    varExternals: Array<VarExternal>;
 }
 
 export const Program = 'Program';
@@ -757,6 +793,7 @@ export function isSelection_statement(item: unknown): item is Selection_statemen
 export interface St extends AstNode {
     readonly $type: 'St';
     function_block: Array<FunctionBlock>;
+    globalVarLists: Array<GlobalVarList>;
     itface: Array<Interface>;
     program: Array<Program>;
     st_function: Array<StFunction>;
@@ -876,7 +913,16 @@ export function isUnionsList(item: unknown): item is UnionsList {
 }
 
 export interface VarDeclarationInit extends AstNode {
-    readonly $container: InputsList | InputsListSingle | StructsList | UnionsList | VarInput | VarLocal | VarOutput;
+    readonly $container:
+        | GlobalVarList
+        | InputsList
+        | InputsListSingle
+        | StructsList
+        | UnionsList
+        | VarExternal
+        | VarInput
+        | VarLocal
+        | VarOutput;
     readonly $type: 'VarDeclarationInit';
     initialValue?: Constant;
     nextVariables: Array<VarEnchanceDecl>;
@@ -888,6 +934,18 @@ export const VarDeclarationInit = 'VarDeclarationInit';
 
 export function isVarDeclarationInit(item: unknown): item is VarDeclarationInit {
     return reflection.isInstance(item, VarDeclarationInit);
+}
+
+export interface VarExternal extends AstNode {
+    readonly $container: FunctionBlock | Program;
+    readonly $type: 'VarExternal';
+    items: Array<VarDeclarationInit>;
+}
+
+export const VarExternal = 'VarExternal';
+
+export function isVarExternal(item: unknown): item is VarExternal {
+    return reflection.isInstance(item, VarExternal);
 }
 
 export interface VarInput extends AstNode {
@@ -1002,7 +1060,7 @@ export function isMemberCall(item: unknown): item is MemberCall {
 
 export interface VariableExpression extends Expression {
     readonly $type: 'VariableExpression';
-    variable: Reference<NamedElement>;
+    variable: Reference<VariableReferenceTarget>;
 }
 
 export const VariableExpression = 'VariableExpression';
@@ -1031,6 +1089,7 @@ export type StAstType = {
     Array_liters: Array_liters;
     AssignPrefix: AssignPrefix;
     Assignment_subrule: Assignment_subrule;
+    AttributePragma: AttributePragma;
     Case_element: Case_element;
     Case_list: Case_list;
     Case_list_element: Case_list_element;
@@ -1046,6 +1105,7 @@ export type StAstType = {
     FunctionExpression: FunctionExpression;
     Function_invoke_or_assign: Function_invoke_or_assign;
     Function_invoke_or_assign_statement: Function_invoke_or_assign_statement;
+    GlobalVarList: GlobalVarList;
     If_statement: If_statement;
     InputsList: InputsList;
     InputsListSingle: InputsListSingle;
@@ -1076,10 +1136,12 @@ export type StAstType = {
     UnionsList: UnionsList;
     Universe: Universe;
     VarDeclarationInit: VarDeclarationInit;
+    VarExternal: VarExternal;
     VarInput: VarInput;
     VarLocal: VarLocal;
     VarOutput: VarOutput;
     VariableExpression: VariableExpression;
+    VariableReferenceTarget: VariableReferenceTarget;
     While_statement: While_statement;
 };
 
@@ -1093,6 +1155,7 @@ export class StAstReflection extends AbstractAstReflection {
             'Array_liters',
             'AssignPrefix',
             'Assignment_subrule',
+            'AttributePragma',
             'Case_element',
             'Case_list',
             'Case_list_element',
@@ -1108,6 +1171,7 @@ export class StAstReflection extends AbstractAstReflection {
             'FunctionExpression',
             'Function_invoke_or_assign',
             'Function_invoke_or_assign_statement',
+            'GlobalVarList',
             'If_statement',
             'InputsList',
             'InputsListSingle',
@@ -1138,10 +1202,12 @@ export class StAstReflection extends AbstractAstReflection {
             'UnionsList',
             'Universe',
             'VarDeclarationInit',
+            'VarExternal',
             'VarInput',
             'VarLocal',
             'VarOutput',
             'VariableExpression',
+            'VariableReferenceTarget',
             'While_statement'
         ];
     }
@@ -1172,11 +1238,18 @@ export class StAstReflection extends AbstractAstReflection {
             case Selection_statement: {
                 return this.isSubtype(Statement, supertype);
             }
+            case GlobalVarList: {
+                return this.isSubtype(VariableReferenceTarget, supertype);
+            }
             case NamedElement: {
-                return this.isSubtype(Universe, supertype);
+                return this.isSubtype(Universe, supertype) || this.isSubtype(VariableReferenceTarget, supertype);
             }
             case StFunction: {
-                return this.isSubtype(ComposeElement, supertype) || this.isSubtype(Universe, supertype);
+                return (
+                    this.isSubtype(ComposeElement, supertype) ||
+                    this.isSubtype(Universe, supertype) ||
+                    this.isSubtype(VariableReferenceTarget, supertype)
+                );
             }
             case Struct_Var_Decl_Init:
             case VarDeclarationInit: {
@@ -1192,7 +1265,6 @@ export class StAstReflection extends AbstractAstReflection {
         const referenceId = `${refInfo.container.$type}:${refInfo.property}`;
         switch (referenceId) {
             case 'Action_call_statement:actionName':
-            case 'AssignPrefix:varEnchanceDecl':
             case 'RefFunctionOrBlockName:refFunctionName': {
                 return Universe;
             }
@@ -1201,9 +1273,12 @@ export class StAstReflection extends AbstractAstReflection {
             case 'Native_Type_Name:Identifier': {
                 return ComposeElement;
             }
-            case 'For_statement:controlVariable':
-            case 'MemberCall:element':
+            case 'AssignPrefix:varEnchanceDecl':
             case 'VariableExpression:variable': {
+                return VariableReferenceTarget;
+            }
+            case 'For_statement:controlVariable':
+            case 'MemberCall:element': {
                 return NamedElement;
             }
             case 'Interface:extender': {
@@ -1251,6 +1326,12 @@ export class StAstReflection extends AbstractAstReflection {
                 return {
                     name: 'AssignPrefix',
                     properties: [{ name: 'varEnchanceDecl' }]
+                };
+            }
+            case 'AttributePragma': {
+                return {
+                    name: 'AttributePragma',
+                    properties: [{ name: 'attributeName' }]
                 };
             }
             case 'Case_element': {
@@ -1320,9 +1401,20 @@ export class StAstReflection extends AbstractAstReflection {
                         { name: 'methods', defaultValue: [] },
                         { name: 'name' },
                         { name: 'statementList', defaultValue: [] },
+                        { name: 'varExternals', defaultValue: [] },
                         { name: 'varInputs', defaultValue: [] },
                         { name: 'varLocals', defaultValue: [] },
                         { name: 'varOutputs', defaultValue: [] }
+                    ]
+                };
+            }
+            case 'GlobalVarList': {
+                return {
+                    name: 'GlobalVarList',
+                    properties: [
+                        { name: 'attributes', defaultValue: [] },
+                        { name: 'items', defaultValue: [] },
+                        { name: 'modifiers', defaultValue: [] }
                     ]
                 };
             }
@@ -1415,7 +1507,12 @@ export class StAstReflection extends AbstractAstReflection {
             case 'Program': {
                 return {
                     name: 'Program',
-                    properties: [{ name: 'inputs', defaultValue: [] }, { name: 'name' }, { name: 'stStatements' }]
+                    properties: [
+                        { name: 'inputs', defaultValue: [] },
+                        { name: 'name' },
+                        { name: 'stStatements' },
+                        { name: 'varExternals', defaultValue: [] }
+                    ]
                 };
             }
             case 'RefFunctionOrBlockName': {
@@ -1453,6 +1550,7 @@ export class StAstReflection extends AbstractAstReflection {
                     name: 'St',
                     properties: [
                         { name: 'function_block', defaultValue: [] },
+                        { name: 'globalVarLists', defaultValue: [] },
                         { name: 'itface', defaultValue: [] },
                         { name: 'program', defaultValue: [] },
                         { name: 'st_function', defaultValue: [] },
@@ -1526,6 +1624,12 @@ export class StAstReflection extends AbstractAstReflection {
                         { name: 'typeName' },
                         { name: 'variables' }
                     ]
+                };
+            }
+            case 'VarExternal': {
+                return {
+                    name: 'VarExternal',
+                    properties: [{ name: 'items', defaultValue: [] }]
                 };
             }
             case 'VarInput': {

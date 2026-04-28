@@ -151,3 +151,126 @@ END_PROGRAM
     assert.ok(errorMessages.some(message => message.includes('BOOL')));
     assert.ok(errorMessages.some(message => message.includes('INT')));
 });
+
+test('st-validator accepts VAR_EXTERNAL declarations for non-qualified GVL variables', async () => {
+    const diagnostics = await getDiagnostics({
+        label: 'st-validator-var-external-ok',
+        extra: [
+            {
+                label: 'GVL_1',
+                uriPath: 'GVL_1.st',
+                text: `
+VAR_GLOBAL
+    gStart: BOOL := TRUE;
+    gCount: INT := 0;
+    gLamp: BOOL := FALSE;
+END_VAR
+`
+            }
+        ],
+        text: `
+FUNCTION_BLOCK FbTest
+VAR_EXTERNAL
+    gStart: BOOL;
+    gCount: INT;
+    gLamp: BOOL;
+END_VAR
+
+IF gStart THEN
+    gCount := gCount + 1;
+END_IF
+END_FUNCTION_BLOCK
+`
+    });
+
+    assert.deepEqual(getErrorMessages(diagnostics), []);
+});
+
+test('st-validator rejects VAR_EXTERNAL declarations for qualified-only GVL variables', async () => {
+    const diagnostics = await getDiagnostics({
+        label: 'st-validator-var-external-qualified-only',
+        extra: [
+            {
+                label: 'GVL_1',
+                uriPath: 'GVL_1.st',
+                text: `
+{attribute 'qualified_only'}
+VAR_GLOBAL
+    gStart: BOOL := TRUE;
+END_VAR
+`
+            }
+        ],
+        text: `
+PROGRAM Main
+VAR_EXTERNAL
+    gStart: BOOL;
+END_VAR
+
+gStart := TRUE;
+END_PROGRAM
+`
+    });
+
+    const errorMessages = getErrorMessages(diagnostics);
+    assert.ok(errorMessages.some(message => message.includes('qualified_only')));
+});
+
+test('st-validator rejects VAR_EXTERNAL declarations that do not exist in any GVL', async () => {
+    const diagnostics = await getDiagnostics({
+        label: 'st-validator-var-external-missing',
+        extra: [
+            {
+                label: 'GVL_1',
+                uriPath: 'GVL_1.st',
+                text: `
+VAR_GLOBAL
+    gStart: BOOL := TRUE;
+END_VAR
+`
+            }
+        ],
+        text: `
+PROGRAM Main
+VAR_EXTERNAL
+    missingGlobal: BOOL;
+END_VAR
+
+missingGlobal := TRUE;
+END_PROGRAM
+`
+    });
+
+    const errorMessages = getErrorMessages(diagnostics);
+    assert.ok(errorMessages.some(message => message.includes('不存在')));
+});
+
+test('st-validator rejects VAR_EXTERNAL declarations whose type mismatches the GVL type', async () => {
+    const diagnostics = await getDiagnostics({
+        label: 'st-validator-var-external-type-mismatch',
+        extra: [
+            {
+                label: 'GVL_1',
+                uriPath: 'GVL_1.st',
+                text: `
+VAR_GLOBAL
+    gCount: INT := 0;
+END_VAR
+`
+            }
+        ],
+        text: `
+PROGRAM Main
+VAR_EXTERNAL
+    gCount: BOOL;
+END_VAR
+
+gCount := FALSE;
+END_PROGRAM
+`
+    });
+
+    const errorMessages = getErrorMessages(diagnostics);
+    assert.ok(errorMessages.some(message => message.includes('类型')));
+    assert.ok(errorMessages.some(message => message.includes('gCount')));
+});
