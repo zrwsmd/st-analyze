@@ -4,10 +4,12 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { TextDocument as LSTextDocument } from 'vscode-languageserver-textdocument';
+import { URI } from 'vscode-uri';
 import { shared } from '../../langium-server/main.js';
 import {
     Alias,
     FunctionBlock,
+    GlobalVarList,
     Program,
     St,
     StEnum,
@@ -16,6 +18,7 @@ import {
     StructsList,
     UnionsList,
     VarDeclarationInit,
+    VarExternal,
     VarInput,
     VarLocal,
     VarOutput,
@@ -194,6 +197,14 @@ export async function loadInitializeAvaiableFile(fileSuffix: string) {
 
 // const globalMap = new Map<string, string>();
 const globalMap = new Multimap<string, string>();
+type GlobalVarReference = {
+    filePath: string;
+    globalVarListName: string;
+    varName: string;
+    varType: string;
+    qualifiedOnly: boolean;
+};
+const globalVarMap = new Multimap<string, GlobalVarReference>();
 const errorFiles = new Set<string>();
 
 function uniqueObjects(array: ComposeNode[], key: 'filePath', type?: string) {
@@ -299,6 +310,7 @@ async function preSaveRefInfo(files: vscode.Uri[], eventType: EventType) {
         }
     } else if (eventType === 'onSave' || eventType === 'onRename' || eventType === 'onDelete') {
         globalMap.clear();
+        globalVarMap.clear();
         for (const file of files) {
             await saveData(langiumDocs, file);
         }
@@ -324,6 +336,7 @@ async function saveData(langiumDocs: LangiumDocuments, file: vscode.Uri) {
     let programArr = st.program;
     let functionArr = st.st_function;
     let functionBlockArr = st.function_block;
+    let globalVarLists = st.globalVarLists;
     let types_struct = st.types_struct;
     let types_alias = st.types_alias;
     let types_enum = st.types_enum;
@@ -349,6 +362,30 @@ async function saveData(langiumDocs: LangiumDocuments, file: vscode.Uri) {
     types_union.forEach(union => {
         globalMap.set(union.name, filePath.concat('@union'));
     });
+    globalVarLists.forEach(globalVarList => {
+        const globalVarListName = getGlobalVarListName(globalVarList, st);
+        globalMap.set(globalVarListName, filePath.concat('@globalVarList'));
+        const qualifiedOnly = hasQualifiedOnly(globalVarList);
+        globalVarList.items.forEach(item => {
+            const varType = getTypeNameFromDeclaration(item);
+            globalVarMap.set(item.variables, {
+                filePath: filePath.concat('@globalVarList'),
+                globalVarListName,
+                varName: item.variables,
+                varType,
+                qualifiedOnly
+            });
+            item.nextVariables.forEach(nextVariable => {
+                globalVarMap.set(nextVariable, {
+                    filePath: filePath.concat('@globalVarList'),
+                    globalVarListName,
+                    varName: nextVariable,
+                    varType,
+                    qualifiedOnly
+                });
+            });
+        });
+    });
 }
 
 /**
@@ -373,6 +410,7 @@ async function handleRoot(st: St, eventType: EventType, historyComposeNode?: Com
     let programArr = st.program;
     let functionArr = st.st_function;
     let functionBlockArr = st.function_block;
+    let globalVarLists = st.globalVarLists;
     let types_struct = st.types_struct;
     let types_alias = st.types_alias;
     let types_enum = st.types_enum;
@@ -385,6 +423,7 @@ async function handleRoot(st: St, eventType: EventType, historyComposeNode?: Com
         elements: []
     };
     composeNode = handleProgramArr(programArr, composeNode);
+    composeNode = handleGlobalVarListArr(globalVarLists, composeNode, st);
     composeNode = handleFunctionBlockArr(functionBlockArr, composeNode);
     composeNode = handleFunctionArr(functionArr, composeNode);
     composeNode = handleStructArr(types_struct, composeNode);
@@ -411,9 +450,8 @@ async function handleRoot(st: St, eventType: EventType, historyComposeNode?: Com
 
 function handleProgramArr(programArr: Program[], composeNode: ComposeNode) {
     programArr.forEach(program => {
-        let varDeclArr = program.inputs;
         let declArr: VarDeclaration[] = [];
-        varDeclArr.forEach(eachVarDecl => {
+        program.inputs.forEach(eachVarDecl => {
             let definition = eachVarDecl.definition;
             let modifier = eachVarDecl.modifiers;
             let varGlobalType = '';
@@ -425,6 +463,8 @@ function handleProgramArr(programArr: Program[], composeNode: ComposeNode) {
             let varDeclElements = eachVarDecl.items;
             handleVarDeclarationInit(varDeclElements, declArr, varGlobalType);
         });
+        handleExternalVariableBlocks(program.varExternals, declArr);
+        attachGlobalVarReferences(declArr);
         const singleElement: SingleElement = {
             $type: 'SingleElement',
             elementType: 'program',
@@ -436,6 +476,21 @@ function handleProgramArr(programArr: Program[], composeNode: ComposeNode) {
         //     filePath: filePath,
         //     elements: singleElements
         // };
+    });
+    return composeNode;
+}
+
+function handleGlobalVarListArr(globalVarLists: GlobalVarList[], composeNode: ComposeNode, st: St) {
+    globalVarLists.forEach(globalVarList => {
+        let declArr: VarDeclaration[] = [];
+        handleVarDeclarationInit(globalVarList.items, declArr, 'VAR_GLOBAL');
+        const singleElement: SingleElement = {
+            $type: 'SingleElement',
+            elementType: 'globalVarList',
+            elementName: getGlobalVarListName(globalVarList, st),
+            varDecls: declArr
+        };
+        composeNode.elements.push(singleElement);
     });
     return composeNode;
 }
@@ -590,10 +645,13 @@ function handleFunctionBlockArr(functionBlockArr: FunctionBlock[], composeNode: 
         let varLocals = functionBlock.varLocals;
         let varInputs = functionBlock.varInputs;
         let varOutputs = functionBlock.varOutputs;
+        let varExternals = functionBlock.varExternals;
         let declArr: VarDeclaration[] = [];
         handleAllVariable(varLocals, declArr);
         handleAllVariable(varInputs, declArr);
         handleAllVariable(varOutputs, declArr);
+        handleExternalVariableBlocks(varExternals, declArr);
+        attachGlobalVarReferences(declArr);
         const functionBlockElement: SingleElement = {
             $type: 'SingleElement',
             elementType: 'functionBlock',
@@ -724,6 +782,69 @@ function handleAllVariable(varGlobalType: VarLocal[] | VarInput[] | VarOutput[],
         handleVarDeclarationInit(varDeclElements, declArr, type);
     });
 }
+
+function handleExternalVariableBlocks(varExternalBlocks: VarExternal[], declArr: VarDeclaration[]) {
+    varExternalBlocks.forEach(block => {
+        handleVarDeclarationInit(block.items, declArr, 'VAR_EXTERNAL');
+    });
+}
+
+function attachGlobalVarReferences(declArr: VarDeclaration[]) {
+    declArr.forEach(varDeclaration => {
+        if (varDeclaration.varGlobalType !== 'VAR_EXTERNAL') {
+            return;
+        }
+        const match = resolveGlobalVarReference(varDeclaration.varName, varDeclaration.varType);
+        if (!match) {
+            return;
+        }
+        varDeclaration.refGlobalFilePath = match.filePath;
+        varDeclaration.refGlobalVarListName = match.globalVarListName;
+        varDeclaration.refGlobalVarName = match.varName;
+    });
+}
+
+function resolveGlobalVarReference(varName: string, varType: string): GlobalVarReference | undefined {
+    const matches = globalVarMap.get(varName) ?? [];
+    const accessibleMatches = matches.filter(match => !match.qualifiedOnly);
+    if (accessibleMatches.length === 0) {
+        return undefined;
+    }
+    const normalizedVarType = varType.toUpperCase();
+    const exactTypeMatches = accessibleMatches.filter(match => match.varType.toUpperCase() === normalizedVarType);
+    if (exactTypeMatches.length === 1) {
+        return exactTypeMatches[0];
+    }
+    if (accessibleMatches.length === 1) {
+        return accessibleMatches[0];
+    }
+    return undefined;
+}
+
+function getGlobalVarListName(globalVarList: GlobalVarList, st: St): string {
+    const targetSt = globalVarList.$document?.parseResult.value as St | undefined;
+    const uri = targetSt?.$document?.uri ?? st.$document?.uri;
+    const filePath = uri?.path ?? '';
+    return path.posix.basename(filePath, path.posix.extname(filePath));
+}
+
+function hasQualifiedOnly(globalVarList: GlobalVarList): boolean {
+    return globalVarList.attributes.some(attribute => normalizeAttributeName(attribute.attributeName) === 'qualified_only');
+}
+
+function normalizeAttributeName(attributeName: string): string {
+    return attributeName.trim().replace(/^['"]|['"]$/g, '').toLowerCase();
+}
+
+function getTypeNameFromDeclaration(declaration: VarDeclarationInit): string {
+    let expectedType = '';
+    const basicType = basicDataType(expectedType, declaration.typeName);
+    if (basicType) {
+        return basicType;
+    }
+    return handleNoAcceptNativeTypeName(declaration.typeName, expectedType) ?? '';
+}
+
 
 // 定义一个函数将 JSON 写入文件
 // function writeJSONToFile(jsonData: any, filePath: string) {

@@ -347,6 +347,118 @@ END_PROGRAM
     }
 });
 
+test('handleBusiness exports GVL nodes and program VAR_EXTERNAL global references', async () => {
+    const handleExportInfo = await loadHandleExportInfoModule();
+    const workspace = await createWorkspace({
+        'GVL_1.st': `
+VAR_GLOBAL
+    gStart: BOOL := TRUE;
+    gCount: INT := 0;
+    gLamp: BOOL := FALSE;
+END_VAR
+`,
+        'main.st': `
+PROGRAM PLC_PRG
+VAR_EXTERNAL
+    gStart: BOOL;
+    gCount: INT;
+    gLamp: BOOL;
+END_VAR
+END_PROGRAM
+`
+    });
+
+    try {
+        configureVscodeMock({
+            workspaceRoot: workspace.workspaceRoot,
+            diagnosticsByPath: {}
+        });
+
+        const result = await handleExportInfo.handleBusiness(
+            [],
+            [workspace.uriByRelativePath['GVL_1.st'], workspace.uriByRelativePath['main.st']],
+            'basic',
+            shared.workspace.LangiumDocumentFactory
+        );
+
+        const gvlComposeNode = getComposeNode(result, workspace.uriByRelativePath['GVL_1.st']);
+        const mainComposeNode = getComposeNode(result, workspace.uriByRelativePath['main.st']);
+
+        const gvl = getElement(gvlComposeNode, 'GVL_1', 'globalVarList');
+        assert.equal(getVarDecl(gvl, 'gStart').varGlobalType, 'VAR_GLOBAL');
+        assert.equal(getVarDecl(gvl, 'gCount').varType, 'INT');
+        assert.equal(getVarDecl(gvl, 'gLamp').varType, 'BOOL');
+
+        const program = getElement(mainComposeNode, 'PLC_PRG', 'program');
+        assert.deepEqual(getVarDecl(program, 'gStart'), {
+            $type: 'VarDeclaration',
+            varGlobalType: 'VAR_EXTERNAL',
+            varName: 'gStart',
+            varType: 'BOOL',
+            refGlobalFilePath: `${workspace.uriByRelativePath['GVL_1.st'].toString()}@globalVarList`,
+            refGlobalVarListName: 'GVL_1',
+            refGlobalVarName: 'gStart'
+        });
+        assert.deepEqual(getVarDecl(program, 'gCount'), {
+            $type: 'VarDeclaration',
+            varGlobalType: 'VAR_EXTERNAL',
+            varName: 'gCount',
+            varType: 'INT',
+            refGlobalFilePath: `${workspace.uriByRelativePath['GVL_1.st'].toString()}@globalVarList`,
+            refGlobalVarListName: 'GVL_1',
+            refGlobalVarName: 'gCount'
+        });
+    } finally {
+        await cleanupWorkspace(workspace);
+    }
+});
+
+test('handleBusiness exports function block VAR_EXTERNAL global references', async () => {
+    const handleExportInfo = await loadHandleExportInfoModule();
+    const workspace = await createWorkspace({
+        'GVL_1.st': `
+VAR_GLOBAL
+    gStart: BOOL := TRUE;
+END_VAR
+`,
+        'fb.st': `
+FUNCTION_BLOCK FbTest
+VAR_EXTERNAL
+    gStart: BOOL;
+END_VAR
+END_FUNCTION_BLOCK
+`
+    });
+
+    try {
+        configureVscodeMock({
+            workspaceRoot: workspace.workspaceRoot,
+            diagnosticsByPath: {}
+        });
+
+        const result = await handleExportInfo.handleBusiness(
+            [],
+            [workspace.uriByRelativePath['GVL_1.st'], workspace.uriByRelativePath['fb.st']],
+            'basic',
+            shared.workspace.LangiumDocumentFactory
+        );
+
+        const fbComposeNode = getComposeNode(result, workspace.uriByRelativePath['fb.st']);
+        const functionBlock = getElement(fbComposeNode, 'FbTest', 'functionBlock');
+        assert.deepEqual(getVarDecl(functionBlock, 'gStart'), {
+            $type: 'VarDeclaration',
+            varGlobalType: 'VAR_EXTERNAL',
+            varName: 'gStart',
+            varType: 'BOOL',
+            refGlobalFilePath: `${workspace.uriByRelativePath['GVL_1.st'].toString()}@globalVarList`,
+            refGlobalVarListName: 'GVL_1',
+            refGlobalVarName: 'gStart'
+        });
+    } finally {
+        await cleanupWorkspace(workspace);
+    }
+});
+
 test('handleBusiness keeps valid files when the last file has declaration errors', async () => {
     const handleExportInfo = await loadHandleExportInfoModule();
     const workspace = await createWorkspace({

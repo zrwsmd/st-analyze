@@ -15,11 +15,15 @@
  ********************************************************************************/
 import 'reflect-metadata';
 
+import * as path from 'node:path';
 import { tmpdir } from 'os';
 import { normalize } from 'path';
 import * as process from 'process';
 import * as vscode from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, Trace, TransportKind } from 'vscode-languageclient/node.js';
+import { URI } from 'vscode-uri';
+import { shared } from '../../langium-server/main.js';
+import { St } from '../../langium-server/src/generated/ast.js';
 import { getRelatedElementInfoToOuter } from '../../langium-server/src/util/transform.js';
 import { registerShowStFilesCommand } from './handleExportInfo.js';
 
@@ -48,14 +52,14 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     });
     let outerfilePath = '';
     let outerfolderPath = '';
-    // let langiumDocs = shared.workspace.LangiumDocuments;
-    // const rootPath = path.resolve(__dirname, '..', '..');
-    // const sourceUri = path.join(rootPath, 'workspace', 'program2.st');
-    // // /console.log(sourceUri);
-    // const rootUri = URI.file(sourceUri).toString();
-    // const document = await langiumDocs.getOrCreateDocument(URI.parse(rootUri));
-    // const root = document.parseResult.value as St;
-    // console.log(root);
+    let langiumDocs = shared.workspace.LangiumDocuments;
+    const rootPath = path.resolve(__dirname, '..', '..');
+    const sourceUri = path.join(rootPath, 'workspace', 'main.st');
+    // /console.log(sourceUri);
+    const rootUri = URI.file(sourceUri).toString();
+    const document = await langiumDocs.getOrCreateDocument(URI.parse(rootUri));
+    const root = document.parseResult.value as St;
+    console.log(root);
     await vscode.commands.executeCommand('devUni.prjView.compileCheckFath').then((result: any) => {
         outerfilePath = result.filePath;
         outerfolderPath = result.folderPath;
@@ -99,7 +103,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
 function startLanguageClient(context: vscode.ExtensionContext): LanguageClient {
     const useDebugServerModule = context.extensionMode === vscode.ExtensionMode.Development && process.env.ST_DEBUG === 'true';
-    const serverModule = useDebugServerModule ? context.asAbsolutePath('../langium-server/out/main.cjs') : context.asAbsolutePath('./dist/main.cjs');
+    const serverModule = useDebugServerModule
+        ? context.asAbsolutePath('../langium-server/out/main.cjs')
+        : context.asAbsolutePath('./dist/main.cjs');
     // The debug options for the server
     // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging.
     // By setting `process.env.DEBUG_BREAK` to a truthy value, the language server will wait until a debugger is attached.

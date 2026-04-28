@@ -124,6 +124,11 @@ module.exports = {
         Hint: 3
     },
     EventEmitter,
+    Uri: {
+        parse(value) {
+            return URI.parse(value);
+        }
+    },
     languages,
     workspace
 };

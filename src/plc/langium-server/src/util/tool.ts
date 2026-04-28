@@ -67,12 +67,15 @@ export type VarDeclaration = {
     varName: string;
     varType: any;
     refFilePath?: string;
+    refGlobalFilePath?: string;
+    refGlobalVarListName?: string;
+    refGlobalVarName?: string;
     //VAR VAR_INPUT  VAR_OUTPUT
     varGlobalType?: string;
 } & AstNode;
 
 export type EventType = 'basic' | 'onSave' | 'onRename' | 'onCreate' | 'onDelete' | 'onChangeTextDocument';
-export type ElementType = 'program' | 'function' | 'functionBlock' | 'struct' | 'alias' | 'enum' | 'union';
+export type ElementType = 'program' | 'function' | 'functionBlock' | 'struct' | 'alias' | 'enum' | 'union' | 'globalVarList';
 
 /**
  *

@@ -35,8 +35,8 @@ VAR_EXTERNAL
     gLamp  : BOOL;
 END_VAR
 
-IF gStart THEN
-    gCount := gCount + 1;
+IF GVL.gStart THEN
+    GVL.gCount := GVL.gCount + 1;
 END_IF;
 
 
