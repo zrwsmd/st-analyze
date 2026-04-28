@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { getDiagnostics, getErrorMessages } = require('./helpers/langium-test-utils.cjs');
+const { getDiagnostics, getErrorMessages, shared, withDocuments } = require('./helpers/langium-test-utils.cjs');
 
 test('st-validator accepts alias compatibility with base numeric types', async () => {
     const diagnostics = await getDiagnostics({
@@ -273,4 +273,40 @@ END_PROGRAM
     const errorMessages = getErrorMessages(diagnostics);
     assert.ok(errorMessages.some(message => message.includes('类型')));
     assert.ok(errorMessages.some(message => message.includes('gCount')));
+});
+
+test('documents with VAR_EXTERNAL are marked affected when a GVL file changes', async () => {
+    await withDocuments(
+        {
+            main: {
+                label: 'Program',
+                uriPath: 'Program.st',
+                text: `
+PROGRAM Main
+VAR_EXTERNAL
+    gStart: BOOL;
+END_VAR
+
+gStart := TRUE;
+END_PROGRAM
+`
+            },
+            extra: [
+                {
+                    label: 'GVL_1',
+                    uriPath: 'GVL_1.st',
+                    text: `
+VAR_GLOBAL
+    gStart: BOOL := TRUE;
+END_VAR
+`
+                }
+            ]
+        },
+        async ({ mainRecord, extraRecords, services }) => {
+            const changedUris = new Set([extraRecords[0].uri.toString()]);
+            const affected = services.shared.workspace.IndexManager.isAffected(mainRecord.document, changedUris);
+            assert.equal(affected, true);
+        }
+    );
 });

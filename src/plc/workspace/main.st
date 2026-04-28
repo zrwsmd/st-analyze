@@ -29,6 +29,16 @@ VAR_IN_OUT
 	Variable: BOOL; (* Comment *)
 END_VAR
 
+VAR_EXTERNAL
+    gStart : BOOL;
+    gCount : INT;
+    gLamp  : BOOL;
+END_VAR
+
+IF gStart THEN
+    gCount := gCount + 1;
+END_IF;
+
 
 mode := RunMode#MANUAL;
 libEnum := MC_BUFFER_MODE#Aborting;
@@ -41,6 +51,9 @@ e.city.cityId33:=123;
 h:=-90;
 
 aa:=0;
+
+
+
 
 
 

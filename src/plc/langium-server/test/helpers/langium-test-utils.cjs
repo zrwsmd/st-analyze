@@ -304,5 +304,7 @@ module.exports = {
     getErrorMessages,
     getScopeElementNames,
     getSignatureHelp,
+    shared,
+    st,
     withDocuments
 };

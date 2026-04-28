@@ -31,6 +31,7 @@ import { CacheSignatureHelpProvider } from './cache-sign-help.js';
 import { StGeneratedModule, StGeneratedSharedModule } from './generated/module.js';
 import { ClientLogger } from './ld-client-logger.js';
 import { StNameProvider } from './st-name-provider.js';
+import { StReferenceDescriptionProvider } from './st-reference-descriptions.js';
 import { StScopeComputation } from './st-compute.js';
 import { StFormatter } from './st-formatter.js';
 import { StLinker } from './st-linker.js';
@@ -135,6 +136,9 @@ export function createStatemachineModule(
             Linker: services => new StLinker(services),
             NameProvider: () => new StNameProvider(),
             References: services => new CacheReference(services)
+        },
+        workspace: {
+            ReferenceDescriptionProvider: services => new StReferenceDescriptionProvider(services)
         },
         serializer: {
             JsonSerializer: services => new StSerializer(services)

@@ -990,23 +990,23 @@ var require_cancellation = __commonJS({
     var ral_1 = require_ral();
     var Is2 = require_is2();
     var events_1 = require_events();
-    var CancellationToken19;
-    (function(CancellationToken20) {
-      CancellationToken20.None = Object.freeze({
+    var CancellationToken20;
+    (function(CancellationToken21) {
+      CancellationToken21.None = Object.freeze({
         isCancellationRequested: false,
         onCancellationRequested: events_1.Event.None
       });
-      CancellationToken20.Cancelled = Object.freeze({
+      CancellationToken21.Cancelled = Object.freeze({
         isCancellationRequested: true,
         onCancellationRequested: events_1.Event.None
       });
       function is(value) {
         const candidate = value;
-        return candidate && (candidate === CancellationToken20.None || candidate === CancellationToken20.Cancelled || Is2.boolean(candidate.isCancellationRequested) && !!candidate.onCancellationRequested);
+        return candidate && (candidate === CancellationToken21.None || candidate === CancellationToken21.Cancelled || Is2.boolean(candidate.isCancellationRequested) && !!candidate.onCancellationRequested);
       }
       __name(is, "is");
-      CancellationToken20.is = is;
-    })(CancellationToken19 || (exports2.CancellationToken = CancellationToken19 = {}));
+      CancellationToken21.is = is;
+    })(CancellationToken20 || (exports2.CancellationToken = CancellationToken20 = {}));
     var shortcutEvent = Object.freeze(function(callback, context) {
       const handle = (0, ral_1.default)().timer.setTimeout(callback.bind(context), 0);
       return { dispose() {
@@ -1056,14 +1056,14 @@ var require_cancellation = __commonJS({
       }
       cancel() {
         if (!this._token) {
-          this._token = CancellationToken19.Cancelled;
+          this._token = CancellationToken20.Cancelled;
         } else {
           this._token.cancel();
         }
       }
       dispose() {
         if (!this._token) {
-          this._token = CancellationToken19.None;
+          this._token = CancellationToken20.None;
         } else if (this._token instanceof MutableToken) {
           this._token.dispose();
         }
@@ -9571,23 +9571,23 @@ var require_cancellation2 = __commonJS({
     var ral_1 = require_ral2();
     var Is2 = require_is4();
     var events_1 = require_events2();
-    var CancellationToken19;
-    (function(CancellationToken20) {
-      CancellationToken20.None = Object.freeze({
+    var CancellationToken20;
+    (function(CancellationToken21) {
+      CancellationToken21.None = Object.freeze({
         isCancellationRequested: false,
         onCancellationRequested: events_1.Event.None
       });
-      CancellationToken20.Cancelled = Object.freeze({
+      CancellationToken21.Cancelled = Object.freeze({
         isCancellationRequested: true,
         onCancellationRequested: events_1.Event.None
       });
       function is(value) {
         const candidate = value;
-        return candidate && (candidate === CancellationToken20.None || candidate === CancellationToken20.Cancelled || Is2.boolean(candidate.isCancellationRequested) && !!candidate.onCancellationRequested);
+        return candidate && (candidate === CancellationToken21.None || candidate === CancellationToken21.Cancelled || Is2.boolean(candidate.isCancellationRequested) && !!candidate.onCancellationRequested);
       }
       __name(is, "is");
-      CancellationToken20.is = is;
-    })(CancellationToken19 || (exports2.CancellationToken = CancellationToken19 = {}));
+      CancellationToken21.is = is;
+    })(CancellationToken20 || (exports2.CancellationToken = CancellationToken20 = {}));
     var shortcutEvent = Object.freeze(function(callback, context) {
       const handle = (0, ral_1.default)().timer.setTimeout(callback.bind(context), 0);
       return { dispose() {
@@ -9637,14 +9637,14 @@ var require_cancellation2 = __commonJS({
       }
       cancel() {
         if (!this._token) {
-          this._token = CancellationToken19.Cancelled;
+          this._token = CancellationToken20.Cancelled;
         } else {
           this._token.cancel();
         }
       }
       dispose() {
         if (!this._token) {
-          this._token = CancellationToken19.None;
+          this._token = CancellationToken20.None;
         } else if (this._token instanceof MutableToken) {
           this._token.dispose();
         }
@@ -44147,6 +44147,109 @@ function getGlobalVarListName(node) {
 }
 __name(getGlobalVarListName, "getGlobalVarListName");
 
+// src/st-reference-descriptions.ts
+var import_vscode_languageserver13 = __toESM(require_main4(), 1);
+var _StReferenceDescriptionProvider = class _StReferenceDescriptionProvider extends DefaultReferenceDescriptionProvider {
+  constructor(services) {
+    super(services);
+    this.indexManager = services.shared.workspace.IndexManager;
+  }
+  async createDescriptions(document, cancelToken = import_vscode_languageserver13.CancellationToken.None) {
+    const descriptions = await super.createDescriptions(document, cancelToken);
+    const root2 = document.parseResult.value;
+    const globalVarListDescriptions = this.getGlobalVarListDescriptions(root2);
+    if (globalVarListDescriptions.length === 0) {
+      return descriptions;
+    }
+    const externalDeclarations = this.collectExternalDeclarations(root2);
+    externalDeclarations.forEach((declaration) => {
+      if (!declaration.$cstNode) {
+        return;
+      }
+      globalVarListDescriptions.forEach((target) => {
+        descriptions.push({
+          sourceUri: document.uri,
+          sourcePath: this.nodeLocator.getAstNodePath(declaration),
+          targetUri: target.documentUri,
+          targetPath: target.path,
+          segment: this.toDocumentSegment(declaration.$cstNode),
+          local: target.documentUri.toString() === document.uri.toString()
+        });
+      });
+    });
+    return descriptions;
+  }
+  collectExternalDeclarations(root2) {
+    const declarations = [];
+    root2.program.forEach((program) => {
+      declarations.push(...this.getProgramExternalDeclarations(program));
+    });
+    root2.function_block.forEach((functionBlock) => {
+      functionBlock.varExternals.forEach((block2) => declarations.push(...block2.items));
+    });
+    return declarations;
+  }
+  getProgramExternalDeclarations(program) {
+    const declarations = [];
+    const seen = /* @__PURE__ */ new Set();
+    program.inputs.filter((input) => input.definition === "VAR_EXTERNAL").forEach((input) => {
+      input.items.forEach((item) => {
+        if (!seen.has(item)) {
+          seen.add(item);
+          declarations.push(item);
+        }
+      });
+    });
+    program.varExternals.forEach((block2) => {
+      block2.items.forEach((item) => {
+        if (!seen.has(item)) {
+          seen.add(item);
+          declarations.push(item);
+        }
+      });
+    });
+    return declarations;
+  }
+  getGlobalVarListDescriptions(root2) {
+    const descriptions = [...this.indexManager.allElements("GlobalVarList").toArray()];
+    root2.globalVarLists.forEach((globalVarList) => {
+      var _a, _b;
+      if (!globalVarList.$document) {
+        return;
+      }
+      const path3 = this.nodeLocator.getAstNodePath(globalVarList);
+      const existing = descriptions.find(
+        (description) => {
+          var _a2;
+          return description.documentUri.toString() === ((_a2 = globalVarList.$document) == null ? void 0 : _a2.uri.toString()) && description.path === path3;
+        }
+      );
+      if (!existing) {
+        descriptions.push({
+          node: globalVarList,
+          name: "",
+          documentUri: globalVarList.$document.uri,
+          path: path3,
+          nameSegment: this.toDocumentSegment((_a = globalVarList.$cstNode) != null ? _a : globalVarList.$document.parseResult.value.$cstNode),
+          selectionSegment: this.toDocumentSegment((_b = globalVarList.$cstNode) != null ? _b : globalVarList.$document.parseResult.value.$cstNode),
+          type: "GlobalVarList"
+        });
+      }
+    });
+    return descriptions.filter((description) => description.type === "GlobalVarList");
+  }
+  toDocumentSegment(node) {
+    return {
+      range: node.range,
+      offset: node.offset,
+      length: node.length,
+      end: node.end
+    };
+  }
+};
+__name(_StReferenceDescriptionProvider, "StReferenceDescriptionProvider");
+var StReferenceDescriptionProvider = _StReferenceDescriptionProvider;
+
 // src/st-compute.ts
 var _StScopeComputation = class _StScopeComputation extends DefaultScopeComputation {
   async computeLocalScopes(document, cancelToken) {
@@ -46605,6 +46708,9 @@ function createStatemachineModule(context) {
       Linker: (services) => new StLinker(services),
       NameProvider: () => new StNameProvider(),
       References: (services) => new CacheReference(services)
+    },
+    workspace: {
+      ReferenceDescriptionProvider: (services) => new StReferenceDescriptionProvider(services)
     },
     serializer: {
       JsonSerializer: (services) => new StSerializer(services)
