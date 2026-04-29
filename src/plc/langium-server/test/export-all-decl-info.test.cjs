@@ -24,6 +24,7 @@ const diagnosticRange = (startLine, startCharacter, endLine, endCharacter) => ({
     end: { line: endLine, character: endCharacter }
 });
 
+// 初始化筛文件时，带有 Error 级别诊断的 ST 文件应被跳过。
 test('loadInitializeAvaiableFile skips files with VSCode error diagnostics', async () => {
     const handleExportInfo = await loadHandleExportInfoModule();
     const workspace = await createWorkspace({
@@ -47,16 +48,12 @@ END_PROGRAM
         configureVscodeMock({
             workspaceRoot: workspace.workspaceRoot,
             diagnosticsByPath: {
-                [workspace.filePathByRelativePath['bad.st']]: [
-                    diagnosticError('declaration failed', diagnosticRange(3, 4, 3, 14))
-                ]
+                [workspace.filePathByRelativePath['bad.st']]: [diagnosticError('declaration failed', diagnosticRange(3, 4, 3, 14))]
             }
         });
 
         const files = await handleExportInfo.loadInitializeAvaiableFile('.st');
-        const normalizedPaths = files
-            .map(file => file.fsPath.toLowerCase())
-            .sort();
+        const normalizedPaths = files.map(file => file.fsPath.toLowerCase()).sort();
 
         assert.deepEqual(normalizedPaths, [workspace.filePathByRelativePath['good.st'].toLowerCase()]);
     } finally {
@@ -64,6 +61,7 @@ END_PROGRAM
     }
 });
 
+// 只有表达式区报错时，不应影响文件进入导出列表。
 test('loadInitializeAvaiableFile keeps files when VSCode errors are only in expressions', async () => {
     const handleExportInfo = await loadHandleExportInfoModule();
     const workspace = await createWorkspace({
@@ -81,9 +79,7 @@ END_PROGRAM
         configureVscodeMock({
             workspaceRoot: workspace.workspaceRoot,
             diagnosticsByPath: {
-                [workspace.filePathByRelativePath['expr-only.st']]: [
-                    diagnosticError('unknown variable', diagnosticRange(5, 0, 5, 20))
-                ]
+                [workspace.filePathByRelativePath['expr-only.st']]: [diagnosticError('unknown variable', diagnosticRange(5, 0, 5, 20))]
             }
         });
 
@@ -96,6 +92,7 @@ END_PROGRAM
     }
 });
 
+// 全量导出时，应正确导出变量列表、跨文件 refFilePath 和外部库类型。
 test('handleBusiness exports variable lists, refFilePath, and external-library types', async () => {
     const handleExportInfo = await loadHandleExportInfoModule();
     const workspace = await createWorkspace({
@@ -227,6 +224,7 @@ END_PROGRAM
     }
 });
 
+// onSave 增量更新时，应刷新当前文件导出结果且保留跨文件引用关系。
 test('handleBusiness refreshes changed files on onSave without losing cross-file references', async () => {
     const handleExportInfo = await loadHandleExportInfoModule();
     const workspace = await createWorkspace({
@@ -277,18 +275,19 @@ END_PROGRAM
         const mainComposeNode = getComposeNode(savedResult, workspace.uriByRelativePath['main.st']);
         const program = getElement(mainComposeNode, 'PLC_PRG', 'program');
 
-        assert.equal(program.varDecls.some(item => item.varName === 'axis'), false);
+        assert.equal(
+            program.varDecls.some(item => item.varName === 'axis'),
+            false
+        );
         assert.equal(getVarDecl(program, 'camRef').varType, 'MC_CAM_REF');
         assert.equal(getVarDecl(program, 'camRef').refFilePath, undefined);
-        assert.equal(
-            getVarDecl(program, 'customMode').refFilePath,
-            `${workspace.uriByRelativePath['types.st'].toString()}@enum`
-        );
+        assert.equal(getVarDecl(program, 'customMode').refFilePath, `${workspace.uriByRelativePath['types.st'].toString()}@enum`);
     } finally {
         await cleanupWorkspace(workspace);
     }
 });
 
+// onSave 时如果只有表达式报错，声明区变量仍应继续导出。
 test('handleBusiness keeps exporting declarations on onSave when only expressions have errors', async () => {
     const handleExportInfo = await loadHandleExportInfoModule();
     const workspace = await createWorkspace({
@@ -325,9 +324,7 @@ END_PROGRAM
         configureVscodeMock({
             workspaceRoot: workspace.workspaceRoot,
             diagnosticsByPath: {
-                [workspace.filePathByRelativePath['main.st']]: [
-                    diagnosticError('unknown variable', diagnosticRange(6, 0, 6, 21))
-                ]
+                [workspace.filePathByRelativePath['main.st']]: [diagnosticError('unknown variable', diagnosticRange(6, 0, 6, 21))]
             }
         });
 
@@ -347,6 +344,7 @@ END_PROGRAM
     }
 });
 
+// 应导出 GVL 本体，并给 PROGRAM 中的 VAR_EXTERNAL 变量补上全局变量引用关系。
 test('handleBusiness exports GVL nodes and program VAR_EXTERNAL global references', async () => {
     const handleExportInfo = await loadHandleExportInfoModule();
     const workspace = await createWorkspace({
@@ -413,6 +411,7 @@ END_PROGRAM
     }
 });
 
+// 应导出 FUNCTION_BLOCK 中的 VAR_EXTERNAL 变量，并补上对应 GVL 引用关系。
 test('handleBusiness exports function block VAR_EXTERNAL global references', async () => {
     const handleExportInfo = await loadHandleExportInfoModule();
     const workspace = await createWorkspace({
@@ -459,6 +458,7 @@ END_FUNCTION_BLOCK
     }
 });
 
+// 批量导出时，最后一个文件声明区报错也不能把前面正常文件的结果丢掉。
 test('handleBusiness keeps valid files when the last file has declaration errors', async () => {
     const handleExportInfo = await loadHandleExportInfoModule();
     const workspace = await createWorkspace({
@@ -482,9 +482,7 @@ END_PROGRAM
         configureVscodeMock({
             workspaceRoot: workspace.workspaceRoot,
             diagnosticsByPath: {
-                [workspace.filePathByRelativePath['bad.st']]: [
-                    diagnosticError('unknown type', diagnosticRange(3, 11, 3, 22))
-                ]
+                [workspace.filePathByRelativePath['bad.st']]: [diagnosticError('unknown type', diagnosticRange(3, 11, 3, 22))]
             }
         });
 
@@ -502,6 +500,7 @@ END_PROGRAM
     }
 });
 
+// onSave 时如果当前文件声明区报错，应跳过该文件的导出结果。
 test('handleBusiness skips changed files on onSave when declaration errors exist', async () => {
     const handleExportInfo = await loadHandleExportInfoModule();
     const workspace = await createWorkspace({
@@ -538,9 +537,7 @@ END_PROGRAM
         configureVscodeMock({
             workspaceRoot: workspace.workspaceRoot,
             diagnosticsByPath: {
-                [workspace.filePathByRelativePath['main.st']]: [
-                    diagnosticError('unknown type', diagnosticRange(3, 11, 3, 22))
-                ]
+                [workspace.filePathByRelativePath['main.st']]: [diagnosticError('unknown type', diagnosticRange(3, 11, 3, 22))]
             }
         });
 
@@ -558,6 +555,7 @@ END_PROGRAM
     }
 });
 
+// 导出阶段遇到语法坏文件时，应跳过坏文件且不影响其他正常文件。
 test('handleBusiness skips files with syntax errors during export generation', async () => {
     const handleExportInfo = await loadHandleExportInfoModule();
     const workspace = await createWorkspace({
