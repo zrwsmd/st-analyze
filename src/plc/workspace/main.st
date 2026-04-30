@@ -33,9 +33,14 @@ VAR_EXTERNAL
     gStart : BOOL;
     gCount : INT;
     gLamp  : BOOL;
+	aa:TON;
 END_VAR
 
 IF GVL.gStart THEN
+    GVL.gCount := GVL.gCount + 1;
+END_IF;
+
+IF GVL_1.aa.Q THEN
     GVL.gCount := GVL.gCount + 1;
 END_IF;
 
