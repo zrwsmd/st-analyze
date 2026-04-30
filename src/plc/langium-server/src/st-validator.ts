@@ -879,6 +879,38 @@ export class StValidator {
         return root?.types_enum.find(item => item.name.toLowerCase() === enumName.toLowerCase());
     }
 
+    private getLinkedEnumByName(enumName: string | undefined, node: AstNode | undefined): StEnum | undefined {
+        if (!enumName || !node || !isEnumeratedValue(node)) {
+            return undefined;
+        }
+        let refNode = node.enumType?.ref;
+        if (refNode?.$type === 'StEnum' && refNode.name.toLowerCase() === enumName.toLowerCase()) {
+            return refNode as StEnum;
+        }
+        return undefined;
+    }
+
+    private getWorkspaceEnumByName(enumName: string | undefined): StEnum | undefined {
+        if (!enumName) {
+            return undefined;
+        }
+        let indexManager = this.services.shared.workspace.IndexManager;
+        let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+        let astNodeLocator = this.services.workspace.AstNodeLocator;
+        for (const description of indexManager.allElements('StEnum')) {
+            if (description.name.toLowerCase() === enumName.toLowerCase()) {
+                let targetDocument = langiumDocuments.getDocument(description.documentUri);
+                if (targetDocument) {
+                    let enumNode = astNodeLocator.getAstNode<StEnum>(targetDocument.parseResult.value, description.path);
+                    if (enumNode) {
+                        return enumNode;
+                    }
+                }
+            }
+        }
+        return undefined;
+    }
+
     private getEnumMembers(enumName: string | undefined, node: AstNode | undefined): string[] | undefined {
         if (!enumName) {
             return undefined;
@@ -886,6 +918,14 @@ export class StValidator {
         let localEnum = this.getLocalEnumByName(enumName, node);
         if (localEnum) {
             return localEnum.enum.map(item => item.variable_name);
+        }
+        let linkedEnum = this.getLinkedEnumByName(enumName, node);
+        if (linkedEnum) {
+            return linkedEnum.enum.map(item => item.variable_name);
+        }
+        let workspaceEnum = this.getWorkspaceEnumByName(enumName);
+        if (workspaceEnum) {
+            return workspaceEnum.enum.map(item => item.variable_name);
         }
         let result = getRelatedEnumElementAndLangiumDoc(enumName);
         if (result) {

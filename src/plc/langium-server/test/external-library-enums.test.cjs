@@ -88,3 +88,36 @@ END_TYPE
     assert.ok(labels.includes('MANUAL'));
     assert.ok(labels.includes('AUTO'));
 });
+
+test('invalid cross-file user enum member is rejected', async () => {
+    const diagnostics = await getDiagnostics({
+        label: 'workspace-enum-invalid-member',
+        text: `
+PROGRAM Main
+VAR
+    mode: RunMode;
+END_VAR
+
+mode := RunMode#MANUAL33;
+END_PROGRAM
+`,
+        extra: [
+            {
+                label: 'workspace-enum-definition',
+                text: `
+TYPE
+    RunMode : (
+        STOP := 0,
+        MANUAL := 1,
+        AUTO := 2
+    )
+END_TYPE
+`
+            }
+        ]
+    });
+
+    const errorMessages = getErrorMessages(diagnostics);
+    assert.ok(errorMessages.some(message => message.includes('RunMode')));
+    assert.ok(errorMessages.some(message => message.includes('MANUAL33')));
+});

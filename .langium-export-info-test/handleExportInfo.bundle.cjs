@@ -43226,6 +43226,37 @@ var StValidator = class {
     let root2 = this.getCurrentRoot(node);
     return root2 == null ? void 0 : root2.types_enum.find((item) => item.name.toLowerCase() === enumName.toLowerCase());
   }
+  getLinkedEnumByName(enumName, node) {
+    var _a;
+    if (!enumName || !node || !isEnumeratedValue(node)) {
+      return void 0;
+    }
+    let refNode = (_a = node.enumType) == null ? void 0 : _a.ref;
+    if ((refNode == null ? void 0 : refNode.$type) === "StEnum" && refNode.name.toLowerCase() === enumName.toLowerCase()) {
+      return refNode;
+    }
+    return void 0;
+  }
+  getWorkspaceEnumByName(enumName) {
+    if (!enumName) {
+      return void 0;
+    }
+    let indexManager = this.services.shared.workspace.IndexManager;
+    let langiumDocuments = this.services.shared.workspace.LangiumDocuments;
+    let astNodeLocator = this.services.workspace.AstNodeLocator;
+    for (const description of indexManager.allElements("StEnum")) {
+      if (description.name.toLowerCase() === enumName.toLowerCase()) {
+        let targetDocument = langiumDocuments.getDocument(description.documentUri);
+        if (targetDocument) {
+          let enumNode = astNodeLocator.getAstNode(targetDocument.parseResult.value, description.path);
+          if (enumNode) {
+            return enumNode;
+          }
+        }
+      }
+    }
+    return void 0;
+  }
   getEnumMembers(enumName, node) {
     if (!enumName) {
       return void 0;
@@ -43233,6 +43264,14 @@ var StValidator = class {
     let localEnum = this.getLocalEnumByName(enumName, node);
     if (localEnum) {
       return localEnum.enum.map((item) => item.variable_name);
+    }
+    let linkedEnum = this.getLinkedEnumByName(enumName, node);
+    if (linkedEnum) {
+      return linkedEnum.enum.map((item) => item.variable_name);
+    }
+    let workspaceEnum = this.getWorkspaceEnumByName(enumName);
+    if (workspaceEnum) {
+      return workspaceEnum.enum.map((item) => item.variable_name);
     }
     let result = getRelatedEnumElementAndLangiumDoc(enumName);
     if (result) {
