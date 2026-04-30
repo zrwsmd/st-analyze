@@ -30,6 +30,7 @@ import { CacheReference } from './cache-reference.js';
 import { CacheSignatureHelpProvider } from './cache-sign-help.js';
 import { StGeneratedModule, StGeneratedSharedModule } from './generated/module.js';
 import { ClientLogger } from './ld-client-logger.js';
+import { StDocumentValidator } from './st-document-validator.js';
 import { StNameProvider } from './st-name-provider.js';
 import { StReferenceDescriptionProvider } from './st-reference-descriptions.js';
 import { StScopeComputation } from './st-compute.js';
@@ -122,6 +123,7 @@ export function createStatemachineModule(
             //ParserErrorMessageProvider: new StParserErrorMessageProvider()
         },
         validation: {
+            DocumentValidator: services => new StDocumentValidator(services),
             StValidator: services => new StValidator(services)
         },
         lsp: {

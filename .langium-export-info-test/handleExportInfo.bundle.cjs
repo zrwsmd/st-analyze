@@ -41776,6 +41776,13 @@ var ClientLogger = class {
   }
 };
 
+// src/st-document-validator.ts
+var StDocumentValidator = class extends DefaultDocumentValidator {
+  getSource() {
+    return "st-analyze";
+  }
+};
+
 // src/st-name-provider.ts
 var import_node_path2 = __toESM(require("path"));
 var StNameProvider = class extends DefaultNameProvider {
@@ -44352,6 +44359,7 @@ function createStatemachineModule(context) {
       //ParserErrorMessageProvider: new StParserErrorMessageProvider()
     },
     validation: {
+      DocumentValidator: (services) => new StDocumentValidator(services),
       StValidator: (services) => new StValidator(services)
     },
     lsp: {
