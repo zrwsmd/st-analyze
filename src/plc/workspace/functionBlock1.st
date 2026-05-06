@@ -19,6 +19,10 @@ VAR_OUTPUT
   mmty:INT;
 END_VAR
 
+VAR_EXTERNAL
+    DevUniAxis1 : AXIS_REF;
+END_VAR
+
 
 // METHOD ConvertCelsiusToFahrenheit58(celsiusTemp: InT): REAL
 // VAR

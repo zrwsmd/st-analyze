@@ -595,3 +595,41 @@ END_PROGRAM
         await cleanupWorkspace(workspace);
     }
 });
+
+test('handleBusiness skips function block files when VAR_EXTERNAL declaration errors exist', async () => {
+    const handleExportInfo = await loadHandleExportInfoModule();
+    const workspace = await createWorkspace({
+        'fb.st': `
+FUNCTION_BLOCK FbTest
+VAR_EXTERNAL
+    missingGlobal: BOOL;
+END_VAR
+END_FUNCTION_BLOCK
+`
+    });
+
+    try {
+        configureVscodeMock({
+            workspaceRoot: workspace.workspaceRoot,
+            diagnosticsByPath: {
+                [workspace.filePathByRelativePath['fb.st']]: [
+                    diagnosticError('unknown global variable', diagnosticRange(3, 4, 3, 17))
+                ]
+            }
+        });
+
+        const files = await handleExportInfo.loadInitializeAvaiableFile('.st');
+        assert.deepEqual(files, []);
+
+        const result = await handleExportInfo.handleBusiness(
+            [],
+            [workspace.uriByRelativePath['fb.st']],
+            'basic',
+            shared.workspace.LangiumDocumentFactory
+        );
+
+        assert.deepEqual(result, []);
+    } finally {
+        await cleanupWorkspace(workspace);
+    }
+});

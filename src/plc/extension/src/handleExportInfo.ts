@@ -922,11 +922,13 @@ function collectDeclarationRanges(st: St) {
 
     st.program.forEach(program => {
         program.inputs.forEach(pushRange);
+        program.varExternals.forEach(pushRange);
     });
     st.function_block.forEach(functionBlock => {
         functionBlock.varInputs.forEach(pushRange);
         functionBlock.varOutputs.forEach(pushRange);
         functionBlock.varLocals.forEach(pushRange);
+        functionBlock.varExternals.forEach(pushRange);
     });
     st.st_function.forEach(stFunction => {
         pushRange(stFunction.variable_type);
