@@ -45816,18 +45816,12 @@ function registerShowStFilesCommand(context) {
   const langiumDocumentFactory = import_main2.shared.workspace.LangiumDocumentFactory;
   let fileSuffix = ".st";
   const command = vscode.commands.registerCommand("exportAllDeclInfo", async () => {
-    var _a, _b;
-    if (currentType === "basic") {
-      let files = await loadInitializeAvaiableFile(fileSuffix);
-      allElements = await handleBusiness(allElements, files, currentType, langiumDocumentFactory);
-      allElements = (_a = uniqueObjects(allElements, "filePath", "basic")) != null ? _a : [];
-      fs4.writeFileSync(variablePath, JSON.stringify(allElements));
-      return allElements;
-    } else {
-      allElements = (_b = uniqueObjects(allElements, "filePath", currentType)) != null ? _b : [];
-      fs4.writeFileSync(variablePath, JSON.stringify(allElements));
-      return allElements;
-    }
+    var _a;
+    const files = await loadInitializeAvaiableFile(fileSuffix);
+    allElements = await handleBusiness([], files, "basic", langiumDocumentFactory);
+    allElements = (_a = uniqueObjects(allElements, "filePath", "basic")) != null ? _a : [];
+    fs4.writeFileSync(variablePath, JSON.stringify(allElements));
+    return allElements;
   });
   const stFileWatcher = vscode.workspace.createFileSystemWatcher("**/*.st", false, false, false);
   stFileWatcher.onDidCreate(async (uri) => {

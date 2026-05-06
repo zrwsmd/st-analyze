@@ -92,22 +92,11 @@ export function registerShowStFilesCommand(context: vscode.ExtensionContext) {
     let fileSuffix = '.st';
     // 注册命令
     const command = vscode.commands.registerCommand('exportAllDeclInfo', async () => {
-        // console.log(currentType);
-        if (currentType === 'basic') {
-            let files = await loadInitializeAvaiableFile(fileSuffix);
-            allElements = await handleBusiness(allElements, files, currentType, langiumDocumentFactory);
-            // if (allElements !== undefined) {
-            //     console.log('init', allElements);
-            // }
-            allElements = uniqueObjects(allElements, 'filePath', 'basic') ?? [];
-            fs.writeFileSync(variablePath, JSON.stringify(allElements));
-            return allElements;
-        } else {
-            allElements = uniqueObjects(allElements, 'filePath', currentType) ?? [];
-            fs.writeFileSync(variablePath, JSON.stringify(allElements));
-            //console.log(`after ${currentType}`, allElements);
-            return allElements;
-        }
+        const files = await loadInitializeAvaiableFile(fileSuffix);
+        allElements = await handleBusiness([], files, 'basic', langiumDocumentFactory);
+        allElements = uniqueObjects(allElements, 'filePath', 'basic') ?? [];
+        fs.writeFileSync(variablePath, JSON.stringify(allElements));
+        return allElements;
     });
 
     // 重命名文件事件
