@@ -14,13 +14,18 @@ const REPO_ROOT = path.resolve(__dirname, '../../../../../');
 const TMP_ROOT = path.join(REPO_ROOT, '.langium-export-info-test');
 const HANDLE_EXPORT_INFO_ENTRY = path.join(REPO_ROOT, 'src/plc/extension/src/handleExportInfo.ts');
 const LANGIUM_MAIN_BUNDLE = path.join(REPO_ROOT, 'src/plc/langium-server/out/main.cjs');
+const LANGIUM_DATA_JSON = path.join(REPO_ROOT, 'src/plc/langium-server/out/data.json');
 const BUNDLE_PATH = path.join(TMP_ROOT, 'handleExportInfo.bundle.cjs');
+const BUNDLE_DATA_JSON = path.join(TMP_ROOT, 'data.json');
 const VSCODE_MOCK_PATH = path.join(TMP_ROOT, 'vscode.mock.cjs');
 
 let bundlePromise;
 
 function ensureTmpRoot() {
     fs.mkdirSync(TMP_ROOT, { recursive: true });
+    if (fs.existsSync(LANGIUM_DATA_JSON)) {
+        fs.copyFileSync(LANGIUM_DATA_JSON, BUNDLE_DATA_JSON);
+    }
 }
 
 function writeVscodeMock() {
@@ -254,6 +259,7 @@ async function cleanupWorkspace(workspace) {
 async function cleanupLangiumDocuments(uris) {
     const langiumDocuments = shared.workspace.LangiumDocuments;
     for (const uri of uris) {
+        shared.workspace.IndexManager.remove(uri);
         if (langiumDocuments.hasDocument(uri)) {
             langiumDocuments.deleteDocument(uri);
         }

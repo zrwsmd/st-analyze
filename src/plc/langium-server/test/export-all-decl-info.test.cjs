@@ -633,3 +633,50 @@ END_FUNCTION_BLOCK
         await cleanupWorkspace(workspace);
     }
 });
+
+test('loadInitializeAvaiableFile rebuilds cached documents from latest file text', async () => {
+    const fs = require('node:fs');
+    const handleExportInfo = await loadHandleExportInfoModule();
+    const workspace = await createWorkspace({
+        'GVL_1.st': `
+VAR_GLOBAL
+    gStart: BOOL;
+END_VAR
+`,
+        'fb.st': `
+FUNCTION_BLOCK FbTest
+VAR_EXTERNAL
+    gStart: BOOL;
+END_VAR
+END_FUNCTION_BLOCK
+`
+    });
+
+    try {
+        configureVscodeMock({
+            workspaceRoot: workspace.workspaceRoot,
+            diagnosticsByPath: {}
+        });
+
+        await shared.workspace.LangiumDocuments.getOrCreateDocument(workspace.uriByRelativePath['fb.st']);
+        fs.writeFileSync(
+            workspace.filePathByRelativePath['fb.st'],
+            `
+FUNCTION_BLOCK FbTest
+VAR_EXTERNAL
+    missingGlobal: BOOL;
+END_VAR
+END_FUNCTION_BLOCK
+`,
+            'utf8'
+        );
+
+        const files = await handleExportInfo.loadInitializeAvaiableFile('.st');
+        const fileNames = files.map(file => require('node:path').basename(file.fsPath));
+
+        assert.ok(fileNames.includes('GVL_1.st'));
+        assert.ok(!fileNames.includes('fb.st'));
+    } finally {
+        await cleanupWorkspace(workspace);
+    }
+});

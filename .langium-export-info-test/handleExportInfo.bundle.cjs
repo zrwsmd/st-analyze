@@ -45855,14 +45855,16 @@ function registerShowStFilesCommand(context) {
   context.subscriptions.push(command);
 }
 async function loadInitializeAvaiableFile(fileSuffix) {
+  var _a;
   let allFiles = await vscode.workspace.findFiles(`**/*${fileSuffix}`);
+  await refreshLangiumDocuments(allFiles);
   let langiumDocs = import_main2.shared.workspace.LangiumDocuments;
   let files = [];
+  errorFiles.clear();
   for (const file of allFiles) {
-    const document = await vscode.workspace.openTextDocument(file);
-    const langiumDocument = await langiumDocs.getOrCreateDocument(file);
+    const langiumDocument = (_a = langiumDocs.getDocument(file)) != null ? _a : await createFreshLangiumDocument(file);
     const root2 = langiumDocument.parseResult.value;
-    const diagnostics = vscode.languages.getDiagnostics(document.uri);
+    const diagnostics = await getCurrentDiagnostics(langiumDocument, file);
     if (!hasDeclarationErrorDiagnostics(root2, diagnostics)) {
       files.push(file);
     } else {
@@ -45874,6 +45876,54 @@ async function loadInitializeAvaiableFile(fileSuffix) {
 var globalMap = new import_multimap.default();
 var globalVarMap = new import_multimap.default();
 var errorFiles = /* @__PURE__ */ new Set();
+async function refreshLangiumDocuments(files) {
+  const langiumDocs = import_main2.shared.workspace.LangiumDocuments;
+  const managedFileDocuments = langiumDocs.all.filter((document) => document.uri.scheme === "file" && document.uri.path.toLowerCase().endsWith(".st")).toArray();
+  for (const document of managedFileDocuments) {
+    import_main2.shared.workspace.IndexManager.remove(document.uri);
+    langiumDocs.deleteDocument(document.uri);
+  }
+  const documents = [];
+  for (const file of files) {
+    import_main2.shared.workspace.IndexManager.remove(file);
+    documents.push(await createFreshLangiumDocument(file));
+  }
+  if (documents.length > 0) {
+    await import_main2.shared.workspace.DocumentBuilder.build(documents, { validation: false });
+  }
+}
+async function createFreshLangiumDocument(file) {
+  const textDocument = await vscode.workspace.openTextDocument(file);
+  const document = import_main2.shared.workspace.LangiumDocumentFactory.fromTextDocument(convertToLSTextDocument(textDocument), file);
+  import_main2.shared.workspace.LangiumDocuments.addDocument(document);
+  return document;
+}
+async function getCurrentDiagnostics(document, uri) {
+  const langiumDiagnostics = await import_main2.shared.ServiceRegistry.getServices(document.uri).validation.DocumentValidator.validateDocument(document);
+  const vscodeDiagnostics = vscode.languages.getDiagnostics(uri);
+  return [...langiumDiagnostics.map(toVscodeDiagnostic), ...vscodeDiagnostics];
+}
+function toVscodeDiagnostic(diagnostic) {
+  return {
+    message: diagnostic.message,
+    range: diagnostic.range,
+    severity: toVscodeSeverity(diagnostic.severity)
+  };
+}
+function toVscodeSeverity(severity) {
+  switch (severity) {
+    case 1:
+      return vscode.DiagnosticSeverity.Error;
+    case 2:
+      return vscode.DiagnosticSeverity.Warning;
+    case 3:
+      return vscode.DiagnosticSeverity.Information;
+    case 4:
+      return vscode.DiagnosticSeverity.Hint;
+    default:
+      return vscode.DiagnosticSeverity.Error;
+  }
+}
 function uniqueObjects(array, key, type) {
   if (array === void 0)
     return [];
@@ -45886,6 +45936,9 @@ function uniqueObjects(array, key, type) {
 async function handleBusiness(allElements2, files, eventType, langiumDocumentFactory, change, reNamefiles) {
   let langiumDocs = import_main2.shared.workspace.LangiumDocuments;
   if (eventType === "basic" || eventType === "onDelete" || eventType === "onCreate") {
+    if (eventType === "basic") {
+      await refreshLangiumDocuments(files);
+    }
     await preSaveRefInfo(files, eventType);
     allElements2 = await saveAsJson(files, langiumDocs, allElements2, eventType);
     let data = uniqueObjects(allElements2, "filePath", eventType);
@@ -45904,7 +45957,7 @@ async function handleBusiness(allElements2, files, eventType, langiumDocumentFac
       let document = langiumDocumentFactory.fromTextDocument(change);
       const root2 = document.parseResult.value;
       let historyComposeNode = allElements2.filter((item) => item.filePath !== change.uri);
-      const diagnostics = vscode.languages.getDiagnostics(vscode.Uri.parse(change.uri));
+      const diagnostics = await getCurrentDiagnostics(document, vscode.Uri.parse(change.uri));
       if (hasDeclarationErrorDiagnostics(root2, diagnostics)) {
         return uniqueObjects(historyComposeNode, "filePath", eventType);
       }
@@ -45933,7 +45986,7 @@ async function saveAsJson(files, langiumDocs, allElements2, eventType) {
     let file = files[i];
     const document = await langiumDocs.getOrCreateDocument(file);
     const root2 = document.parseResult.value;
-    const diagnostics = vscode.languages.getDiagnostics(file);
+    const diagnostics = await getCurrentDiagnostics(document, file);
     if (hasDeclarationErrorDiagnostics(root2, diagnostics)) {
       continue;
     }
@@ -45957,6 +46010,8 @@ async function saveAsJson(files, langiumDocs, allElements2, eventType) {
 async function preSaveRefInfo(files, eventType) {
   let langiumDocs = import_main2.shared.workspace.LangiumDocuments;
   if (eventType === "basic") {
+    globalMap.clear();
+    globalVarMap.clear();
     for (const file of files) {
       await saveData(langiumDocs, file);
     }
