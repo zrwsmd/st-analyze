@@ -53,6 +53,28 @@ END_PROGRAM
     assert.ok(labels.includes('BlendingHigh'));
 });
 
+test('cache-complete only provides enum members after hash', async () => {
+    const labels = await getCompletionLabels({
+        label: 'cache-complete-enum-member-only-after-hash',
+        text: `
+PROGRAM Main
+VAR
+    direction: MC_Direction;
+END_VAR
+
+direction := MC_Direction#/*cursor*/
+END_PROGRAM
+`
+    });
+
+    assert.ok(labels.includes('negative'));
+    assert.ok(labels.includes('positive'));
+    assert.ok(labels.includes('shortest'));
+    assert.ok(!labels.includes('MC_BUFFER_MODE'));
+    assert.ok(!labels.includes('MC_Direction'));
+    assert.ok(!labels.includes('MC_STARTMODE'));
+});
+
 test('cache-complete provides external struct member completion after dot', async () => {
     const labels = await getCompletionLabels({
         label: 'cache-complete-struct-members',

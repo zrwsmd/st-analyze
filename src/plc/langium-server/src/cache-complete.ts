@@ -69,14 +69,16 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
     }
 
     override async getCompletion(document: LangiumDocument<AstNode>, params: CompletionParams): Promise<CompletionList | undefined> {
-        let baseCompletion = await super.getCompletion(document, params);
         let enumCompletionItems = this.getManualEnumCompletionItems(document, params);
+        if (enumCompletionItems) {
+            return CompletionList.create(this.deduplicateItems(enumCompletionItems), true);
+        }
+        let baseCompletion = await super.getCompletion(document, params);
         let memberCompletionItems = await this.getManualMemberCompletionItems(document, params);
-        if (enumCompletionItems.length === 0 && memberCompletionItems.length === 0) {
+        if (memberCompletionItems.length === 0) {
             return baseCompletion;
         }
-        let mergedItems = this.mergeSupplementalItems(baseCompletion?.items ?? [], enumCompletionItems);
-        mergedItems = this.mergeOverrideItems(mergedItems, memberCompletionItems);
+        let mergedItems = this.mergeOverrideItems(baseCompletion?.items ?? [], memberCompletionItems);
         if (memberCompletionItems.length > 0) {
             mergedItems = this.prioritizeItems(mergedItems, memberCompletionItems);
         }
@@ -303,7 +305,7 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         return supplementalDetail.length > existingDetail.length;
     }
 
-    private getManualEnumCompletionItems(document: LangiumDocument<AstNode>, params: CompletionParams): CompletionItem[] {
+    private getManualEnumCompletionItems(document: LangiumDocument<AstNode>, params: CompletionParams): CompletionItem[] | undefined {
         let textDocument = document.textDocument;
         let textBeforeCursor = textDocument.getText({
             start: Position.create(0, 0),
@@ -311,7 +313,7 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
         });
         let match = textBeforeCursor.match(/([_a-zA-Z][\w_]*)#([_a-zA-Z][\w_]*)?$/);
         if (!match) {
-            return [];
+            return undefined;
         }
         let enumTypeName = match[1];
         let partialMemberName = match[2] ?? '';
@@ -325,7 +327,21 @@ export class CacheCompletionProvider extends DefaultCompletionProvider {
             tokenEndOffset: offset,
             features: []
         };
+        if (!this.hasEnumType(enumTypeName, syntheticContext)) {
+            return undefined;
+        }
         return this.buildEnumMemberCompletionItems(enumTypeName, partialMemberName, syntheticContext);
+    }
+
+    private hasEnumType(enumTypeName: string | undefined, context: CompletionContext): boolean {
+        if (!enumTypeName) {
+            return false;
+        }
+        return (
+            this.getLocalEnumByName(enumTypeName, context) !== undefined ||
+            this.getWorkspaceEnumByName(enumTypeName) !== undefined ||
+            getRelatedEnumElementAndLangiumDoc(enumTypeName) !== undefined
+        );
     }
 
     private async getManualMemberCompletionItems(document: LangiumDocument<AstNode>, params: CompletionParams): Promise<CompletionItem[]> {
