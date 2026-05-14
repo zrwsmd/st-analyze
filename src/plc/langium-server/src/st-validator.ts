@@ -39,10 +39,9 @@ import {
     StructsList,
     UnionsList,
     Universe,
-    VariableReferenceTarget,
-    VarExternal,
     VarDeclarationInit,
     VariableExpression,
+    VariableReferenceTarget,
     isArr_string,
     isAssignPrefix,
     isConstant,
@@ -800,15 +799,15 @@ export class StValidator {
                 return;
             }
 
-            if (accessibleMatches.length > 1) {
-                const listNames = accessibleMatches.map(match => this.getGlobalVarListDisplayName(match.list)).join(', ');
-                accept('error', `全局变量 '${name}' 在多个全局变量列表中存在(${listNames})，请使用限定名访问`, {
-                    node: item,
-                    property,
-                    index: propertyIndex
-                });
-                return;
-            }
+            // if (accessibleMatches.length > 1) {
+            //     const listNames = accessibleMatches.map(match => this.getGlobalVarListDisplayName(match.list)).join(', ');
+            //     accept('error', `全局变量 '${name}' 在多个全局变量列表中存在(${listNames})，请使用限定名访问`, {
+            //         node: item,
+            //         property,
+            //         index: propertyIndex
+            //     });
+            //     return;
+            // }
 
             const actualDecl = accessibleMatches[0].declaration;
             let expectType = '';
@@ -864,7 +863,10 @@ export class StValidator {
     }
 
     private normalizeAttributeName(attributeName: string): string {
-        return attributeName.trim().replace(/^['"]|['"]$/g, '').toLowerCase();
+        return attributeName
+            .trim()
+            .replace(/^['"]|['"]$/g, '')
+            .toLowerCase();
     }
 
     private getGlobalVarListDisplayName(globalVarList: GlobalVarList): string {
