@@ -141,6 +141,8 @@ VAR
     bufferMode: MC_BUFFER_MODE;
     dateTimeA, dateTimeB: DATE_AND_TIME;
     todValue: TIME_OF_DAY;
+    anyNumber: ANY_NUM;
+    anyInt: any_int;
 END_VAR
 END_PROGRAM
 `
@@ -219,6 +221,8 @@ END_PROGRAM
         assert.equal(getVarDecl(program, 'dateTimeA').varType, 'DATE_AND_TIME');
         assert.equal(getVarDecl(program, 'dateTimeB').varType, 'DATE_AND_TIME');
         assert.equal(getVarDecl(program, 'todValue').varType, 'TIME_OF_DAY');
+        assert.equal(getVarDecl(program, 'anyNumber').varType, 'ANY_NUM');
+        assert.equal(getVarDecl(program, 'anyInt').varType, 'ANY_INT');
     } finally {
         await cleanupWorkspace(workspace);
     }

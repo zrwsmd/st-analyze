@@ -21,6 +21,7 @@ export const StTerminals = {
     Time_Of_Day_type_name: /\b(?:TIME_OF_DAY)\b/i,
     Time_type_name: /\b(?:TIME)\b/i,
     Date_type_name: /\b(?:DATE)\b/i,
+    Any_type_name: /\b(?:ANY|ANY_DERIVED|ANY_ELEMENTARY|ANY_MAGNITUDE|ANY_NUM|ANY_REAL|ANY_INT|ANY_BIT|ANY_NBIT|ANY_STRING|ANY_DATE)\b/i,
     Identifier: /[_a-zA-Z][\w_]*/,
     Exponent: /(([Ee])(\+|-)?((([0-9]+)((_)?([0-9]+))*)))/,
     Binary_integer: /\b2#(0|1)(0|1|(_))*\b/,
@@ -665,6 +666,7 @@ export function isMethods(item: unknown): item is Methods {
 
 export interface Native_Type_Name extends AstNode {
     readonly $type: 'Array_liters' | 'Native_Type_Name';
+    Any_type_name?: string;
     Bit_string_type_name?: string;
     Bool_type_name?: string;
     Cache_type_name?: string;
@@ -1477,6 +1479,7 @@ export class StAstReflection extends AbstractAstReflection {
                 return {
                     name: 'Native_Type_Name',
                     properties: [
+                        { name: 'Any_type_name' },
                         { name: 'Bit_string_type_name' },
                         { name: 'Bool_type_name' },
                         { name: 'Cache_type_name' },
@@ -1731,6 +1734,7 @@ export class StAstReflection extends AbstractAstReflection {
                 return {
                     name: 'Array_liters',
                     properties: [
+                        { name: 'Any_type_name' },
                         { name: 'arrayElemets', defaultValue: [] },
                         { name: 'Bit_string_type_name' },
                         { name: 'Bool_type_name' },

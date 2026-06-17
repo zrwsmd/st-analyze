@@ -124,7 +124,18 @@ export const keywordStr: string[] = [
     'LREAL',
     'REAL',
     'BOOL',
-    'STRING'
+    'STRING',
+    'ANY',
+    'ANY_DERIVED',
+    'ANY_ELEMENTARY',
+    'ANY_MAGNITUDE',
+    'ANY_NUM',
+    'ANY_REAL',
+    'ANY_INT',
+    'ANY_BIT',
+    'ANY_NBIT',
+    'ANY_STRING',
+    'ANY_DATE'
     // 'PUBLIC',
     // 'INTERNAL',
     // 'FINAL'
@@ -719,6 +730,7 @@ export function basicDataType(expectType: string | undefined, typeName: Native_T
             typeName.Time_type_name ||
             typeName.Date_And_time_type_name ||
             typeName.Time_Of_Day_type_name ||
+            typeName.Any_type_name ||
             typeName.Cache_type_name;
     }
     let normalizedTypeName = expectType?.toUpperCase();
@@ -728,6 +740,9 @@ export function basicDataType(expectType: string | undefined, typeName: Native_T
     if (normalizedTypeName === 'TOD') {
         return 'TIME_OF_DAY';
     }
+    if (normalizedTypeName && standardTypeStr.includes(normalizedTypeName)) {
+        return normalizedTypeName;
+    }
     return expectType;
 }
 
@@ -735,6 +750,15 @@ const signedIntegerTypeStr = ['SINT', 'INT', 'DINT', 'LINT'];
 const unsignedIntegerTypeStr = ['USINT', 'UINT', 'UDINT', 'ULINT'];
 const bitStringTypeStr = ['BYTE', 'WORD', 'DWORD', 'LWORD'];
 const realTypeStr = ['REAL', 'LREAL'];
+const timeAndDateTypeStr = ['DATE', 'TIME', 'DATE_AND_TIME', 'TIME_OF_DAY'];
+const anyTypeStr = ['ANY', 'ANY_DERIVED', 'ANY_ELEMENTARY', 'ANY_MAGNITUDE', 'ANY_NUM', 'ANY_REAL', 'ANY_INT', 'ANY_BIT', 'ANY_NBIT', 'ANY_STRING', 'ANY_DATE'];
+const standardTypeStr = signedIntegerTypeStr
+    .concat(unsignedIntegerTypeStr)
+    .concat(bitStringTypeStr)
+    .concat(realTypeStr)
+    .concat(['BOOL', 'STRING'])
+    .concat(timeAndDateTypeStr)
+    .concat(anyTypeStr);
 
 function normalizeBuiltinTypeName(typeName: string | undefined): string | undefined {
     if (!typeName) {
@@ -775,6 +799,8 @@ function createNativeTypeNameByName(typeName: string): Native_Type_Name {
         astTypeName.Date_And_time_type_name = normalizedTypeName;
     } else if (normalizedTypeName === 'TIME_OF_DAY') {
         astTypeName.Time_Of_Day_type_name = normalizedTypeName;
+    } else if (anyTypeStr.includes(normalizedTypeName)) {
+        astTypeName.Any_type_name = normalizedTypeName;
     } else {
         astTypeName.Cache_type_name = typeName;
     }
@@ -818,7 +844,8 @@ function resolveExternalTypeName(typeName: string | undefined, visitedAlias = ne
         normalizedTypeName === 'DATE' ||
         normalizedTypeName === 'TIME' ||
         normalizedTypeName === 'DATE_AND_TIME' ||
-        normalizedTypeName === 'TIME_OF_DAY'
+        normalizedTypeName === 'TIME_OF_DAY' ||
+        anyTypeStr.includes(normalizedTypeName)
     ) {
         return {
             typeName: normalizedTypeName
@@ -919,7 +946,7 @@ export function isDecimal(str: string): boolean {
      */
 export function ignoreCase(eachVarTypeName: string): [string | null, boolean] {
     const upperStr = eachVarTypeName.toUpperCase();
-    const matchedString = allFunctionBlockStr.find(validStr => validStr === upperStr);
+    const matchedString = standardTypeStr.concat(allFunctionBlockStr).find(validStr => validStr.toUpperCase() === upperStr);
     return matchedString ? [matchedString, true] : [null, false];
 }
 
@@ -1093,6 +1120,7 @@ export function handleNotCaseSensitive(eachVarTypeName: any, typeName: Native_Ty
         | 'Date_type_name'
         | 'Time_Of_Day_type_name'
         | 'Time_type_name'
+        | 'Any_type_name'
         | 'Cache_type_name';
 
     let sourceTypeName = basicDataType(eachVarTypeName, typeName);
@@ -1118,6 +1146,8 @@ export function handleNotCaseSensitive(eachVarTypeName: any, typeName: Native_Ty
         type = 'Time_Of_Day_type_name';
     } else if (typeName.Time_type_name) {
         type = 'Time_type_name';
+    } else if (typeName.Any_type_name) {
+        type = 'Any_type_name';
     } else if (typeName.Cache_type_name) {
         type = 'Cache_type_name';
     } else {

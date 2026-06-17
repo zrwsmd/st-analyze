@@ -133,6 +133,24 @@ END_PROGRAM
     assert.deepEqual(getErrorMessages(diagnostics), []);
 });
 
+test('st-validator accepts IEC generic ANY type names', async () => {
+    const diagnostics = await getDiagnostics({
+        label: 'st-validator-any-types',
+        text: `
+PROGRAM Main
+VAR
+    value: ANY;
+    numberValue: ANY_NUM;
+    intValue: any_int;
+    bitValue: ANY_BIT;
+END_VAR
+END_PROGRAM
+`
+    });
+
+    assert.deepEqual(getErrorMessages(diagnostics), []);
+});
+
 test('st-validator rejects assigning BOOL literals to INT variables', async () => {
     const diagnostics = await getDiagnostics({
         label: 'st-validator-bool-to-int-assignment',

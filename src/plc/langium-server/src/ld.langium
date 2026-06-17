@@ -166,7 +166,7 @@ Native_Type_Name:
 		Integer_type_name=Signed_integer_type_name | Unsigned_integer_type_name=Unsigned_integer_type_name |Bool_type_name=Bool_type_name|String_type_name=String_type_name|
      Bit_string_type_name=Bit_string_type_name | Real_type_name=Real_type_name |Time_type_name=Time_type_name|Date_type_name=Date_type_name|
      Date_And_time_type_name=(Date_And_time_type_name | 'DT')|Time_Of_Day_type_name=(Time_Of_Day_type_name | 'TOD')|
-     Array_liters|Identifier=[ComposeElement:Identifier]|Cache_type_name=Cache_type_name
+     Any_type_name=Any_type_name|Array_liters|Identifier=[ComposeElement:Identifier]|Cache_type_name=Cache_type_name
 ;
 
 
@@ -506,6 +506,7 @@ terminal Date_And_time_type_name: /\b(?:DATE_AND_TIME)\b/i;
 terminal Time_Of_Day_type_name: /\b(?:TIME_OF_DAY)\b/i;
 terminal Time_type_name: /\b(?:TIME)\b/i;
 terminal Date_type_name: /\b(?:DATE)\b/i;
+terminal Any_type_name: /\b(?:ANY|ANY_DERIVED|ANY_ELEMENTARY|ANY_MAGNITUDE|ANY_NUM|ANY_REAL|ANY_INT|ANY_BIT|ANY_NBIT|ANY_STRING|ANY_DATE)\b/i;
 terminal Identifier: /[_a-zA-Z][\w_]*/;
 
 // numeric tokens
