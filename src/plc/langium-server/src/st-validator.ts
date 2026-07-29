@@ -1069,6 +1069,15 @@ export class StValidator {
                             }
                         }
                     }
+                } else if (this.isLibraryCallableElement(refNode)) {
+                    if (params) {
+                        this.validateLibraryFunction([refNode], params.parameters, accept);
+                    }
+                }
+            } else if (params) {
+                let result = getRelatedElementAndLangiumDoc(selectRefFunctionName.refFunctionName.$refText);
+                if (result) {
+                    this.validateLibraryFunction(result, params.parameters, accept);
                 }
             }
         } else if (selectRefFunctionName.Cache_type_name) {
@@ -1176,6 +1185,9 @@ export class StValidator {
                 if (elementType === 'functionBlock') {
                     elementNode = elementNode as FunctionBlockElement;
                     this.validateFb(elementNode, parameters, accept);
+                } else if (elementType === 'function') {
+                    elementNode = elementNode as FunctionElement;
+                    this.validateFb(elementNode, parameters, accept, false, true);
                 }
             }
         } else {
@@ -1183,7 +1195,18 @@ export class StValidator {
         }
     }
 
-    private validateFb(elementNode: any, parameters: Param_assignment[], accept: ValidationAcceptor, isCustomFb?: boolean) {
+    private isLibraryCallableElement(node: AstNode): node is FunctionBlockElement | FunctionElement {
+        let elementType = (node as FunctionBlockElement | FunctionElement).elementType;
+        return elementType === 'functionBlock' || elementType === 'function';
+    }
+
+    private validateFb(
+        elementNode: any,
+        parameters: Param_assignment[],
+        accept: ValidationAcceptor,
+        isCustomFb?: boolean,
+        skipTypeMatch?: boolean
+    ) {
         let inputSet = this.judgeCacheNodeInputOutputVarDecl(':=', elementNode);
         let outputSet = this.judgeCacheNodeInputOutputVarDecl('=>', elementNode);
         parameters.forEach(parameter => {
@@ -1212,7 +1235,7 @@ export class StValidator {
                 }
             }
             if (!flag) {
-                if (paramValue) {
+                if (paramValue && !skipTypeMatch) {
                     this.handleCacheTypeMatch(paramName, paramValue, elementNode, accept, parameter);
                 }
             }
